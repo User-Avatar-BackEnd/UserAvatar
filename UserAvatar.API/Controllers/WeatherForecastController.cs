@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserAvatar.Controllers
+namespace UserAvatar.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
