@@ -1,6 +1,6 @@
 using System;
 
-namespace UserAvatar
+namespace UserAvatar.API
 {
     public class WeatherForecast
     {
