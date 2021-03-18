@@ -1,15 +1,14 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using UserAvatar.API.Options;
 
 namespace UserAvatar.API
 {
@@ -25,11 +24,64 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions<JwtOptions>();
+            var jwtOptions = services
+                .BuildServiceProvider()
+                .GetRequiredService<IOptions<JwtOptions>>()
+                .Value;
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options =>
+              {
+                  options.RequireHttpsMetadata = jwtOptions.RequireHttps;
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuer = true,
+                      ValidIssuer = jwtOptions.Issuer,
+
+                      ValidateAudience = true,
+                      ValidAudience = jwtOptions.Audience,
+                      ValidateLifetime = true,
+                      ClockSkew = TimeSpan.Zero,
+
+                      IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
+                      ValidateIssuerSigningKey = true
+                  };
+              });
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
+
+                options.AddSecurityRequirement(
+                        new OpenApiSecurityRequirement
+                        {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                },
+                            },
+                            new string[0]
+                        }
+                        });
+
+                options.AddSecurityDefinition(
+                    "Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Header,
+                        Scheme = "Bearer",
+                        Name = "Authorization",
+                        Description = "JWT token",
+                        BearerFormat = "JWT"
+                    });
             });
         }
 
@@ -45,6 +97,7 @@ namespace UserAvatar.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
