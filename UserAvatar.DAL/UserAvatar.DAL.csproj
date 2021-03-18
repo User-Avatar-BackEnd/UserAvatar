@@ -12,5 +12,6 @@
     </PackageReference>
     <Folder Include="Entities\" />
     <Folder Include="Context\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 </Project>
