@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserAvatar.DAL.Context;
 
 namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    partial class UserAvatarContextModelSnapshot : ModelSnapshot
+    [Migration("20210319151202_AddModels")]
+    partial class AddModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,13 +346,13 @@ namespace UserAvatar.DAL.Migrations
             modelBuilder.Entity("UserAvatar.DAL.Entities.Invite", b =>
                 {
                     b.HasOne("UserAvatar.DAL.Entities.User", "Invited")
-                        .WithMany()
+                        .WithMany("Invited")
                         .HasForeignKey("InvitedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("UserAvatar.DAL.Entities.User", "Inviter")
-                        .WithMany()
+                        .WithMany("Inviter")
                         .HasForeignKey("InviterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -407,6 +409,10 @@ namespace UserAvatar.DAL.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Histories");
+
+                    b.Navigation("Invited");
+
+                    b.Navigation("Inviter");
                 });
 #pragma warning restore 612, 618
         }

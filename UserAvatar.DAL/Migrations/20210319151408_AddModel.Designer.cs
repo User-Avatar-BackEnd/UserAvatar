@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserAvatar.DAL.Context;
 
 namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    partial class UserAvatarContextModelSnapshot : ModelSnapshot
+    [Migration("20210319151408_AddModel")]
+    partial class AddModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,34 +151,6 @@ namespace UserAvatar.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Histories");
-                });
-
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Invite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("InvitedId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("InviterId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Issued")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvitedId");
-
-                    b.HasIndex("InviterId");
-
-                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("UserAvatar.DAL.Entities.Member", b =>
@@ -339,25 +313,6 @@ namespace UserAvatar.DAL.Migrations
                     b.Navigation("Event");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Invite", b =>
-                {
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Invited")
-                        .WithMany()
-                        .HasForeignKey("InvitedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Inviter")
-                        .WithMany()
-                        .HasForeignKey("InviterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Invited");
-
-                    b.Navigation("Inviter");
                 });
 
             modelBuilder.Entity("UserAvatar.DAL.Entities.Member", b =>

@@ -41,8 +41,7 @@ namespace UserAvatar.API
                             Configuration.GetConnectionString("connectionString"),
                             x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
             }
-            
-            
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAuthService, AuthService>();
             

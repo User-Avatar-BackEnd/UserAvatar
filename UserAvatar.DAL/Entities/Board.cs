@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,9 +13,9 @@ namespace UserAvatar.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         
-        //Fk
+        [ForeignKey("OwnerId")]
         [Required]
-        public int OwnerId { get; set; }
+        public virtual User User { get; set; }
         
         [Required]
         public string Title { get; set; }
@@ -23,5 +24,8 @@ namespace UserAvatar.DAL.Entities
         public DateTime CreatedAt { get; set; }
         
         public DateTime ModifiedAt { get; set; }
+        
+        public ICollection<Column> Columns { get; set; }
+        public ICollection<Member> Members { get; set; }
     }
 }

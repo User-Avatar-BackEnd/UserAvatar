@@ -13,11 +13,12 @@ namespace UserAvatar.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        //FK
-        public int TaskId { get; set; }
+        
+        [ForeignKey("TaskId")]
+        public virtual Task Task { get; set; }
         [Required]
-        //FK
-        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
         [Required]
         public string Text { get; set; }
         [Required]
