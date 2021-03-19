@@ -19,7 +19,6 @@ namespace UserAvatar.DAL.Repositories
         {
             try
             {
-                //this is to check if table exists
                 var count = _dbContext.Set<T>().Count();
                 _dbContext.Set<T>().Add(item);
             }
