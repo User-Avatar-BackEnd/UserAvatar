@@ -7,4 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="DTOs\" />
+  </ItemGroup>
 </Project>

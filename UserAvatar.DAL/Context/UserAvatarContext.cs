@@ -8,14 +8,15 @@ namespace UserAvatar.DAL.Context
     {
         public DbSet<User> Users { get; set; }
 
-        public UserAvatarContext(DbContextOptions<UserAvatarContext> options) : base(options)
+        public UserAvatarContext()
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           // optionsBuilder.LogTo(Console.WriteLine);
-            //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=qwerty");
+            optionsBuilder.LogTo(Console.WriteLine);
+            optionsBuilder.UseSqlite("Filename=userAvatar.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
