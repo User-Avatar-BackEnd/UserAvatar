@@ -21,8 +21,5 @@
     <ProjectReference Include="..\UserAvatar.BLL\UserAvatar.BLL.csproj" />
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ServiceExtensions" />
-  </ItemGroup>
 
 </Project>

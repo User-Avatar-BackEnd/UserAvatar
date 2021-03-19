@@ -152,7 +152,7 @@ namespace UserAvatar.API
                 {
                     Email = "admin@admin.com",
                     Login = "admin",
-                    PasswordHash = "admin",
+                    PasswordHash = PasswordHash.CreateHash("admin"),
                     Role = "admin",
                 });
             }
