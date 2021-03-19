@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserAvatar.BLL.Services;
+using UserAvatar.DAL.Context;
+using UserAvatar.DAL.Entities;
 
 namespace UserAvatar.API.Controllers
 {
@@ -11,6 +14,7 @@ namespace UserAvatar.API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly IAuthService _authService;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -18,22 +22,23 @@ namespace UserAvatar.API.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            IAuthService authService)
         {
             _logger = logger;
+            _authService = authService;
+        }
+
+        [HttpPost("register/{email}/{password}")]
+        public IActionResult Register(string email, string password)
+        {
+            return Ok(_authService.Register(email, password));
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IActionResult GetAll()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return Ok(_authService.GetALlUsers());
         }
     }
 }

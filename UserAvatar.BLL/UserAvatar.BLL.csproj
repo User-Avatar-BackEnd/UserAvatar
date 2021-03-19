@@ -4,6 +4,13 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
+
   <ItemGroup>
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
   </ItemGroup>
