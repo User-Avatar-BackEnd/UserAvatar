@@ -22,7 +22,6 @@ namespace UserAvatar.DAL.Repositories
                 //this is to check if table exists
                 var count = _dbContext.Set<T>().Count();
                 _dbContext.Set<T>().Add(item);
-                //this is to change added value
             }
             catch (Exception exception)
             {
