@@ -26,8 +26,8 @@ namespace UserAvatar.API
             Environment = environment;
         }
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
