@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using UserAvatar.API.Options;
 using UserAvatar.BLL.Services;
 using UserAvatar.DAL.Context;
+using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
 
 namespace UserAvatar.API
@@ -116,6 +118,12 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
+                context?.Database.MigrateAsync();
+                EnsureAdminCreated(context);
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -132,6 +140,24 @@ namespace UserAvatar.API
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void EnsureAdminCreated(UserAvatarContext context)
+        {
+
+            var testBlog = context.Users.FirstOrDefault(x=> x.Login == "admin" && x.PasswordHash == "admin");
+            if (testBlog == null)
+            {
+                context.Users.Add(new User
+                {
+                    Email = "admin@admin.com",
+                    Login = "admin",
+                    PasswordHash = "admin",
+                    Role = "admin",
+                });
+            }
+
+            context.SaveChanges();
         }
     }
 }

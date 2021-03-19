@@ -27,5 +27,6 @@ namespace UserAvatar.DAL.Entities
         
         public ICollection<Column> Columns { get; set; }
         public ICollection<Member> Members { get; set; }
+        public ICollection<Invite> Invites { get; set; }
     }
 }
