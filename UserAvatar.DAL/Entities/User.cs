@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 //using SQLite;
 
@@ -20,13 +21,21 @@ namespace UserAvatar.DAL.Entities
         [StringLength(64, MinimumLength = 6)]
         public string Login { get; set; }
 
-        [Required]
+        [Required] 
         public string PasswordHash { get; set; }
-        
+
         public int Score { get; set; }
-        
+
         //todo: change into constants
         public string Role { get; set; }
+
+        public ICollection<History> Histories { get; set; }
+        public ICollection<Board> Boards { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+        /*[InverseProperty("Invited")]
+        public ICollection<Invite> Invited { get; set; }
+        [InverseProperty("Inviter")]
+        public ICollection<Invite> Inviter { get; set; }*/
 
     }
 }
