@@ -13,28 +13,36 @@ namespace UserAvatar.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*services.AddDbContext<UserAvatarContext>(
-                options =>
-                    options.UseNpgsql(
-                        Configuration.GetConnectionString("connectionString"),
-                        x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);*/
+            if (Environment.IsDevelopment())
+            {
+                services.AddDbContext<UserAvatarContext>(
+                    options =>
+                        options.UseSqlite(
+                            Configuration.GetConnectionString("sqliteConn"),
+                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
+            }
+            else
+            {
+                services.AddDbContext<UserAvatarContext>(
+                    options =>
+                        options.UseNpgsql(
+                            Configuration.GetConnectionString("connectionString"),
+                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
+            }
             
-            services.AddDbContext<UserAvatarContext>(
-                options =>
-                    options.UseSqlite(
-                        Configuration.GetConnectionString("sqliteConn"),
-                        x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
-
+            
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IAuthService, AuthService>();
             
@@ -44,6 +52,7 @@ namespace UserAvatar.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
             });
         }
+        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
