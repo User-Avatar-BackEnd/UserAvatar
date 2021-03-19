@@ -7,7 +7,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.BLL.Services;
 using UserAvatar.DAL.Context;
-using UserAvatar.DAL.Repositories;
+using UserAvatar.DAL.Storages;
 
 namespace UserAvatar.API
 {
@@ -42,7 +42,8 @@ namespace UserAvatar.API
                             x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
             }
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<UserStorage>();
+
             services.AddTransient<IAuthService, AuthService>();
             
             services.AddControllers();

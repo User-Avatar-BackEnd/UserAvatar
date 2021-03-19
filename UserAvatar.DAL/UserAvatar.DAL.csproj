@@ -12,8 +12,8 @@
     </PackageReference>
     <Folder Include="Entities\" />
     <Folder Include="Context\" />
-    <Folder Include="Repositories\" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
+    <Folder Include="Storages\" />
   </ItemGroup>
 </Project>

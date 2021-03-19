@@ -35,10 +35,10 @@ namespace UserAvatar.API.Controllers
             return Ok(_authService.Register(email, password));
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("{email}")]
+        public IActionResult GetByEmail(string email)
         {
-            return Ok(_authService.GetALlUsers());
+            return Ok(_authService.GetUserByEmail(email));
         }
     }
 }
