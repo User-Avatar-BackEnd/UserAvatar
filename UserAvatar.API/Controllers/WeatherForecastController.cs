@@ -38,7 +38,7 @@ namespace UserAvatar.API.Controllers
         [HttpGet("{email}")]
         public IActionResult GetByEmail(string email)
         {
-            return Ok(_authService.GetUserByEmail(email));
+            return Ok(_authService.GetUser(email));
         }
     }
 }
