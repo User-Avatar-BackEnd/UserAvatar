@@ -21,7 +21,6 @@ namespace UserAvatar.DAL.Entities
         public string Login { get; set; }
 
         [Required]
-        [StringLength(64, MinimumLength = 6)]
         public string PasswordHash { get; set; }
         
         public int Score { get; set; }

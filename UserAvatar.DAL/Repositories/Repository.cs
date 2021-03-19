@@ -8,43 +8,54 @@ namespace UserAvatar.DAL.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected UserAvatarContext _db;
+        private readonly UserAvatarContext _dbContext;
 
-        public Repository(UserAvatarContext context)
+        public Repository(UserAvatarContext dbContext)
         {
-            _db = context;
+            _dbContext = dbContext;
         }
 
         public void Create(T item)
         {
-            _db.Set<T>().Add(item);
+            try
+            {
+                //this is to check if table exists
+                var count = _dbContext.Set<T>().Count();
+                _dbContext.Set<T>().Add(item);
+                //this is to change added value
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+            
         }
 
         public void Delete(int id)
         {
-            T entity = _db.Set<T>().Find(id);
+            var entity = _dbContext.Set<T>().Find(id);
             if (entity != null)
-                _db.Set<T>().Remove(entity);
+                _dbContext.Set<T>().Remove(entity);
         }
 
         public IEnumerable<T> Find(Func<T, bool> predicate)
         {
-            return _db.Set<T>().Where(predicate);
+            return _dbContext.Set<T>().Where(predicate);
         }
 
         public T Get(int id)
         {
-            return _db.Set<T>().Find(id);
+            return _dbContext.Set<T>().Find(id);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _db.Set<T>().ToList();
+            return _dbContext.Set<T>().ToList();
         }
 
         public void Update(T item)
         {
-            _db.Entry(item).State = EntityState.Modified;
+            _dbContext.Entry(item).State = EntityState.Modified;
         }
 
     }

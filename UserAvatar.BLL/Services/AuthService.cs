@@ -7,13 +7,13 @@ using UserAvatar.DAL.Repositories;
 
 namespace UserAvatar.BLL.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
-        private UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthService()
+        public AuthService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork();
+            _unitOfWork = unitOfWork;
         }
 
         public int Register(string email, string password)
@@ -21,12 +21,13 @@ namespace UserAvatar.BLL.Services
             var user = new User
             {
                 Email = email,
-                PasswordHash = password.GetHashCode().ToString(),
+                PasswordHash = PasswordHash.CreateHash(password),
                 Login = "user31257825324",
                 Score = 0,
                 Role = "user"
             };
             _unitOfWork.Users.Create(user);
+            _unitOfWork.Save();
             return user.Id;
         }
 

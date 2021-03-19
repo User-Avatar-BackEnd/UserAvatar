@@ -4,13 +4,13 @@ using UserAvatar.DAL.Entities;
 
 namespace UserAvatar.DAL.Repositories
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IDisposable,IUnitOfWork
     {
-        private UserAvatarContext _db;
+        private readonly UserAvatarContext _db;
 
-        public UnitOfWork()
+        public UnitOfWork(UserAvatarContext db)
         {
-            _db = new UserAvatarContext();
+            _db = db;
         }
 
         private Repository<User> _userRepository;

@@ -7,16 +7,17 @@ namespace UserAvatar.DAL.Context
     public class UserAvatarContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-
-        public UserAvatarContext()
+        
+        public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
+            :base(options)
         {
-            Database.EnsureCreated();
+            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
-            optionsBuilder.UseSqlite("Filename=userAvatar.db");
+            //optionsBuilder.UseSqlite("Filename=userAvatar.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
