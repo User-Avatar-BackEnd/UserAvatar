@@ -17,16 +17,7 @@ namespace UserAvatar.DAL.Repositories
 
         public void Create(T item)
         {
-            try
-            {
-                var count = _dbContext.Set<T>().Count();
-                _dbContext.Set<T>().Add(item);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-            
+            _dbContext.Set<T>().Add(item);
         }
 
         public void Delete(int id)
