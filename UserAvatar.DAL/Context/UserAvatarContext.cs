@@ -26,7 +26,7 @@ namespace UserAvatar.DAL.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
-            optionsBuilder.UseSqlite("Filename=userAvatar.db");
+            //optionsBuilder.UseSqlite("Filename=userAvatar.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
