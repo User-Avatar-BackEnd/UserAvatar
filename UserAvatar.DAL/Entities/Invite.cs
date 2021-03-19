@@ -22,6 +22,10 @@ namespace UserAvatar.DAL.Entities
         [Required]
         //Enum?
         public string Status { get; set; }
+        
+        [ForeignKey("BoardId")]
+        public virtual Board Board{ get; set; }
+        
         public DateTime Issued { get; set; }
     }
 }
