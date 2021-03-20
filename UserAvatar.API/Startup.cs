@@ -80,7 +80,8 @@ namespace UserAvatar.API
 
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IBoardService, BoardService>();
-            
+            services.AddTransient<ITaskService, TaskService>();
+
             services.AddControllers();
             services.AddSwaggerGen(options =>
             {

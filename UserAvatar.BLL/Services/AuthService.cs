@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using System;
-using UserAvatar.BLL.DTOs;
+using UserAvatar.BLL.Models;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
 
@@ -14,10 +14,10 @@ namespace UserAvatar.BLL.Services
         public AuthService(UserStorage userStorage)
         {
             _userStorage = userStorage;
-            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDto>()).CreateMapper();
+            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserModel>()).CreateMapper();
         }
 
-        public UserDto Register(string email, string password)
+        public UserModel Register(string email, string password)
         {
             var login = GenerateLogin();
 
@@ -34,16 +34,16 @@ namespace UserAvatar.BLL.Services
 
             _userStorage.Create(user);
             
-            return _mapper.Map<User, UserDto>(user);
+            return _mapper.Map<User, UserModel>(user);
         }
 
-        public UserDto Login(string email, string password)
+        public UserModel Login(string email, string password)
         {
             var user = _userStorage.GetByEmail(email);
 
             if (user == null) return null;
             
-            return !PasswordHash.ValidatePassword(password, user.PasswordHash) ? null : _mapper.Map<User, UserDto>(user);
+            return !PasswordHash.ValidatePassword(password, user.PasswordHash) ? null : _mapper.Map<User, UserModel>(user);
             
         }
 

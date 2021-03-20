@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAvatar.API.Contracts;
 using UserAvatar.API.Options;
-using UserAvatar.BLL.DTOs;
+using UserAvatar.BLL.Models;
 using UserAvatar.BLL.Services;
 
 namespace UserAvatar.API.Controllers
@@ -80,7 +80,7 @@ namespace UserAvatar.API.Controllers
         #endregion
 
         #region Methods for Jwt
-        private async Task<ActionResult> BuildToken(UserDto user)
+        private async Task<ActionResult> BuildToken(UserModel user)
         {
             if (user == null) return Unauthorized();
 
