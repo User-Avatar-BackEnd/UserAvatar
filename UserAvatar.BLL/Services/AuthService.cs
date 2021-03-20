@@ -30,6 +30,8 @@ namespace UserAvatar.BLL.Services
                 Role = "user"
             };
 
+            if (_userStorage.IsUserExist(email)) return null;
+
             _userStorage.Create(user);
             
             return _mapper.Map<User, UserDto>(user);
