@@ -47,6 +47,8 @@ namespace UserAvatar.API.Controllers
 
             var user = _authService.Register(authRequest.Email, authRequest.Password);
 
+            if (user == null) Unauthorized();
+
              return await BuildToken(user);
         }
 
