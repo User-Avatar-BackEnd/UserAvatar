@@ -30,7 +30,7 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Environment.IsDevelopment())
+            if (!Environment.IsDevelopment())
             {
                 services.AddDbContext<UserAvatarContext>(
                     options =>
@@ -74,8 +74,10 @@ namespace UserAvatar.API
 
 
             services.AddTransient<UserStorage>();
+            services.AddTransient<BoardStorage>();
 
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IBoardService, BoardService>();
             
             services.AddControllers();
             services.AddSwaggerGen(options =>

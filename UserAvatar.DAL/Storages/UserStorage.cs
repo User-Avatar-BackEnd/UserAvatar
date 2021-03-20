@@ -5,7 +5,7 @@ using UserAvatar.DAL.Entities;
 
 namespace UserAvatar.DAL.Storages
 {
-    public class UserStorage
+    public class UserStorage : IUserStorage
     {
         private readonly UserAvatarContext _dbContext;
 
@@ -13,10 +13,15 @@ namespace UserAvatar.DAL.Storages
         {
             _dbContext = dbContext;
         }
-
+        
         public User GetByEmail(string email)
         {
             return _dbContext.Set<User>().Where(user => user.Email == email).FirstOrDefault();
+        }
+
+        public User GetById(int id)
+        {
+            return _dbContext.Set<User>().FirstOrDefault(x => x.Id == id);
         }
 
         public void Create(User user)
@@ -28,6 +33,11 @@ namespace UserAvatar.DAL.Storages
         public bool IsLoginExist(string login)
         {
             return _dbContext.Set<User>().Any(user => user.Login == login);
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

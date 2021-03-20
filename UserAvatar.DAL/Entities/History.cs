@@ -12,19 +12,22 @@ namespace UserAvatar.DAL.Entities
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Required]
+        public int UserId { get; set; }
+
         [ForeignKey("UserId")]
-        //FK
         public virtual User User { get; set; }
+
         [Required]
+        public string EventId { get; set; }
+
         [ForeignKey("EventId")]
-        //FK
         public virtual Event Event { get; set; }
+
         [Required]
         public DateTime DateTime { get; set; }
         
         public bool Calculated { get; set; }
-        
-        
     }
 }

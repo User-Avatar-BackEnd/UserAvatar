@@ -11,21 +11,28 @@ namespace UserAvatar.DAL.Entities
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
-        
-        [ForeignKey("OwnerId")]
+        public int Id { get; set; }
+          
         [Required]
-        public virtual User User { get; set; }
-        
-        [Required]
+        [MaxLength(64)]
         public string Title { get; set; }
-        
+
+        [Required]
+        public int OwnerId { get; set; }
+
+        [ForeignKey("OwnerId")]
+        public virtual User User { get; set; }
+
         [Required]
         public DateTime CreatedAt { get; set; }
-        
+
+        [Required]
         public DateTime ModifiedAt { get; set; }
         
-        public ICollection<Column> Columns { get; set; }
-        public ICollection<Member> Members { get; set; }
+        public virtual ICollection<Column> Columns { get; set; }
+
+        public virtual ICollection<Member> Members { get; set; }
+
+        public bool isDeleted { get; set; }
     }
 }

@@ -9,10 +9,12 @@ namespace UserAvatar.BLL.Services
     public class AuthService : IAuthService
     {
         private readonly UserStorage _userStorage;
+        private readonly IMapper _mapper;
 
         public AuthService(UserStorage userStorage)
         {
             _userStorage = userStorage;
+            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDto>()).CreateMapper();
         }
 
         public UserDto Register(string email, string password)
@@ -29,8 +31,8 @@ namespace UserAvatar.BLL.Services
             };
 
             _userStorage.Create(user);
-
-            return new UserDto(user);
+            
+            return _mapper.Map<User, UserDto>(user);
         }
 
         public UserDto Login(string email, string password)
@@ -38,12 +40,9 @@ namespace UserAvatar.BLL.Services
             var user = _userStorage.GetByEmail(email);
 
             if (user == null) return null;
-
-            if (user.PasswordHash != PasswordHash.CreateHash(password)) return null;
-
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDto>()).CreateMapper();
-
-            return mapper.Map<User, UserDto>(user);
+            
+            return !PasswordHash.ValidatePassword(password, user.PasswordHash) ? null : _mapper.Map<User, UserDto>(user);
+            
         }
 
         private string GenerateLogin()
