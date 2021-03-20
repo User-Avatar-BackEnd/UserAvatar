@@ -12,9 +12,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using UserAvatar.API.Options;
 using UserAvatar.BLL.Services;
+using UserAvatar.BLL.Services.Interfaces;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.API
 {
@@ -77,10 +79,13 @@ namespace UserAvatar.API
 
             services.AddTransient<UserStorage>();
             services.AddTransient<BoardStorage>();
+            services.AddTransient<IColumnStorage, ColumnStorage>();
+            
 
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IBoardService, BoardService>();
-            services.AddTransient<ITaskService, TaskService>();
+            services.AddTransient<IColumnService, ColumnService>();
+            //services.AddTransient<ITaskService, TaskService>();
 
             services.AddControllers();
             services.AddSwaggerGen(options =>
@@ -128,11 +133,16 @@ namespace UserAvatar.API
                 EnsureAdminCreated(context);
             }
 
-             app.UseDeveloperExceptionPage();
-             app.UseSwagger();
-             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
 
             app.UseRouting();
+            
+            // Use cors
+            app.UseCors(builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()); 
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -143,11 +153,11 @@ namespace UserAvatar.API
             });
         }
 
-        private void EnsureAdminCreated(UserAvatarContext context)
+        private static void EnsureAdminCreated(UserAvatarContext context)
         {
-
-            var testBlog = context.Users.FirstOrDefault(x=> x.Login == "admin" && x.PasswordHash == "admin");
-            if (testBlog == null)
+            var adminUser = context.Users.Any(x=> x.Email == "admin@admin.com" 
+                                                  && x.Login == "admin");
+            if (!adminUser)
             {
                 context.Users.Add(new User
                 {
