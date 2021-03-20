@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,9 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using UserAvatar.API.Options;
 using UserAvatar.BLL.Services;
 using UserAvatar.DAL.Context;
-using UserAvatar.DAL.Repositories;
+using UserAvatar.DAL.Entities;
+using UserAvatar.DAL.Storages;
 
 namespace UserAvatar.API
 {
@@ -19,13 +26,13 @@ namespace UserAvatar.API
             Environment = environment;
         }
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Environment.IsDevelopment())
+            if (!Environment.IsDevelopment())
             {
                 services.AddDbContext<UserAvatarContext>(
                     options =>
@@ -41,14 +48,71 @@ namespace UserAvatar.API
                             Configuration.GetConnectionString("connectionString"),
                             x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
             }
+            
+            services.AddOptions<JwtOptions>();
+            var jwtOptions = services
+                .BuildServiceProvider()
+                .GetRequiredService<IOptions<JwtOptions>>()
+                .Value;
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = jwtOptions.RequireHttps;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtOptions.Issuer,
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+                        ValidateAudience = true,
+                        ValidAudience = jwtOptions.Audience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+
+                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
+
+            services.AddTransient<UserStorage>();
+            services.AddTransient<BoardStorage>();
+
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IBoardService, BoardService>();
             
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
+
+                options.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                },
+                            },
+                            new string[0]
+                        }
+                    });
+
+                options.AddSecurityDefinition(
+                    "Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.ApiKey,
+                        In = ParameterLocation.Header,
+                        Scheme = "Bearer",
+                        Name = "Authorization",
+                        Description = "JWT token",
+                        BearerFormat = "JWT"
+                    });
             });
         }
         
@@ -56,21 +120,44 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
-            //}
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
+                context?.Database.MigrateAsync();
+                EnsureAdminCreated(context);
+            }
+
+             app.UseDeveloperExceptionPage();
+             app.UseSwagger();
+             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void EnsureAdminCreated(UserAvatarContext context)
+        {
+
+            var testBlog = context.Users.FirstOrDefault(x=> x.Login == "admin" && x.PasswordHash == "admin");
+            if (testBlog == null)
+            {
+                context.Users.Add(new User
+                {
+                    Email = "admin@admin.com",
+                    Login = "admin",
+                    PasswordHash = PasswordHash.CreateHash("admin"),
+                    Role = "admin",
+                });
+            }
+
+            context.SaveChanges();
         }
     }
 }

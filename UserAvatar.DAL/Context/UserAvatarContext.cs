@@ -4,7 +4,7 @@ using UserAvatar.DAL.Entities;
 
 namespace UserAvatar.DAL.Context
 {
-    public class UserAvatarContext : DbContext
+    public sealed class UserAvatarContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Board> Boards { get; set; }
@@ -20,39 +20,26 @@ namespace UserAvatar.DAL.Context
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)
         {
-            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.LogTo(Console.WriteLine);
-            //optionsBuilder.UseSqlite("Filename=userAvatar.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .ToTable("Users");
-            modelBuilder.Entity<Column>()
-                .ToTable("Columns");
-            modelBuilder.Entity<Comment>()
-                .ToTable("Comments");
-            modelBuilder.Entity<Event>()
-                .ToTable("Events");
-            modelBuilder.Entity<History>()
-                .ToTable("Histories");
-            
             modelBuilder.Entity<Invite>()
-                .ToTable("Invites");
-            
-            modelBuilder.Entity<Member>()
-                .ToTable("Members");
-            modelBuilder.Entity<Rank>()
-                .ToTable("Ranks");
-            modelBuilder.Entity<Task>()
-                .ToTable("Tasks");
-            modelBuilder.Entity<Board>()
-                .ToTable("Boards");
+                .HasOne(invite => invite.Inviter)
+                .WithMany(user => user.Inviter)
+                .HasForeignKey(invite => invite.InviterId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Invite>()
+                .HasOne(invite => invite.Invited)
+                .WithMany(user => user.Invited)
+                .HasForeignKey(invite => invite.InvitedId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -24,18 +24,22 @@ namespace UserAvatar.DAL.Entities
         [Required] 
         public string PasswordHash { get; set; }
 
+        [Required]
         public int Score { get; set; }
 
+        [Required]
         //todo: change into constants
         public string Role { get; set; }
 
-        public ICollection<History> Histories { get; set; }
-        public ICollection<Board> Boards { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        /*[InverseProperty("Invited")]
-        public ICollection<Invite> Invited { get; set; }
-        [InverseProperty("Inviter")]
-        public ICollection<Invite> Inviter { get; set; }*/
+        public virtual ICollection<History> Histories { get; set; }
+
+        public virtual ICollection<Board> Boards { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
+
+        public virtual ICollection<Invite> Invited { get; set; }
+
+        public virtual ICollection<Invite> Inviter { get; set; }
 
     }
 }

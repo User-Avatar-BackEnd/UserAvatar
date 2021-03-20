@@ -5,8 +5,8 @@ namespace UserAvatar.BLL.Services
 {
     public interface IAuthService
     {
-        int Register(string email, string password);
-        List<UserDto> GetALlUsers();
-        
+        public UserDto Register(string email, string password);
+
+        public UserDto Login(string email, string password);
     }
 }
