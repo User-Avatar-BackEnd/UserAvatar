@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,5 +14,7 @@ namespace UserAvatar.DAL.Entities
 
         [Required]
         public int Score { get; set; }
+
+        public virtual ICollection<History> Histories { get; set; }
     }
 }

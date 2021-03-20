@@ -37,10 +37,8 @@ namespace UserAvatar.DAL.Entities
 
         public virtual ICollection<Comment> Comments { get; set; }
 
-        [InverseProperty("Invited")]
         public virtual ICollection<Invite> Invited { get; set; }
 
-        [InverseProperty("Inviter")]
         public virtual ICollection<Invite> Inviter { get; set; }
 
     }

@@ -20,9 +20,9 @@ namespace UserAvatar.DAL.Entities
         public virtual User User { get; set; }
 
         [Required]
-        public string EventId { get; set; }
+        public string EventName { get; set; }
 
-        [ForeignKey("EventId")]
+        [ForeignKey("EventName")]
         public virtual Event Event { get; set; }
 
         [Required]
