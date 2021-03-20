@@ -15,6 +15,7 @@ using UserAvatar.BLL.Services;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
+using AutoMapper;
 
 namespace UserAvatar.API
 {
@@ -32,6 +33,15 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            var mapper = mapperConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+
             if (Environment.IsDevelopment())
             {
                 services.AddDbContext<UserAvatarContext>(

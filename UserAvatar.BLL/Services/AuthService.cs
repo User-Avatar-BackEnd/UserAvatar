@@ -8,10 +8,10 @@ namespace UserAvatar.BLL.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserStorage _userStorage;
+        private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
 
-        public AuthService(UserStorage userStorage)
+        public AuthService(IUserStorage userStorage)
         {
             _userStorage = userStorage;
             _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserModel>()).CreateMapper();
