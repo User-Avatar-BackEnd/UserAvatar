@@ -126,12 +126,10 @@ namespace UserAvatar.API
                 context?.Database.MigrateAsync();
                 EnsureAdminCreated(context);
             }
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
-            }
+
+             app.UseDeveloperExceptionPage();
+             app.UseSwagger();
+             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
 
             app.UseRouting();
 
