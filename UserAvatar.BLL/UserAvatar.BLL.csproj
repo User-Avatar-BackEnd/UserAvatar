@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="DTOs\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 

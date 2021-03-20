@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.API.Contracts;
-using UserAvatar.BLL.DTOs;
+using UserAvatar.BLL.Models;
 using UserAvatar.BLL.Services;
 
 namespace UserAvatar.API.Controllers
@@ -22,7 +22,7 @@ namespace UserAvatar.API.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<List<BoardsDto>>> GetBoards()
+        public async Task<ActionResult<List<BoardModel>>> GetBoards()
         {
             //todo: remove DRY
             //if (!ModelState.IsValid) return BadRequest();

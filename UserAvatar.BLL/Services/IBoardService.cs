@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using UserAvatar.BLL.DTOs;
+using UserAvatar.BLL.Models;
 
 namespace UserAvatar.BLL.Services
 {
     public interface IBoardService
     {
-        List<BoardsDto> GetAllBoardsById(int id);
+        List<BoardModel> GetAllBoardsById(int id);
 
         bool CreateBoard(int id, string name);
     }
