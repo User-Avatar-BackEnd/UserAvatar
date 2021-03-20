@@ -10,7 +10,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAvatar.API.Contracts;
 using UserAvatar.API.Options;
-using UserAvatar.DAL.Entities;
+using UserAvatar.BLL.DTOs;
+using UserAvatar.BLL.Services;
 
 namespace UserAvatar.API.Controllers
 {
@@ -19,16 +20,13 @@ namespace UserAvatar.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly JwtOptions _jwt;
+        private readonly IAuthService _authService;
 
-        public AuthController(IOptions<JwtOptions> jwt)
+        public AuthController(IAuthService authService, IOptions<JwtOptions> jwt)
         {
+            _authService = authService;
             _jwt = jwt.Value;
         }
-
-
-        //[FromHeader(Name = "Authorization")]
-        //public string Token { get; set; }
-
 
         #region Actions
 
@@ -37,68 +35,32 @@ namespace UserAvatar.API.Controllers
         /// </summary>
         /// <param name="authRequest"></param>
         /// <returns></returns>
+        
         [HttpPost]
         [Route("/register")]
-        [ProducesResponseType(typeof(LoginResponse), 200)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         [AllowAnonymous]
         public async Task<ActionResult> RegisterAsync(AuthRequest authRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            #region
-            // return Ok(new LoginResponse { Token = string.Empty });
 
-            //and logins back
-            //validations, call business login,
-            //
-
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            // business logic: register the account 
-            // var account = ...
-            // check user is empty -> Conflict
-            #endregion
-
-            // TODO: business logic: register and check
-
-            var user = new User()
-            {
-                Id = 1,
-                Email = "omel.omelian.com",
-                Login = "skoooby",
-                PasswordHash = "hdDGSHDhdhjsuGD",
-                Score = 0,
-                Role = Roles.Admin
-            };
+            var user = _authService.Register(authRequest.Email, authRequest.Password);
 
              return await BuildToken(user);
-            //return Ok(new LoginResponse { Token = token});
-        }
-
-        private class LoginResponse
-        {
-            public string Token { get; set; }
         }
 
         [HttpPost]
         [Route("/login")]
-        [ProducesResponseType(typeof(LoginResponse), 200)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> LoginAsync(AuthRequest authRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // TODO: business logic: is such a user exist?
+            var user = _authService.Login(authRequest.Email, authRequest.Password);
 
-            var user = new User()
-            {
-                Id = 1,
-                Email = "k.bilotska@gmail.com",
-                Login = "lucky_spirit",
-                PasswordHash = "hdDGSHDhdhjsuGD",
-                Score = 0,
-                Role = Roles.Admin
-            };
+            if (user == null) return Unauthorized();
 
             return await BuildToken(user);
         }
@@ -108,23 +70,17 @@ namespace UserAvatar.API.Controllers
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        // TODO: Add the parameter
         public Task<HttpStatusCode> LogoutAsync()
         {
+            // call gamification service to add scores for the logout
             return System.Threading.Tasks.Task.FromResult(HttpStatusCode.OK);
         }
         #endregion
 
         #region Methods for Jwt
-        // We need to decide which fields we will put into claim.
-        // It will define which parameter we should pass to BuildToken
-        // Now it is User
-        private async Task<ActionResult> BuildToken(User user)
+        private async Task<ActionResult> BuildToken(UserDto user)
         {
             if (user == null) return Unauthorized();
-            // we need to get the role of this account
-            // var role = 
-            //var role = Roles.Admin;
 
             var identity = GetClaimsIdentity(user.Id, user.Role);
 
@@ -139,11 +95,10 @@ namespace UserAvatar.API.Controllers
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
-            // ??
             var response = new
             {
                 access_token = encodedJwt,
-                username = identity.Name
+                role = user.Role
             };
 
             return Ok(response);

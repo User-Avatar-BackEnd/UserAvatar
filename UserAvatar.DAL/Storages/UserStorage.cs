@@ -24,5 +24,10 @@ namespace UserAvatar.DAL.Storages
             _dbContext.Set<User>().Add(user);
             _dbContext.SaveChanges();
         }
+
+        public bool IsLoginExist(string login)
+        {
+            return _dbContext.Set<User>().Any(user => user.Login == login);
+        }
     }
 }
