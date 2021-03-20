@@ -12,23 +12,28 @@ namespace UserAvatar.DAL.Entities
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
-        [ForeignKey("BoardId")]
+
         [Required]
-        public virtual Board Board { get; set; }
-        [Required]
+        [MaxLength(64)]
         public int Title { get; set; }
+
+        [Required]
+        public int BoardId { get; set; }
+
+        [ForeignKey("BoardId")]
+        public virtual Board Board { get; set; }
+
         [Required]
         public DateTime CreatedAt { get; set; }
+
         [Required]
-        //FK
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-        
         public DateTime ModifiedAt { get; set; }
-        public int ModifiedBy { get; set; }
+
+        [Required]
         public int Index { get; set; }
         
-        public ICollection<Task> Tasks { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
+
+        public bool isDeleted { get; set; }
     }
 }

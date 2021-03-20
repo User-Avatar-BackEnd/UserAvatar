@@ -10,13 +10,19 @@ namespace UserAvatar.DAL.Entities
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Required]
+        public int UserId { get; set; }
+
         [ForeignKey("UserId")]
-        //FK
         public virtual User User { get; set; }
+
         [Required]
+        public int BoardId { get; set; }
+
         [ForeignKey("BoardId")]
-        //FK
         public virtual Board Board{ get; set; }
+
+        public bool isDeleted { get; set; }
     }
 }

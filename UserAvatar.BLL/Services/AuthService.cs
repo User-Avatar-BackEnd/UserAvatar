@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using UserAvatar.BLL.DTOs;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
@@ -34,7 +35,8 @@ namespace UserAvatar.BLL.Services
         {
             var user = _userStorage.GetByEmail(email);
             if (user == null) return null;
-            return new UserDto(user);
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserDto>()).CreateMapper();
+            return mapper.Map<User, UserDto>(user);
         }
     }
 }
