@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserAvatar.API.Contracts;
 using UserAvatar.BLL.DTOs;
 using UserAvatar.BLL.Services;
+using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers
 {

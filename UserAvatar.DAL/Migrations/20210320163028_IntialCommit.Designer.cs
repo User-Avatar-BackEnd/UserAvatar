@@ -10,7 +10,7 @@ using UserAvatar.DAL.Context;
 namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210320114349_IntialCommit")]
+    [Migration("20210320163028_IntialCommit")]
     partial class IntialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,9 +71,10 @@ namespace UserAvatar.DAL.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Title")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");

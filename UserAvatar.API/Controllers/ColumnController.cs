@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.API.Contracts;
+using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers
 {
@@ -10,16 +11,19 @@ namespace UserAvatar.API.Controllers
     [Route("api/columns")]
     public class ColumnController : ControllerBase
     {
-        public ColumnController()
+        private readonly IColumnService _columnService;
+        public ColumnController(IColumnService columnService)
         {
-            
+            _columnService = columnService;
         }
 
         [HttpPost]
         [Route("/create")]
         public IActionResult CreateColumn(ColumnRequest columnRequest)
         {
-            throw new NotImplementedException();
+            _columnService
+                .Create(columnRequest.BoardOrColumnId,columnRequest.Title);
+            return Ok();
         }
         
         [HttpPatch]
@@ -33,7 +37,8 @@ namespace UserAvatar.API.Controllers
         [Route("/delete")]
         public IActionResult DeleteColumn(ColumnRequest columnRequest)
         {
-            throw new NotImplementedException();
+            _columnService.Delete(columnRequest.BoardOrColumnId);
+            return Ok();
         }
         
         [HttpGet]
@@ -41,7 +46,8 @@ namespace UserAvatar.API.Controllers
         public IActionResult ChangeColumnPosition([FromHeader] int columnId,
             [FromQuery] int positionIndex)
         {
-            throw new NotImplementedException();
+            _columnService.ChangePosition(columnId,positionIndex);
+            return Ok();
         }
     }
 }

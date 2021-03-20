@@ -15,7 +15,7 @@ namespace UserAvatar.DAL.Entities
 
         [Required]
         [MaxLength(64)]
-        public int Title { get; set; }
+        public string Title { get; set; }
 
         [Required]
         public int BoardId { get; set; }

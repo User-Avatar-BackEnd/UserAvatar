@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.DAL.Storages
 {
@@ -22,11 +23,11 @@ namespace UserAvatar.DAL.Storages
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<Board> ListBoardsById(int id)
+        public List<Board> ListBoardsById(int id)
         {
             var result = _dbContext.Boards
                 .Include(x => x.Members)
-                .Where(x => x.OwnerId == id || x.Members.Any(x => x.UserId == id)).ToList();
+                .Where(x => x.OwnerId == id || x.Members.Any(y => y.UserId == id)).ToList();
                 
             return result;
         }

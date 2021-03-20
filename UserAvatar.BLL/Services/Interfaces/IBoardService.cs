@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UserAvatar.BLL.DTOs;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.BLL.Services.Interfaces
 {
     public interface IBoardService
     {
