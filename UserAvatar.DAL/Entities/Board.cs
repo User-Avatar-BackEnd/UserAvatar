@@ -11,7 +11,7 @@ namespace UserAvatar.DAL.Entities
         [Key]
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        public int Id { get; set; }
           
         [Required]
         [MaxLength(64)]

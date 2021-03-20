@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,7 +33,7 @@ namespace UserAvatar.DAL.Entities
         [ForeignKey("OwnerId")]
         public virtual User Owner { get; set; }
 
-        public int ResposibleId { get; set; }
+        public int ResponsibleId { get; set; }
 
         [ForeignKey("ResponsibleId")]
         public virtual User Responsible { get; set; }
