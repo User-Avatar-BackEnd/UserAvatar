@@ -10,7 +10,7 @@ using UserAvatar.DAL.Context;
 namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210320112935_IntialCommit")]
+    [Migration("20210320114349_IntialCommit")]
     partial class IntialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
