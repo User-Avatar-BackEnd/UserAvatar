@@ -39,10 +39,5 @@ namespace UserAvatar.DAL.Storages
         {
             return _dbContext.Set<User>().Any(user => user.Email == email);
         }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

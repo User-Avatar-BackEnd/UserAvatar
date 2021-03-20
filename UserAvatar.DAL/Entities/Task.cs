@@ -49,6 +49,8 @@ namespace UserAvatar.DAL.Entities
         public bool IsHidden { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
+
+        public bool IsDeleted { get; set; }
         
     }
 }
