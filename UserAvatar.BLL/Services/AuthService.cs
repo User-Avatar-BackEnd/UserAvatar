@@ -54,7 +54,18 @@ namespace UserAvatar.BLL.Services
                 if(!_userStorage.IsLoginExist(login)) return login;
             }
         }
+            return mapper.Map<User, UserDto>(user);
+        }
 
+        private string GenerateLogin()
+        {
+            while (true)
+            {
+                string login = "user" + RandomDigits();
+
+                if(!_userStorage.IsLoginExist(login)) return login;
+            }
+        }
         private string RandomDigits()
         {
             var random = new Random();

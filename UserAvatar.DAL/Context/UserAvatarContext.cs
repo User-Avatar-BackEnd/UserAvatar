@@ -4,7 +4,7 @@ using UserAvatar.DAL.Entities;
 
 namespace UserAvatar.DAL.Context
 {
-    public class UserAvatarContext : DbContext
+    public sealed class UserAvatarContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Board> Boards { get; set; }
@@ -19,6 +19,11 @@ namespace UserAvatar.DAL.Context
         
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)
+        {
+            Database.EnsureCreated();
+        }
+
+        public UserAvatarContext()
         {
             
         }
