@@ -19,9 +19,15 @@ namespace UserAvatar.BLL.Services
             _mapper = mapper;
         }
 
-        public UserModel Register(string email, string password)
+        public UserModel Register(string email, string login, string password)
         {
-            var login = GenerateLogin();
+            if (login != null)
+            {
+                var isLoginTaken = _userStorage.IsLoginExist(login);
+                if (isLoginTaken) throw new Exception();
+            }
+
+            login = GenerateLogin();
 
             var user = new User
             {
@@ -32,7 +38,7 @@ namespace UserAvatar.BLL.Services
                 Role = "user"
             };
 
-            if (_userStorage.IsUserExist(email)) return null;
+            if (_userStorage.IsUserExist(email)) throw new Exception();
 
             _userStorage.Create(user);
             
