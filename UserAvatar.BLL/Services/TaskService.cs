@@ -54,6 +54,7 @@ namespace UserAvatar.Bll.Services
         public TaskModel GetById(int taskId, int userId)
         {
             var boardId = _taskStorage.GetBoardId(taskId);
+
             if (_boardStorage.IsUsersBoard(userId,boardId)) return null;
 
             var task = _taskStorage.GetById(taskId);
