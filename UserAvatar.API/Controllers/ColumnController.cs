@@ -8,7 +8,7 @@ namespace UserAvatar.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/columns")]
+    [Route("api/v1/")]
     public class ColumnController : ControllerBase
     {
         private readonly IColumnService _columnService;
@@ -18,7 +18,7 @@ namespace UserAvatar.API.Controllers
         }
 
         [HttpPost]
-        [Route("/create")]
+        [Route("[controller]/create")]
         public IActionResult CreateColumn(ColumnRequest columnRequest)
         {
             _columnService
@@ -27,14 +27,14 @@ namespace UserAvatar.API.Controllers
         }
         
         [HttpPatch]
-        [Route("/modify")]
+        [Route("[controller]/modify")]
         public IActionResult UpdateColumn(ColumnRequest columnRequest)
         {
             throw new NotImplementedException();
         }
         
         [HttpDelete]
-        [Route("/delete")]
+        [Route("[controller]/delete")]
         public IActionResult DeleteColumn(ColumnRequest columnRequest)
         {
             _columnService.Delete(columnRequest.BoardOrColumnId);
@@ -42,7 +42,7 @@ namespace UserAvatar.API.Controllers
         }
         
         [HttpGet]
-        [Route("/change_position/")]
+        [Route("[controller]/change_position/")]
         public IActionResult ChangeColumnPosition([FromHeader] int columnId,
             [FromQuery] int positionIndex)
         {
