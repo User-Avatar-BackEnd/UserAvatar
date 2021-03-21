@@ -55,5 +55,16 @@ namespace UserAvatar.Dal.Storages
                 .FirstOrDefault(x => x.Id == taskId)
                 .Column.BoardId;
         }
+
+        public void DeleteTask(int taskId)
+        {
+            var task = _dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
+
+            if (task == null) throw new Exception();
+
+            task.IsDeleted = true;
+            //comments
+            _dbContext.SaveChanges();
+        }
     }
 }

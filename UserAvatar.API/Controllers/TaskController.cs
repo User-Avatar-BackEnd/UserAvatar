@@ -62,9 +62,14 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteTask()
+        public IActionResult DeleteTask(int id)
         {
-            throw new NotImplementedException();
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+
+            _taskService.DeleteTask(userId, id);
+
+            return Ok();
         }
     }
 }

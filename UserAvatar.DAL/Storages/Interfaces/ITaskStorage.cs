@@ -12,5 +12,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         public int GetTasksCountInColumn(int columnId);
 
         public int GetBoardId(int taskId);
+
+        public void DeleteTask(int taskId);
     }
 }
