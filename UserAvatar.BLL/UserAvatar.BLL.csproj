@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
+    <ProjectReference Include="..\UserAvatar.Contracts\UserAvatar.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />

@@ -6,5 +6,11 @@ namespace UserAvatar.Dal.Storages.Interfaces
     public interface ITaskStorage
     {
         public Task GetById(int id);
+
+        public Task Create(Task task);
+
+        public int GetTasksCountInColumn(int columnId);
+
+        public int GetBoardId(int taskId);
     }
 }

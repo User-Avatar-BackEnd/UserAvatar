@@ -5,15 +5,16 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.API.Contracts.Requests;
+using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Contracts.Requests;
 
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/task")]
+    [Route("api/v1/Task")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -36,13 +37,9 @@ namespace UserAvatar.Api.Controllers
 
             var taskDto = _mapper.Map<TaskModel, TaskDetailedDto>(task);
 
-            if (taskDto.Comments == null)
-            {
-                taskDto.Comments = new List<CommentDto>();
-            }
             taskDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
 
-            return Ok(_mapper.Map<TaskModel, TaskDetailedDto>(task));
+            return Ok(taskDto);
         }
 
         [HttpPost]
@@ -51,7 +48,23 @@ namespace UserAvatar.Api.Controllers
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            return Ok();
+            var task = _taskService.CreateTask(addTaskRequest, userId);
+
+            var taskDto = _mapper.Map<TaskModel, TaskShortDto>(task);
+
+            return Ok(taskDto);
+        }
+
+        [HttpPatch]
+        public IActionResult UpdateTask()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteTask()
+        {
+            throw new NotImplementedException();
         }
     }
 }
