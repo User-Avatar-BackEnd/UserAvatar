@@ -3,10 +3,11 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Dal.Storages
 {
-    public class TaskStorage
+    public class TaskStorage : ITaskStorage
     {
         private readonly UserAvatarContext _dbContext;
 
