@@ -23,6 +23,6 @@ namespace UserAvatar.Dal.Entities
         [ForeignKey("BoardId")]
         public virtual Board Board{ get; set; }
 
-        public bool isDeleted { get; set; }
+        public bool isDeleted { get; set; } = false;
     }
 }

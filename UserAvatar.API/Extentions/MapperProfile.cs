@@ -11,6 +11,7 @@ namespace UserAvatar.Api.Extentions
         public MappingProfile()
         {
             CreateMap<User, UserModel>();
+            CreateMap<Member, MemberModel>();
             CreateMap<CommentModel, Comment>();
             CreateMap<Board, BoardModel>();
             CreateMap<BoardModel, BoardDto>();
