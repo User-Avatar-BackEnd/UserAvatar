@@ -8,5 +8,7 @@ namespace UserAvatar.Bll.Services.Interfaces
         public TaskModel GetById(int taskId, int userId);
 
         public TaskModel CreateTask(AddTaskRequest addTaskRequest, int userId);
+
+        public void DeleteTask(int taskId, int userId);
     }
 }
