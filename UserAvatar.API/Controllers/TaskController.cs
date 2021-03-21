@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.API.Contracts.Requests;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 
@@ -32,7 +34,24 @@ namespace UserAvatar.Api.Controllers
             var task = _taskService.GetById(id, userId);
             if (task == null) BadRequest();
 
+            var taskDto = _mapper.Map<TaskModel, TaskDetailedDto>(task);
+
+            if (taskDto.Comments == null)
+            {
+                taskDto.Comments = new List<CommentDto>();
+            }
+            taskDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
+
             return Ok(_mapper.Map<TaskModel, TaskDetailedDto>(task));
+        }
+
+        [HttpPost]
+        public IActionResult AddTask(AddTaskRequest addTaskRequest)
+        {
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+
+            return Ok();
         }
     }
 }
