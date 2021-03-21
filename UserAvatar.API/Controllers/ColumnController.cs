@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UserAvatar.API.Contracts.Requests;
-using UserAvatar.BLL.Services.Interfaces;
+using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.Bll.Services.Interfaces;
 
-namespace UserAvatar.API.Controllers
+namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]

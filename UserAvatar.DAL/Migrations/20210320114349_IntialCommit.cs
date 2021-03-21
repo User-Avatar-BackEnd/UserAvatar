@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace UserAvatar.DAL.Migrations
+namespace UserAvatar.Dal.Migrations
 {
     public partial class IntialCommit : Migration
     {

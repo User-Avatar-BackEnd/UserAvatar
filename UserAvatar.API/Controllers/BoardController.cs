@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserAvatar.API.Contracts.Dtos;
-using UserAvatar.API.Contracts.Requests;
-using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services.Interfaces;
+using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.Bll.Models;
+using UserAvatar.Bll.Services.Interfaces;
 
-namespace UserAvatar.API.Controllers
+namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]

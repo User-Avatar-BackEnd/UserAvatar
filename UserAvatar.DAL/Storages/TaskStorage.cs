@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using UserAvatar.DAL.Context;
-using UserAvatar.DAL.Entities;
+using UserAvatar.Dal.Context;
+using UserAvatar.Dal.Entities;
 
-namespace UserAvatar.DAL.Storages
+namespace UserAvatar.Dal.Storages
 {
     public class TaskStorage
     {

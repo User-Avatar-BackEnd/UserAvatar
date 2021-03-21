@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using UserAvatar.DAL.Entities;
+using UserAvatar.Dal.Entities;
 
-namespace UserAvatar.DAL.Storages.Interfaces
+namespace UserAvatar.Dal.Storages.Interfaces
 {
     public  interface IBoardStorage
     {

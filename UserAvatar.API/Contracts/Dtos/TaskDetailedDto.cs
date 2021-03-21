@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using UserAvatar.BLL.Models;
+using UserAvatar.Bll.Models;
 
-namespace UserAvatar.API.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.Dtos
 {
     public class TaskDetailedDto
     {

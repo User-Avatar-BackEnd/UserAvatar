@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UserAvatar.DAL.Entities
+namespace UserAvatar.Dal.Entities
 {
     [Table("Tasks")]
     public class Task

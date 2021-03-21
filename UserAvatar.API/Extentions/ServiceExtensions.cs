@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using UserAvatar.BLL.Services;
-using UserAvatar.BLL.Services.Interfaces;
-using UserAvatar.DAL.Storages;
-using UserAvatar.DAL.Storages.Interfaces;
+using UserAvatar.Bll.Services;
+using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Dal.Storages;
+using UserAvatar.Dal.Storages.Interfaces;
 
 namespace AuthWebApps.AuthServices.Extensions
 {

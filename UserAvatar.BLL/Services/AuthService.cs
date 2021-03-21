@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using System;
-using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services.Interfaces;
-using UserAvatar.DAL.Entities;
-using UserAvatar.DAL.Storages;
-using UserAvatar.DAL.Storages.Interfaces;
+using UserAvatar.Bll.Models;
+using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages;
+using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.Bll.Services
 {
     public class AuthService : IAuthService
     {

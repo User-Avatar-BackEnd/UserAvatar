@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace UserAvatar.API
+namespace UserAvatar.Api
 {
     public class Program
     {

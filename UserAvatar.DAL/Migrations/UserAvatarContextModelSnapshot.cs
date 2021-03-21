@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UserAvatar.DAL.Context;
+using UserAvatar.Dal.Context;
 
-namespace UserAvatar.DAL.Migrations
+namespace UserAvatar.Dal.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
     partial class UserAvatarContextModelSnapshot : ModelSnapshot

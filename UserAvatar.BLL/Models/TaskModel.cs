@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UserAvatar.BLL.Models
+namespace UserAvatar.Bll.Models
 {
     public class TaskModel
     {

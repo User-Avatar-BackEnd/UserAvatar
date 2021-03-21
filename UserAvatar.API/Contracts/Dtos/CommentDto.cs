@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UserAvatar.API.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.Dtos
 {
     public class CommentDto
     {
