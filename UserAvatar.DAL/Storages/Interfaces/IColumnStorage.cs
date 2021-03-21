@@ -1,8 +1,8 @@
 ﻿using System;
-using UserAvatar.DAL.Entities;
+using UserAvatar.Dal.Entities;
 using Task = System.Threading.Tasks.Task;
 
-namespace UserAvatar.DAL.Storages.Interfaces
+namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface IColumnStorage
     {

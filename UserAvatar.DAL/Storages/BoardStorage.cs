@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using UserAvatar.DAL.Context;
-using UserAvatar.DAL.Entities;
-using UserAvatar.DAL.Storages.Interfaces;
+using UserAvatar.Dal.Context;
+using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.DAL.Storages
+namespace UserAvatar.Dal.Storages
 {
     public class BoardStorage : IBoardStorage
     {

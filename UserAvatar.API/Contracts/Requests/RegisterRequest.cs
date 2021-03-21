@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserAvatar.API.Contracts.Requests
+namespace UserAvatar.Api.Contracts.Requests
 {
     public class RegisterRequest
     {

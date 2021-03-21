@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.Bll.Services
 {
     /// <summary>
     /// Salted password hashing with PBKDF2-SHA1.

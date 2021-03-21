@@ -3,11 +3,11 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UserAvatar.API.Contracts.Dtos;
-using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services.Interfaces;
+using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Bll.Models;
+using UserAvatar.Bll.Services.Interfaces;
 
-namespace UserAvatar.API.Controllers
+namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]

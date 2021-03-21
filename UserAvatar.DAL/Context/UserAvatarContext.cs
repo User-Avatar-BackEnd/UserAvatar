@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using UserAvatar.DAL.Entities;
+using UserAvatar.Dal.Entities;
 
-namespace UserAvatar.DAL.Context
+namespace UserAvatar.Dal.Context
 {
     public sealed class UserAvatarContext : DbContext
     {

@@ -10,17 +10,15 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using UserAvatar.API.Options;
-using UserAvatar.BLL.Services;
-using UserAvatar.BLL.Services.Interfaces;
-using UserAvatar.DAL.Context;
-using UserAvatar.DAL.Entities;
-using UserAvatar.DAL.Storages;
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.Services;
+using UserAvatar.Dal.Context;
+using UserAvatar.Dal.Entities;
 using AutoMapper;
-using UserAvatar.DAL.Storages.Interfaces;
 using AuthWebApps.AuthServices.Extensions;
+using UserAvatar.Api.Extentions;
 
-namespace UserAvatar.API
+namespace UserAvatar.Api
 {
     public class Startup
     {

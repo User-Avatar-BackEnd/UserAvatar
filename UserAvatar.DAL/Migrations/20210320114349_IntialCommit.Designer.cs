@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UserAvatar.DAL.Context;
+using UserAvatar.Dal.Context;
 
-namespace UserAvatar.DAL.Migrations
+namespace UserAvatar.Dal.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
     [Migration("20210320114349_IntialCommit")]

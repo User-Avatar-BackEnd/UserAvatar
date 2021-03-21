@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoMapper;
-using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services.Interfaces;
-using UserAvatar.DAL.Entities;
-using UserAvatar.DAL.Storages.Interfaces;
+using UserAvatar.Bll.Models;
+using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.Bll.Services
 {
     public class BoardService : IBoardService
     {

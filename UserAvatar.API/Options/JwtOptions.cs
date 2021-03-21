@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace UserAvatar.API.Options
+namespace UserAvatar.Api.Options
 {
     public class JwtOptions
     {

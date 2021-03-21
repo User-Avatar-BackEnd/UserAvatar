@@ -8,12 +8,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UserAvatar.API.Contracts.Requests;
-using UserAvatar.API.Options;
-using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services.Interfaces;
+using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.Models;
+using UserAvatar.Bll.Services.Interfaces;
 
-namespace UserAvatar.API.Controllers
+namespace UserAvatar.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/auth")]

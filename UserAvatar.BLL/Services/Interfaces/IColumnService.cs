@@ -1,4 +1,4 @@
-﻿namespace UserAvatar.BLL.Services.Interfaces
+﻿namespace UserAvatar.Bll.Services.Interfaces
 {
     public interface IColumnService
     {

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using UserAvatar.API.Contracts;
-using UserAvatar.API.Contracts.Dtos;
-using UserAvatar.BLL.Models;
-using UserAvatar.DAL.Entities;
+using UserAvatar.Api.Contracts;
+using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Bll.Models;
+using UserAvatar.Dal.Entities;
 
-namespace UserAvatar.API.Options
+namespace UserAvatar.Api.Extentions
 {
     public class MappingProfile : Profile
     {

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UserAvatar.BLL.Models
+namespace UserAvatar.Bll.Models
 {
     public class HistoryModel
     {
