@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -16,7 +16,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
+    <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.Dal.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
