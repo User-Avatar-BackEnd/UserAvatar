@@ -56,7 +56,7 @@ namespace UserAvatar.Dal.Storages
         {
             //if (!IsUsersBoard(userId, boardId)) throw new Exception();
 
-            var board = _dbContext.Boards.First(board => board.Id == userId && board.Id==boardId);
+            var board = _dbContext.Boards.First(board => board.OwnerId == userId && board.Id==boardId);
 
             board.isDeleted = true;
 
