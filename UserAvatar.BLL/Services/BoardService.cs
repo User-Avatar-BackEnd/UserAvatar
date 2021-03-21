@@ -72,6 +72,8 @@ namespace UserAvatar.Bll.Services
 
         public async System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId)
         {
+            if (!_boardStorage.IsOwnerBoard(userId, boardId)) throw new Exception();
+
             await _boardStorage.DeleteBoardAsync(userId, boardId);
         }
     }
