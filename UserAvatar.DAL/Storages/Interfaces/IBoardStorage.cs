@@ -17,6 +17,6 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         bool DoesUserHasBoard(int userId, string title);
 
-        bool IsUsersBoard(int userId, int boardId);
+        bool IsOwnerBoard(int userId, int boardId);
     }
 }
