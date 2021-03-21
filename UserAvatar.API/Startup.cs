@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,15 +11,18 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using UserAvatar.Api.Extentions;
+using UserAvatar.API.Extentions;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Services;
+using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
-using AutoMapper;
-using AuthWebApps.AuthServices.Extensions;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Dal.Storages;
+using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Api
+
+namespace UserAvatar.API
 {
     public class Startup
     {
@@ -30,10 +34,16 @@ namespace UserAvatar.Api
 
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IUserStorage,UserStorage>();
+            services.AddTransient<IBoardStorage,BoardStorage>();
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IBoardService, BoardService>();
+            
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
@@ -42,62 +52,15 @@ namespace UserAvatar.Api
             var mapper = mapperConfig.CreateMapper();
 
             services.AddSingleton(mapper);
-
-            if (Environment.IsDevelopment())
-            {
-                services.AddDbContext<UserAvatarContext>(
-                    options =>
-                        options.UseSqlite(
-                            Configuration.GetConnectionString("sqliteConn"),
-                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
-            }
-            else
-            {
-                services.AddDbContext<UserAvatarContext>(
+            
+            services.AddDbContext<UserAvatarContext>(
                     options =>
                         options.UseNpgsql(
                             Configuration.GetConnectionString("connectionString"),
                             x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
-            }
             
-            services.AddOptions<JwtOptions>();
-            var jwtOptions = services
-                .BuildServiceProvider()
-                .GetRequiredService<IOptions<JwtOptions>>()
-                .Value;
-            
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = jwtOptions.RequireHttps;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtOptions.Issuer,
-
-                        ValidateAudience = true,
-                        ValidAudience = jwtOptions.Audience,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
-
-                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
-                        ValidateIssuerSigningKey = true
-                    };
-                });
-
-            services.AddServices<object>();
-
-            //services.AddTransient<IUserStorage, UserStorage>();
-            //services.AddTransient<IBoardStorage, BoardStorage>();
-            //services.AddTransient<IColumnStorage, ColumnStorage>();
-
-
-            //services.AddTransient<IAuthService, AuthService>();
-            //services.AddTransient<IBoardService, BoardService>();
-            //services.AddTransient<IColumnService, ColumnService>();
-            //services.AddTransient<ITaskService, TaskService>();
-
             services.AddControllers();
+            
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
@@ -130,6 +93,35 @@ namespace UserAvatar.Api
                         BearerFormat = "JWT"
                     });
             });
+            
+            services.AddCors();
+            
+            services.AddOptions<JwtOptions>();
+            var jwtOptions = services
+                .BuildServiceProvider()
+                .GetRequiredService<IOptions<JwtOptions>>()
+                .Value;
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = jwtOptions.RequireHttps;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtOptions.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = jwtOptions.Audience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+
+                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
+
         }
         
 
@@ -143,16 +135,22 @@ namespace UserAvatar.Api
                 EnsureAdminCreated(context);
             }
 
-            app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
-
-            app.UseRouting();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserAvatar v1"));
+            }
             
-            // Use cors
             app.UseCors(builder => builder.AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader()); 
+                .AllowAnyHeader()
+                .WithExposedHeaders("Authorization", "Accept", "Content-Type", "Origin"));
+            
+            app.UseMiddleware<LoggingMiddleware>();
+            
+            app.UseRouting();
+            
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -177,7 +175,6 @@ namespace UserAvatar.Api
                     Role = "admin",
                 });
             }
-
             context.SaveChanges();
         }
     }
