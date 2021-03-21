@@ -13,14 +13,13 @@ namespace UserAvatar.Dal.Storages
     public class ColumnStorage : IColumnStorage
     {
         private readonly UserAvatarContext _userAvatarContext;
-        private readonly ITaskStorage _taskStorage;
+        //private readonly ITaskStorage _taskStorage;
 
-        private static readonly SemaphoreSlim LockSlim = new(1, 3);
+        private static readonly SemaphoreSlim LockSlim = new(1, 1);
 
-        public ColumnStorage(UserAvatarContext userAvatarContext, ITaskStorage taskStorage)
+        public ColumnStorage(UserAvatarContext userAvatarContext)
         {
-            _userAvatarContext = userAvatarContext;
-            _taskStorage = taskStorage;
+           _userAvatarContext = userAvatarContext;
         }
 
         public async Task Create(Column column)
@@ -28,7 +27,8 @@ namespace UserAvatar.Dal.Storages
             await LockSlim.WaitAsync();
             try
             {
-                var thisBoard = await _userAvatarContext.Boards.FindAsync(column.BoardId);
+                //var thisBoard = _userAvatarContext.Boards.FindAsync(column.BoardId).Result;
+                var  thisBoard = _userAvatarContext.Boards.FirstOrDefault(x => x.Id == column.BoardId);
                 if (thisBoard == null)
                     throw new Exception();
 
@@ -37,8 +37,9 @@ namespace UserAvatar.Dal.Storages
                 column.Board = thisBoard;
                 column.Index = columnCount;
 
-                await _userAvatarContext.Columns.AddAsync(column);
-                await _userAvatarContext.SaveChangesAsync();
+                // Please do not change or userAvatarContext would be disposed after first method call
+                _userAvatarContext.Columns.Add(column);
+                _userAvatarContext.SaveChanges();
             }
             finally
             {
@@ -47,14 +48,14 @@ namespace UserAvatar.Dal.Storages
             
         }
 
-        public void DeleteApparent(int columnId)
+        public async Task DeleteApparent(int columnId)
         {
             var column = GetColumnById(columnId);
             column.isDeleted = true;
-            //todo
+            _userAvatarContext.Update(column);
             //collection.Select(c => {c.PropertyToSet = value; return c;}).ToList();
             //column.Select(c => {c.PropertyToSet = value; return c;}).ToList();
-            _userAvatarContext.SaveChanges();
+            await _userAvatarContext.SaveChangesAsync();
         }
 
         public async Task RecurrentlyDelete(IEnumerable<Column> columns)
@@ -67,10 +68,10 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public void Update(Column column)
+        public async Task Update(Column column)
         {
             _userAvatarContext.Entry(column).State = EntityState.Modified;
-            _userAvatarContext.SaveChanges();
+            await _userAvatarContext.SaveChangesAsync();
         }
 
         public async Task ChangePosition(int columnId, int newIndex)
