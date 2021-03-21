@@ -39,7 +39,7 @@ namespace UserAvatar.Bll.Services
 
             var boards = await GetAllBoardsAsync(userId);
 
-            if (boards.Count() > 10) throw new Exception();
+            if (boards.Count() >= 10) throw new Exception();
 
             if (_boardStorage.DoesUserHasBoard(userId, board.Title)) throw new Exception();
 
@@ -61,7 +61,7 @@ namespace UserAvatar.Bll.Services
 
             if (board == null) throw new Exception("This board doesn't exist");
 
-            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, board.Title);
+            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, title);
 
             if (isSameBoardExist) throw new SystemException();
 
