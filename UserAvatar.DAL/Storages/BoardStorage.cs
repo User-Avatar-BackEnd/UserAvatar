@@ -54,7 +54,7 @@ namespace UserAvatar.DAL.Storages
 
         public async System.Threading.Tasks.Task<bool> DeleteBoardAsync(int userId, int boardId)
         {
-            if (!IsUsersBoard(userId, boardId)) throw new Exception();
+            //if (!IsUsersBoard(userId, boardId)) throw new Exception();
 
             var board = _dbContext.Boards.First(board => board.Id == userId && board.Id==boardId);
 
@@ -75,11 +75,12 @@ namespace UserAvatar.DAL.Storages
         }
 
         // does user has this board
+        // todo: fix linq
         public bool IsUsersBoard(int userId, int boardId)
         {
-            var count = _dbContext.Members.Include(x=> x.Board)
-                .Where(member => member.Id == userId && member.BoardId == boardId && member.Board.isDeleted == false && member.isDeleted ==false)
-                .Count();
+            var count = _dbContext.Members
+                .Include(x => x.Board)
+                .Count(member => member.Id == userId && member.BoardId == boardId && member.Board.isDeleted == false && member.isDeleted ==false);
 
             if (count == 0) return false;
 
