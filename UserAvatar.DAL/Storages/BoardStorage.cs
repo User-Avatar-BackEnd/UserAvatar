@@ -11,10 +11,12 @@ namespace UserAvatar.Dal.Storages
     public class BoardStorage : IBoardStorage
     {
         private readonly UserAvatarContext _dbContext;
+        private readonly IColumnStorage _columnStorage;
 
-        public BoardStorage(UserAvatarContext dbContext)
+        public BoardStorage(UserAvatarContext dbContext, IColumnStorage columnStorage)
         {
             _dbContext = dbContext;
+            _columnStorage = columnStorage;
         }
 
         public async System.Threading.Tasks.Task<bool> CreateBoardAsync(int userId, Board board)

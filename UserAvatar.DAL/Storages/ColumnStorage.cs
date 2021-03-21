@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ namespace UserAvatar.Dal.Storages
     public class ColumnStorage : IColumnStorage
     {
         private readonly UserAvatarContext _userAvatarContext;
+        private readonly ITaskStorage _taskStorage;
 
-        private static readonly SemaphoreSlim LockSlim = new SemaphoreSlim(1, 3);
+        private static readonly SemaphoreSlim LockSlim = new(1, 3);
 
-        public ColumnStorage(UserAvatarContext userAvatarContext)
+        public ColumnStorage(UserAvatarContext userAvatarContext, ITaskStorage taskStorage)
         {
             _userAvatarContext = userAvatarContext;
+            _taskStorage = taskStorage;
         }
 
         public async Task Create(Column column)
@@ -48,7 +51,20 @@ namespace UserAvatar.Dal.Storages
         {
             var column = GetColumnById(columnId);
             column.isDeleted = true;
+            //todo
+            //collection.Select(c => {c.PropertyToSet = value; return c;}).ToList();
+            //column.Select(c => {c.PropertyToSet = value; return c;}).ToList();
             _userAvatarContext.SaveChanges();
+        }
+
+        public async Task RecurrentlyDelete(IEnumerable<Column> columns)
+        {
+            foreach (var column in columns)
+            {
+                column.isDeleted = true;
+            }
+            //todo: make recurrently 'isDeleted' tasks!
+            await _userAvatarContext.SaveChangesAsync();
         }
 
         public void Update(Column column)

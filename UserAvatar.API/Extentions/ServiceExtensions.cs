@@ -5,17 +5,16 @@ using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace AuthWebApps.AuthServices.Extensions
+namespace UserAvatar.API.Extentions
 {
     public static class ServiceExtensions
     {
         /// <summary>
         /// Registers services.
         /// </summary>
-        /// <typeparam name="TSessionData">Session data type.</typeparam>
         /// <param name="services">Service collection.</param>
         /// <returns>Service collection.</returns>
-        public static IServiceCollection AddServices<TSessionData>(this IServiceCollection services)
+        public static IServiceCollection AddServices(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
             

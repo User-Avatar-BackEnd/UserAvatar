@@ -39,10 +39,7 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IUserStorage,UserStorage>();
-            services.AddTransient<IBoardStorage,BoardStorage>();
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IBoardService, BoardService>();
+            services.AddServices();
             
             var mapperConfig = new MapperConfiguration(mc =>
             {

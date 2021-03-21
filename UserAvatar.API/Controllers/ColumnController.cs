@@ -19,31 +19,31 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPost]
         [Route("[controller]/create")]
-        public IActionResult CreateColumn(ColumnRequest columnRequest)
+        public IActionResult CreateColumn(CreateColumnRequest createColumnRequest)
         {
             _columnService
-                .Create(columnRequest.BoardOrColumnId,columnRequest.Title);
+                .Create(createColumnRequest.Id,createColumnRequest.Title);
             return Ok();
         }
         
         [HttpPatch]
         [Route("[controller]/modify")]
-        public IActionResult UpdateColumn(ColumnRequest columnRequest)
+        public IActionResult UpdateColumn(CreateColumnRequest createColumnRequest)
         {
             throw new NotImplementedException();
         }
         
         [HttpDelete]
-        [Route("[controller]/delete")]
-        public IActionResult DeleteColumn(ColumnRequest columnRequest)
+        [Route("[controller]/delete/")]
+        public IActionResult DeleteColumn([FromQuery]int columnId)
         {
-            _columnService.Delete(columnRequest.BoardOrColumnId);
+            _columnService.Delete(columnId);
             return Ok();
         }
         
         [HttpGet]
         [Route("[controller]/change_position/")]
-        public IActionResult ChangeColumnPosition([FromHeader] int columnId,
+        public IActionResult ChangeColumnPosition([FromQuery] int columnId,
             [FromQuery] int positionIndex)
         {
             _columnService.ChangePosition(columnId,positionIndex);
