@@ -8,10 +8,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UserAvatar.API.Contracts;
+using UserAvatar.API.Contracts.Requests;
 using UserAvatar.API.Options;
 using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services;
+using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers
 {

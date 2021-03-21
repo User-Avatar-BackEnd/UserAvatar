@@ -24,7 +24,7 @@ namespace UserAvatar.API.Options
         /// <summary>
         /// Token life time.
         /// </summary>
-        public TimeSpan LifeTime { get; set; }  = TimeSpan.FromMinutes(1d);
+        public TimeSpan LifeTime { get; set; }  = TimeSpan.FromDays(7);
 
         /// <summary>
         /// Require HTTPS.

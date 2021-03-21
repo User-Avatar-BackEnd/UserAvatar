@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserAvatar.API.Contracts
+namespace UserAvatar.API.Contracts.Requests
 {
     public class AuthRequest
     {

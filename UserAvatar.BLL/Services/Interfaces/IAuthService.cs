@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UserAvatar.BLL.Models;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.BLL.Services.Interfaces
 {
     public interface IAuthService
     {

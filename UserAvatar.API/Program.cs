@@ -16,7 +16,5 @@ namespace UserAvatar.API
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-        
-        //
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.DAL.Storages
 {

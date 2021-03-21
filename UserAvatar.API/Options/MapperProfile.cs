@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UserAvatar.API.Contracts;
+using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.BLL.Models;
 using UserAvatar.DAL.Entities;
 
@@ -12,6 +13,7 @@ namespace UserAvatar.API.Options
             CreateMap<User, UserModel>();
             CreateMap<CommentModel, Comment>();
             CreateMap<Board, BoardModel>();
+            CreateMap<BoardModel, BoardDto>();
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();
             CreateMap<Invite, InviteModel>();
