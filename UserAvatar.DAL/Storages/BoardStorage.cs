@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.DAL.Storages
 {
@@ -16,9 +17,9 @@ namespace UserAvatar.DAL.Storages
             _dbContext = dbContext;
         }
 
-        public async System.Threading.Tasks.Task<bool> CreateBoard(int userId, Board board)
+        public async System.Threading.Tasks.Task<bool> CreateBoardAsync(int userId, Board board)
         {
-            var boards = await GetAllBoards(userId);
+            var boards = await GetAllBoardsAsync(userId);
 
             if (boards.Count() > 10) throw new Exception();
 
@@ -30,7 +31,7 @@ namespace UserAvatar.DAL.Storages
             return true;
         }
 
-        public async System.Threading.Tasks.Task<IEnumerable<Board>> GetAllBoards(int userId)
+        public async System.Threading.Tasks.Task<IEnumerable<Board>> GetAllBoardsAsync(int userId)
         {
              return await _dbContext.Boards
                 .Include(x => x.Members)
@@ -38,20 +39,20 @@ namespace UserAvatar.DAL.Storages
                 .ToListAsync();
         }
 
-        public async System.Threading.Tasks.Task<Board> GetBoard(int userId, int boardId)
+        public async System.Threading.Tasks.Task<Board> GetBoardAsync(int userId, int boardId)
         {
             return await _dbContext.Boards
                 .FirstOrDefaultAsync(board => board.Id == boardId && board.OwnerId==userId && board.isDeleted == false);
         }
 
-        public async System.Threading.Tasks.Task Update(Board board)
+        public async System.Threading.Tasks.Task UpdateAsync(Board board)
         {
             _dbContext.Entry(board).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task<bool> DeleteBoard(int userId, int boardId)
+        public async System.Threading.Tasks.Task<bool> DeleteBoardAsync(int userId, int boardId)
         {
             if (!IsUsersBoard(userId, boardId)) throw new Exception();
 

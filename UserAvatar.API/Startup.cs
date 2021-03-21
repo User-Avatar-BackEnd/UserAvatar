@@ -18,6 +18,7 @@ using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
 using AutoMapper;
 using UserAvatar.DAL.Storages.Interfaces;
+using AuthWebApps.AuthServices.Extensions;
 
 namespace UserAvatar.API
 {
@@ -86,15 +87,16 @@ namespace UserAvatar.API
                     };
                 });
 
+            services.AddServices<object>();
 
-            services.AddTransient<UserStorage>();
-            services.AddTransient<BoardStorage>();
-            services.AddTransient<IColumnStorage, ColumnStorage>();
-            
+            //services.AddTransient<IUserStorage, UserStorage>();
+            //services.AddTransient<IBoardStorage, BoardStorage>();
+            //services.AddTransient<IColumnStorage, ColumnStorage>();
 
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IBoardService, BoardService>();
-            services.AddTransient<IColumnService, ColumnService>();
+
+            //services.AddTransient<IAuthService, AuthService>();
+            //services.AddTransient<IBoardService, BoardService>();
+            //services.AddTransient<IColumnService, ColumnService>();
             //services.AddTransient<ITaskService, TaskService>();
 
             services.AddControllers();

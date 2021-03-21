@@ -2,6 +2,7 @@
 using System.Linq;
 using UserAvatar.DAL.Context;
 using UserAvatar.DAL.Entities;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.DAL.Storages
 {
@@ -13,7 +14,7 @@ namespace UserAvatar.DAL.Storages
         {
             _dbContext = dbContext;
         }
-        
+
         public User GetByEmail(string email)
         {
             return _dbContext.Set<User>().Where(user => user.Email == email).FirstOrDefault();

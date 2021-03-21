@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using System;
 using UserAvatar.BLL.Models;
+using UserAvatar.BLL.Services.Interfaces;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.BLL.Services
 {
@@ -11,15 +13,21 @@ namespace UserAvatar.BLL.Services
         private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserStorage userStorage)
+        public AuthService(IUserStorage userStorage, IMapper mapper)
         {
             _userStorage = userStorage;
-            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserModel>()).CreateMapper();
+            _mapper = mapper;
         }
 
-        public UserModel Register(string email, string password)
+        public UserModel Register(string email, string login, string password)
         {
-            var login = GenerateLogin();
+            if (login != null)
+            {
+                var isLoginTaken = _userStorage.IsLoginExist(login);
+                if (isLoginTaken) throw new Exception();
+            }
+
+            login = GenerateLogin();
 
             var user = new User
             {
@@ -30,7 +38,7 @@ namespace UserAvatar.BLL.Services
                 Role = "user"
             };
 
-            if (_userStorage.IsUserExist(email)) return null;
+            if (_userStorage.IsUserExist(email)) throw new Exception();
 
             _userStorage.Create(user);
             

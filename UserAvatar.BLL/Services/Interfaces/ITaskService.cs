@@ -1,7 +1,6 @@
-﻿using System;
-using UserAvatar.BLL.Models;
+﻿using UserAvatar.BLL.Models;
 
-namespace UserAvatar.BLL.Services
+namespace UserAvatar.BLL.Services.Interfaces
 {
     public interface ITaskService
     {

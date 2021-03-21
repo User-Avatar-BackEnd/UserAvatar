@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UserAvatar.API.Contracts;
+using UserAvatar.API.Contracts.Requests;
 using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers

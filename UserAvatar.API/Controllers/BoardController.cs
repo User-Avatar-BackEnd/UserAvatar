@@ -1,13 +1,14 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using UserAvatar.API.Contracts;
+using UserAvatar.API.Contracts.Dtos;
+using UserAvatar.API.Contracts.Requests;
 using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services;
+using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers
 {
@@ -18,18 +19,19 @@ namespace UserAvatar.API.Controllers
     {
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
-        public BoardController(IBoardService boardService)
+        public BoardController(IBoardService boardService, IMapper mapper)
         {
             _boardService = boardService;
-            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<BoardModel, BoardDto>()).CreateMapper();
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<BoardDto>>> GetBoards()
+        [Route("/get_boards")]
+        public async Task<ActionResult<List<BoardDto>>> GetBoardsAsync()
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            var result = await _boardService.GetAllBoards(userId);
+            var result = await _boardService.GetAllBoardsAsync(userId);
 
             // what?
             _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardDto>>(result);
@@ -38,13 +40,14 @@ namespace UserAvatar.API.Controllers
         }
 
         [HttpPost]
+        [Route("/create_board")]
         [ProducesResponseType(typeof(List<object>), 200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateBoard(BoardRequest boardRequest)
+        public async Task<IActionResult> CreateBoardAsync(BoardRequest boardRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-          var success = await _boardService.CreateBoard(userId, boardRequest.Title);
+          var success = await _boardService.CreateBoardAsync(userId, boardRequest.Title);
 
             if (!success) return BadRequest();
 
@@ -52,21 +55,24 @@ namespace UserAvatar.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBoard([FromHeader] int boardId)
+        [Route("/get_board")]
+        public async Task<IActionResult> GetBoardAsync([FromHeader] int boardId)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            var board = await _boardService.GetBoard(userId, boardId);
+            var board = await _boardService.GetBoardAsync(userId, boardId);
 
             return Ok(_mapper.Map<BoardModel, BoardDto>(board));
         }
 
+        // problem: doesn't set up a board id
         [HttpPatch]
-        public async Task<IActionResult> RenameBoard([FromHeader] BoardRequest boardRequest)
+        [Route("/rename_board")]
+        public async Task<IActionResult> RenameBoardAsync([FromBody] BoardRequest boardRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            var success = await _boardService.RenameBoard(userId, boardRequest.Id, boardRequest.Title);
+            var success = await _boardService.RenameBoardAsync(userId, boardRequest.Id, boardRequest.Title);
 
             if (!success) return BadRequest();
 
@@ -74,11 +80,12 @@ namespace UserAvatar.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteBoard([FromHeader] int boardId)
+        [Route("/delete_board")]
+        public async Task<IActionResult> DeleteBoardAsync([FromBody] int boardId)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-           var success = await _boardService.DeleteBoard(userId, boardId);
+           var success = await _boardService.DeleteBoardAsync(userId, boardId);
 
             if (!success) return BadRequest();
 

@@ -8,10 +8,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UserAvatar.API.Contracts;
+using UserAvatar.API.Contracts.Requests;
 using UserAvatar.API.Options;
 using UserAvatar.BLL.Models;
-using UserAvatar.BLL.Services;
+using UserAvatar.BLL.Services.Interfaces;
 
 namespace UserAvatar.API.Controllers
 {
@@ -33,7 +33,7 @@ namespace UserAvatar.API.Controllers
         /// <summary>
         /// Registration method
         /// </summary>
-        /// <param name="authRequest"></param>
+        /// <param name="registerRequest"></param>
         /// <returns></returns>
         
         [HttpPost]
@@ -41,11 +41,11 @@ namespace UserAvatar.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         [AllowAnonymous]
-        public async Task<ActionResult> RegisterAsync(AuthRequest authRequest)
+        public async Task<ActionResult> RegisterAsync(RegisterRequest registerRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = _authService.Register(authRequest.Email, authRequest.Password);
+            var user = _authService.Register(registerRequest.Email, registerRequest.Login ,registerRequest.Password);
 
             if (user == null) Unauthorized();
 
@@ -56,11 +56,11 @@ namespace UserAvatar.API.Controllers
         [Route("/login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
-        public async Task<ActionResult> LoginAsync(AuthRequest authRequest)
+        public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = _authService.Login(authRequest.Email, authRequest.Password);
+            var user = _authService.Login(loginRequest.Email, loginRequest.Password);
 
             if (user == null) return Unauthorized();
 

@@ -1,6 +1,6 @@
 ﻿using UserAvatar.DAL.Entities;
 
-namespace UserAvatar.DAL.Storages
+namespace UserAvatar.DAL.Storages.Interfaces
 {
     public interface IUserStorage
     {

@@ -1,8 +1,10 @@
 ﻿using System;
 using AutoMapper;
 using UserAvatar.BLL.Models;
+using UserAvatar.BLL.Services.Interfaces;
 using UserAvatar.DAL.Entities;
 using UserAvatar.DAL.Storages;
+using UserAvatar.DAL.Storages.Interfaces;
 
 namespace UserAvatar.BLL.Services
 {
@@ -11,10 +13,10 @@ namespace UserAvatar.BLL.Services
         private readonly ITaskStorage _taskStorage;
         private readonly IMapper _mapper;
 
-        public TaskService(ITaskStorage taskStorage)
+        public TaskService(ITaskStorage taskStorage, IMapper mapper)
         {
             _taskStorage = taskStorage;
-            _mapper = new MapperConfiguration(cfg => cfg.CreateMap<Task, TaskModel>()).CreateMapper();
+            _mapper = mapper;
         }
 
         public TaskModel GetById(int taskId, int userId)
