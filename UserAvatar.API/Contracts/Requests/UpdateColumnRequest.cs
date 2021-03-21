@@ -1,9 +1,8 @@
 ﻿namespace UserAvatar.Api.Contracts.Requests
 {
-    public class CreateColumnRequest
+    public class UpdateColumnRequest
     {
-        public int BoardId { get; set; }
+        public int ColumnId { get; set; }
         public string Title { get; set; }
-
     }
 }

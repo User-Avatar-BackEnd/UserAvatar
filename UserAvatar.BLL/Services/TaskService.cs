@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
@@ -28,6 +29,13 @@ namespace UserAvatar.Bll.Services
             if (task == null) return null;
 
             return _mapper.Map<Task, TaskModel>(task);
+        }
+
+        public TaskModel Test()
+        {
+            var task = _taskStorage.GetById(2);
+            var test = _mapper.Map<Task, TaskModel>(task);
+            return test;
         }
     }
 }

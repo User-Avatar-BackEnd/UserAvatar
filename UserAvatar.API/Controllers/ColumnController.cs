@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Mime;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
@@ -9,44 +16,58 @@ namespace UserAvatar.Api.Controllers
     [Authorize]
     [ApiController]
     [Route("api/v1/")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     public class ColumnController : ControllerBase
     {
         private readonly IColumnService _columnService;
-        public ColumnController(IColumnService columnService)
+        private readonly IMapper _mapper;
+        public ColumnController(IColumnService columnService, IMapper mapper)
         {
             _columnService = columnService;
+            _mapper = mapper;
         }
+        
+        [HttpGet]
+        [Route("[controller]/getAll")]
+        public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns([FromQuery] int boardId)
+        {
+            var foundColumn = await _columnService.GetAllColumns(boardId);
 
+            return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnDto>>(foundColumn));
+        }
+        
         [HttpPost]
         [Route("[controller]/create")]
-        public IActionResult CreateColumn(CreateColumnRequest createColumnRequest)
+        public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
         {
-            _columnService
-                .Create(createColumnRequest.Id,createColumnRequest.Title);
-            return Ok();
+            var thisColumn = await _columnService
+                .Create(createColumnRequest.BoardId,createColumnRequest.Title);
+            return Ok(_mapper.Map<ColumnModel,FullColumnDto>(thisColumn));
         }
         
         [HttpPatch]
         [Route("[controller]/modify")]
-        public IActionResult UpdateColumn(CreateColumnRequest createColumnRequest)
+        public async Task<IActionResult> UpdateColumn(UpdateColumnRequest updateColumnRequest)
         {
-            throw new NotImplementedException();
+            await _columnService.Update(updateColumnRequest.ColumnId, updateColumnRequest.Title);
+            return Ok();
         }
         
         [HttpDelete]
-        [Route("[controller]/delete/")]
-        public IActionResult DeleteColumn([FromQuery]int columnId)
+        [Route("[controller]/delete")]
+        public async Task<IActionResult> DeleteColumn([FromQuery]int columnId)
         {
-            _columnService.Delete(columnId);
+            await _columnService.Delete(columnId);
             return Ok();
         }
         
         [HttpGet]
         [Route("[controller]/change_position/")]
-        public IActionResult ChangeColumnPosition([FromQuery] int columnId,
+        public async Task<IActionResult> ChangeColumnPosition([FromQuery] int columnId,
             [FromQuery] int positionIndex)
         {
-            _columnService.ChangePosition(columnId,positionIndex);
+            await _columnService.ChangePosition(columnId,positionIndex);
             return Ok();
         }
     }

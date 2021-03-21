@@ -39,22 +39,23 @@ namespace UserAvatar.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(c=>c.AddProfile<MappingProfile>(), typeof(Startup));
             services.AddServices();
             
-            var mapperConfig = new MapperConfiguration(mc =>
+            /*var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             });
 
             var mapper = mapperConfig.CreateMapper();
 
-            services.AddSingleton(mapper);
+            services.AddSingleton(mapper);*/
             
             services.AddDbContext<UserAvatarContext>(
                     options =>
                         options.UseNpgsql(
                             Configuration.GetConnectionString("connectionString"),
-                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
+                            x => x.MigrationsAssembly("UserAvatar.Dal")), ServiceLifetime.Transient);
             
             services.AddControllers();
             

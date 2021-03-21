@@ -5,5 +5,6 @@ namespace UserAvatar.Bll.Services.Interfaces
     public interface ITaskService
     {
         public TaskModel GetById(int taskId, int userId);
+        TaskModel Test();
     }
 }

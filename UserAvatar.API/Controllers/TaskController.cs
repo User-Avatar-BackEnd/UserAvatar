@@ -9,7 +9,6 @@ using UserAvatar.Bll.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/task")]
     public class TaskController : ControllerBase
@@ -31,6 +30,7 @@ namespace UserAvatar.Api.Controllers
 
             var task = _taskService.GetById(id, userId);
             if (task == null) BadRequest();
+            
 
             return Ok(_mapper.Map<TaskModel, TaskDetailedDto>(task));
         }

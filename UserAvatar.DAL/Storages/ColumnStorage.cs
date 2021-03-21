@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
@@ -22,13 +23,13 @@ namespace UserAvatar.Dal.Storages
            _userAvatarContext = userAvatarContext;
         }
 
-        public async Task Create(Column column)
+        public async Task<Column> Create(Column column)
         {
             await LockSlim.WaitAsync();
             try
             {
                 //var thisBoard = _userAvatarContext.Boards.FindAsync(column.BoardId).Result;
-                var  thisBoard = _userAvatarContext.Boards.FirstOrDefault(x => x.Id == column.BoardId);
+                var thisBoard = _userAvatarContext.Boards.FirstOrDefault(x => x.Id == column.BoardId);
                 if (thisBoard == null)
                     throw new Exception();
 
@@ -41,17 +42,23 @@ namespace UserAvatar.Dal.Storages
                 _userAvatarContext.Columns.Add(column);
                 _userAvatarContext.SaveChanges();
             }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                //todo: delete
+            }
             finally
             {
                 LockSlim.Release();
             }
-            
-        }
+            return column;
 
+        }
+        
         public async Task DeleteApparent(int columnId)
         {
-            var column = GetColumnById(columnId);
-            column.isDeleted = true;
+            var column = await GetColumnById(columnId);
+            column.IsDeleted = true;
             _userAvatarContext.Update(column);
             //collection.Select(c => {c.PropertyToSet = value; return c;}).ToList();
             //column.Select(c => {c.PropertyToSet = value; return c;}).ToList();
@@ -62,10 +69,15 @@ namespace UserAvatar.Dal.Storages
         {
             foreach (var column in columns)
             {
-                column.isDeleted = true;
+                column.IsDeleted = true;
             }
             //todo: make recurrently 'isDeleted' tasks!
             await _userAvatarContext.SaveChangesAsync();
+        }
+
+        public async Task<IQueryable<Column>> GetAllColumns(int boardId)
+        {
+            return _userAvatarContext.Columns.Where(x => x.Board.Id == boardId);
         }
 
         public async Task Update(Column column)
@@ -76,7 +88,7 @@ namespace UserAvatar.Dal.Storages
 
         public async Task ChangePosition(int columnId, int newIndex)
         {
-            var thisColumn = GetColumnById(columnId);
+            var thisColumn = await GetColumnById(columnId);
             
             var columnList = _userAvatarContext.Columns
                 .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id);
@@ -90,6 +102,12 @@ namespace UserAvatar.Dal.Storages
                 
             await _userAvatarContext.SaveChangesAsync();
         }
+
+        public async Task<Column> GetColumnById(int id)
+        {
+            return await _userAvatarContext.Columns.FindAsync(id);
+        }
+        
         private static bool PositionAlgorithm(int previousIndex, int newIndex, IQueryable<Column> columnList)
         {
             if(previousIndex - newIndex == 0)
@@ -118,11 +136,6 @@ namespace UserAvatar.Dal.Storages
                     } 
                 }
             return true;
-        }
-
-        public Column GetColumnById(int id)
-        {
-            return _userAvatarContext.Columns.Find(id);
         }
     }
 }  

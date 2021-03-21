@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace UserAvatar.Dal.Migrations
+namespace UserAvatar.DAL.Migrations
 {
     public partial class IntialCommit : Migration
     {
@@ -132,12 +132,12 @@ namespace UserAvatar.Dal.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<int>(type: "integer", maxLength: 64, nullable: false),
+                    Title = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     BoardId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Index = table.Column<int>(type: "integer", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,7 +191,8 @@ namespace UserAvatar.Dal.Migrations
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Priority = table.Column<int>(type: "integer", nullable: false),
-                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
