@@ -28,8 +28,7 @@ namespace UserAvatar.Dal.Storages
             await LockSlim.WaitAsync();
             try
             {
-                //var thisBoard = _userAvatarContext.Boards.FindAsync(column.BoardId).Result;
-                var thisBoard = _userAvatarContext.Boards.FirstOrDefault(x => x.Id == column.BoardId);
+                var thisBoard = await _userAvatarContext.Boards.FindAsync(column.BoardId);
                 if (thisBoard == null)
                     throw new Exception();
 
@@ -39,19 +38,15 @@ namespace UserAvatar.Dal.Storages
                 column.Index = columnCount;
 
                 // Please do not change or userAvatarContext would be disposed after first method call
-                _userAvatarContext.Columns.Add(column);
-                _userAvatarContext.SaveChanges();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                //todo: delete
+                await _userAvatarContext.Columns.AddAsync(column);
+                await  _userAvatarContext.SaveChangesAsync();
+                return column;  
             }
             finally
             {
                 LockSlim.Release();
             }
-            return column;
+            
 
         }
 
@@ -75,9 +70,13 @@ namespace UserAvatar.Dal.Storages
             if (column.IsDeleted)
                 throw new Exception($"Already Deleted!{columnId}");
             column.IsDeleted = true;
-            _userAvatarContext.Update(column);
-            //collection.Select(c => {c.PropertyToSet = value; return c;}).ToList();
-            //column.Select(c => {c.PropertyToSet = value; return c;}).ToList();
+
+            var columnList = InternalGetAllColumns(column);
+            await RecheckPosition(columnList.ToList(),column.Index);
+
+            //column.Index = -1;
+            //_userAvatarContext.Update(column);
+            // recurrently delete all tasks
             await _userAvatarContext.SaveChangesAsync();
         }
 
@@ -105,13 +104,19 @@ namespace UserAvatar.Dal.Storages
             _userAvatarContext.Entry(column).State = EntityState.Modified;
             await _userAvatarContext.SaveChangesAsync();
         }
+        
+        private IEnumerable<Column> InternalGetAllColumns(Column column)
+        {
+            return _userAvatarContext.Columns
+                .Where(x => x.BoardId == column.BoardId);
+        }
 
         public async Task ChangePosition(int columnId, int newIndex)
         {
             var thisColumn = await GetColumnById(columnId);
             
             var columnList = _userAvatarContext.Columns
-                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id);
+                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id && !x.IsDeleted);
 
             
             var previousIndex = thisColumn.Index;
@@ -127,12 +132,29 @@ namespace UserAvatar.Dal.Storages
         {
             return await _userAvatarContext.Columns.FindAsync(id);
         }
-        
+
+        private static async Task RecheckPosition(List<Column> columnList, int deletedPosition)
+        {
+            await LockSlim.WaitAsync();
+            try
+            {
+                if (deletedPosition == columnList.Count)
+                    return;
+                foreach (var column in columnList.Where(column => column.Index >= deletedPosition))
+                {
+                    column.Index--;
+                }
+            }
+            finally
+            {
+                LockSlim.Release();
+            }
+        }
         private static bool PositionAlgorithm(int previousIndex, int newIndex, IQueryable<Column> columnList)
         {
             if(previousIndex - newIndex == 0)
                 return true;
-            if (newIndex < 0 || newIndex > columnList.Count())
+            if (newIndex < 0 || newIndex > columnList.Count() + 1)
                 return false;
             
             foreach (var column in columnList)

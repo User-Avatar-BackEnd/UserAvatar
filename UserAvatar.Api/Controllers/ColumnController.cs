@@ -13,8 +13,9 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
-    [Authorize]
+    
     [ApiController]
+    [Authorize]
     [Route("api/v1/column")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
@@ -28,9 +29,8 @@ namespace UserAvatar.Api.Controllers
             _mapper = mapper;
         }
 
-        /*
         [HttpGet("{boardId:int}")]
-        public async Card<ActionResult<List<FullColumnDto>>> GetAllColumns(int boardId)
+        public async Task<ActionResult<List<ColumnDto>>> GetAllColumns(int boardId)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
@@ -39,9 +39,9 @@ namespace UserAvatar.Api.Controllers
 
             return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnDto>>(foundColumn));
         }
-        */
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
@@ -62,8 +62,8 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteColumn(int columnId)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteColumn([FromQuery]int columnId)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
@@ -72,9 +72,8 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpGet("change_position/{id:int}/{positionIndex:int}")]
-        public async Task<IActionResult> ChangeColumnPosition(int columnId,
-            int positionIndex)
+        [HttpPost("[controller]/changePosition/{column:int}/{positionIndex:int}")]
+        public async Task<IActionResult> ChangeColumnPosition(int columnId, int positionIndex)
         {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
             
