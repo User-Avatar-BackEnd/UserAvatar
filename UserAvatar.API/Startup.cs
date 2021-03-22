@@ -46,7 +46,7 @@ namespace UserAvatar.API
                     options =>
                         options.UseNpgsql(
                             Configuration.GetConnectionString("connectionString"),
-                            x => x.MigrationsAssembly("UserAvatar.Dal")), ServiceLifetime.Transient);
+                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
             
             services.AddControllers();
             
@@ -120,7 +120,7 @@ namespace UserAvatar.API
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
-                context?.Database.MigrateAsync();
+                context?.Database.Migrate();
                 EnsureAdminCreated(context);
             }
 

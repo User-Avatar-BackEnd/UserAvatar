@@ -59,7 +59,7 @@ namespace UserAvatar.DAL.Migrations
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -158,7 +158,7 @@ namespace UserAvatar.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     BoardId = table.Column<int>(type: "integer", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,10 +187,10 @@ namespace UserAvatar.DAL.Migrations
                     Title = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     Description = table.Column<string>(type: "character varying(2048)", maxLength: 2048, nullable: true),
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
-                    ResponsibleId = table.Column<int>(type: "integer", nullable: false),
+                    ResponsibleId = table.Column<int>(type: "integer", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: true),
                     IsHidden = table.Column<bool>(type: "boolean", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -214,7 +214,7 @@ namespace UserAvatar.DAL.Migrations
                         column: x => x.ResponsibleId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,7 +228,7 @@ namespace UserAvatar.DAL.Migrations
                     Text = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
