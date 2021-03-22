@@ -1,14 +1,14 @@
-using AutoMapper;
+﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserAvatar.Bll.Services;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Services;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Bll.Services
+namespace UserAvatar.Bll.TaskManager.Services
 {
     public class PersonalAccountService : IPersonalAccountService
     {

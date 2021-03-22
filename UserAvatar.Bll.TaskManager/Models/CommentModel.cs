@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UserAvatar.Bll.Models
+namespace UserAvatar.Bll.TaskManager.Models
 {
     public class CommentModel
     {

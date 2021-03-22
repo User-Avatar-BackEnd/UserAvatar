@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using UserAvatar.Api.Extentions;
 using UserAvatar.Api.Options;
-using UserAvatar.Bll.Services;
+using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 

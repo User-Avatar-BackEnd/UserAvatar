@@ -1,6 +1,6 @@
-﻿using UserAvatar.Bll.Models;
+﻿using UserAvatar.Bll.TaskManager.Models;
 
-namespace UserAvatar.Bll.Services.Interfaces
+namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface ICardService
     {

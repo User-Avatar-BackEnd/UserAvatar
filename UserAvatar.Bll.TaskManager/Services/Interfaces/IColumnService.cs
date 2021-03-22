@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserAvatar.Bll.Models;
+using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using Task = System.Threading.Tasks.Task;
 
-namespace UserAvatar.Bll.Services.Interfaces
+namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IColumnService
     {

@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using UserAvatar.Bll.Models;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Bll.Services
+namespace UserAvatar.Bll.TaskManager.Services
 {
     public class BoardService : IBoardService
     {

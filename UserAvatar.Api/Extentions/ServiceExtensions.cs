@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using UserAvatar.Bll.Services;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Services;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 

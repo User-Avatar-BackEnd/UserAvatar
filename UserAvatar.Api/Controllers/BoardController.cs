@@ -8,8 +8,8 @@ using System.Net;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.Bll.Models;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {

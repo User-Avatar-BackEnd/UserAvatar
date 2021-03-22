@@ -1,12 +1,12 @@
 ﻿using System;
 using AutoMapper;
-using UserAvatar.Bll.Models;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Bll.Services
+namespace UserAvatar.Bll.TaskManager.Services
 {
     public class CardService : ICardService
     {

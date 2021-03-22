@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using UserAvatar.Api.Contracts.Requests;
-using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
-namespace UserAvatar.API.Controllers
+namespace UserAvatar.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]

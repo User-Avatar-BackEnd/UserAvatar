@@ -21,8 +21,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UserAvatar.Bll\UserAvatar.Bll.csproj" />
     <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
+    <ProjectReference Include="..\UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
