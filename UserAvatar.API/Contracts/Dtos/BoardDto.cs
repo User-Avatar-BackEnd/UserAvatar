@@ -16,6 +16,6 @@ namespace UserAvatar.Api.Contracts.Dtos
 
         public List<UserShortDto> Members { get; set; }
 
-        public List<ColumnDto> Columns { get; set; }
+        public List<FullColumnDto> Columns { get; set; }
     }
 }
