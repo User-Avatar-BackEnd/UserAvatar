@@ -24,9 +24,9 @@ namespace UserAvatar.Bll.TaskManager.Services
         }
 
 
-        public void ChangePassword(int userId, string oldPassword, string newPassword)
+        public async Task ChangePasswordAsync(int userId, string oldPassword, string newPassword)
         {
-            var user = _userStorage.GetById(userId);
+            var user = await _userStorage.GetByIdAsync(userId);
 
             if (user == null) throw new SystemException("User doesn't exist");
 
@@ -39,15 +39,15 @@ namespace UserAvatar.Bll.TaskManager.Services
             _userStorage.UpdateAsync(user);
         }
 
-        public void ChangeLogin(int userId, string newLogin)
+        public async Task ChangeLoginAsync(int userId, string newLogin)
         {
-            var user = _userStorage.GetById(userId);
+            var user = await _userStorage.GetByIdAsync(userId);
 
             if (user == null) throw new SystemException("User doesn't exist");
 
             if (user.Login == newLogin) throw new SystemException("This is current login");
 
-            if (_userStorage.IsLoginExist(newLogin)) throw new SystemException("This login is already taken");
+            if (await _userStorage.IsLoginExistAsync(newLogin)) throw new SystemException("This login is already taken");
 
             user.Login = newLogin;
 

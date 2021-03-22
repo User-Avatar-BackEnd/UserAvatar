@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using UserAvatar.Api.Contracts.Dtos;
+using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -25,7 +26,7 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("change_login")]
-        public IActionResult ChangeLogin(string login)
+        public async Task<ActionResult> ChangeLogin([FromBody] string login)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
@@ -33,20 +34,20 @@ namespace UserAvatar.Api.Controllers
 
             if (login.Length < 5 || login.Length > 64) throw new SystemException("Login length should be between 5 and 64 characters");
 
-            _personalAccountService.ChangeLogin(userId, login);
+            await _personalAccountService.ChangeLoginAsync(userId, login);
 
             return Ok();
         }
 
         [HttpPatch]
         [Route("change_password")]
-        public IActionResult ChangePasword(ChangePasswordRequest request)
+        public async Task<ActionResult> ChangePasword(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            _personalAccountService.ChangePassword(userId, request.OldPassword, request.NewPassword);
+            await _personalAccountService.ChangePasswordAsync(userId, request.OldPassword, request.NewPassword);
 
             return Ok();
         }

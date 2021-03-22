@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -17,39 +18,38 @@ namespace UserAvatar.Dal.Storages
             _dbContext = dbContext;
         }
 
-        public async Task<User> GetByEmail(string email)
+        public async Task<User> GetByEmailAsync(string email)
         {
             return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
             return await _dbContext.Users
                 .Include(user=> user.Invited)
                 .FirstOrDefaultAsync(user => user.Id == id);
         }
 
-        public async Task Create(User user)
+        public async Task CreateAsync(User user)
         {
            await _dbContext.Users.AddAsync(user);
            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> IsLoginExist(string login)
+        public async Task<bool> IsLoginExistAsync(string login)
         {
             return await _dbContext.Users.AnyAsync(user => user.Login == login);
-        }
-
-        public async Task<bool> IsUserExist(string email)
-        {
-            return await _dbContext.Users.AnyAsync(user => user.Email == email);
         }
 
         public async Task UpdateAsync(User user)
         {
             _dbContext.Entry(user).State = EntityState.Modified;
-
             await _dbContext.SaveChangesAsync();
+        }
+        
+        public async Task<bool> IsUserExistAsync(string email)
+        {
+            return await _dbContext.Users.AnyAsync(user => user.Email == email);
         }
     }
 }
