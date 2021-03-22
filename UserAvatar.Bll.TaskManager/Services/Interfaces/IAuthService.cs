@@ -1,11 +1,13 @@
-﻿using UserAvatar.Bll.TaskManager.Models;
+﻿using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IAuthService
     {
-        public UserModel Register(string email, string login, string password);
+        public Task<Result<UserModel>> RegisterAsync(string email, string login, string password);
 
-        public UserModel Login(string email, string password);
+        public Task<Result<UserModel>> LoginAsync(string email, string password);
     }
 }
