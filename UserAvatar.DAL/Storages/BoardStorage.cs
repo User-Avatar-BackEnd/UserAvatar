@@ -86,15 +86,13 @@ namespace UserAvatar.Dal.Storages
 
         public bool IsUserBoard(int userId, int boardId)
         {
-            var count = _dbContext.Boards
+            /*var count = _dbContext.Boards
                 .Include(board => board.Members)
                 .Where(board => board.Id == boardId && board.Members
                 .Any(member => member.Id == userId))
-                .Count();
+                .Count();*/
 
-            if (count == 0) return false;
-
-            return true;
+            return _dbContext.Members.Any(x => x.BoardId == boardId && x.UserId == userId);
         }
 
         public async System.Threading.Tasks.Task AddAsMember(int userId, int boardId)
