@@ -72,7 +72,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpGet("change_position/{id:int}&{positionIndex:int}")]
+        [HttpGet("change_position/{id:int}/{positionIndex:int}")]
         public async Task<IActionResult> ChangeColumnPosition(int columnId,
             int positionIndex)
         {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");

@@ -41,7 +41,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask(AddTaskRequest request)
+        public IActionResult AddTask(CreateTaskRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);

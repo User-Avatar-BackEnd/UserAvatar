@@ -2,7 +2,7 @@
 
 namespace UserAvatar.Api.Contracts.Requests
 {
-    public class BoardRequest
+    public class UpdateBoardRequest
     {
         public int Id { get; set; }
         
