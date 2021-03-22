@@ -24,7 +24,6 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Card, CardModel>();
             CreateMap<Comment, CommentModel>();
             
-            
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
            

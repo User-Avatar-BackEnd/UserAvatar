@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -20,14 +21,14 @@ namespace UserAvatar.Bll.TaskManager.Services
             _mapper = mapper;
         }
 
-        public async System.Threading.Tasks.Task<IEnumerable<BoardModel>> GetAllBoardsAsync(int userId)
+        public async Task<IEnumerable<BoardModel>> GetAllBoardsAsync(int userId)
         {
             var boards = await _boardStorage.GetAllBoardsAsync(userId);
 
             return _mapper.Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
         }
 
-        public async System.Threading.Tasks.Task CreateBoardAsync(int userId, string title)
+        public async Task CreateBoardAsync(int userId, string title)
         {
             var board = new Board()
             {
@@ -45,7 +46,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 throw new Exception("You already create maximum 10 boards");
             }
 
-            if (_boardStorage.DoesUserHasBoard(userId, board.Title))
+            if (await _boardStorage.DoesUserHasBoardAsync(userId, board.Title))
             {
                 throw new Exception("You already create maximum 10 boards");
             }
@@ -53,7 +54,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _boardStorage.CreateBoardAsync(board);
         }
 
-        public async System.Threading.Tasks.Task<BoardModel> GetBoardAsync(int userId, int boardId)
+        public async Task<BoardModel> GetBoardAsync(int userId, int boardId)
         {
             var board = await _boardStorage.GetBoardAsync(userId, boardId);
 
@@ -62,24 +63,24 @@ namespace UserAvatar.Bll.TaskManager.Services
             return _mapper.Map<Board, BoardModel>(board);
         }
 
-        public async System.Threading.Tasks.Task RenameBoardAsync(int userId, int boardId, string title)
+        public async Task RenameBoardAsync(int userId, int boardId, string title)
         {
             var board = await _boardStorage.GetBoardAsync(userId, boardId);
 
             if (board == null) throw new Exception("This board doesn't exist");
 
-            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, title);
+            var isSameBoardExist = _boardStorage.DoesUserHasBoardAsync(userId, title);
 
-            if (isSameBoardExist) throw new SystemException();
+            if (await isSameBoardExist) throw new SystemException();
 
             board.Title = title;
 
            await _boardStorage.UpdateAsync(userId, board);
         }
 
-        public async System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId)
+        public async Task DeleteBoardAsync(int userId, int boardId)
         {
-            if (!_boardStorage.IsOwnerBoard(userId, boardId)) throw new Exception();
+            if (!await _boardStorage.IsOwnerBoardAsync(userId, boardId)) throw new Exception();
 
             await _boardStorage.DeleteBoardAsync(userId, boardId);
         }

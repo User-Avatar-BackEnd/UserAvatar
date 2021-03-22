@@ -22,7 +22,6 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<IUserStorage, UserStorage>()
                 .AddTransient<IBoardStorage, BoardStorage>()
                 .AddTransient<IColumnStorage, ColumnStorage>()
-                .AddTransient<IPersonalAccountStorage,PersonalAccountStorage>()
                 .AddTransient<ICommentStorage,CommentStorage>()
                 .AddTransient<ICardStorage,CardStorage>()
                 .AddTransient<IAuthService, AuthService>()

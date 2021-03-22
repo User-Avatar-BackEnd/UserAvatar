@@ -1,9 +1,14 @@
-﻿namespace UserAvatar.Bll.TaskManager.Services.Interfaces
+﻿using UserAvatar.Bll.TaskManager.Models;
+﻿using System.Threading.Tasks;
+
+namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IPersonalAccountService
     {
-        void ChangePassword(int userId, string oldPassword, string newPassword);
-        void ChangeLogin(int userId, string newLogin);
+        Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
 
+        Task ChangeLoginAsync(int userId, string newLogin);
+
+        Task<UserModel> GetUsersDataAsync(int userId);
     }
 }

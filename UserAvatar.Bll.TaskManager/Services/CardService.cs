@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -48,10 +49,11 @@ namespace UserAvatar.Bll.TaskManager.Services
             return taskModel;
         }
 
-        public void UpdateCard(CardModel cardModel, int columnId, int? responsibleId, int userId)
+        public async Task UpdateCardAsync(CardModel cardModel, int columnId, int? responsibleId, int userId)
         {
             var boardId = _cardStorage.GetBoardId(cardModel.Id);
-            if (!_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
             var task = _cardStorage.GetById(cardModel.Id);
 
@@ -66,25 +68,23 @@ namespace UserAvatar.Bll.TaskManager.Services
             _cardStorage.Update(task);
         }
 
-        public CardModel GetById(int cardId, int userId)
+        public async Task<CardModel> GetByIdAsync(int taskId, int userId)
         {
-            if (_cardStorage.GetById(cardId) == null)
-                return null;
-            
-            var boardId = _cardStorage.GetBoardId(cardId);
-            if (!_boardStorage.IsUserBoard(userId,boardId)) throw new Exception();
+            var boardId = _cardStorage.GetBoardId(taskId);
+            if (await _boardStorage.IsUserBoardAsync(userId,boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(cardId);
+            var task = _cardStorage.GetById(taskId);
 
             return task == null ? null : _mapper.Map<Card, CardModel>(task);
         }
-        
-        public void DeleteCard(int taskId, int userId)
+
+        public async Task DeleteCard(int taskId, int userId)
         {
             if (_cardStorage.GetById(taskId) == null)
                 return;
             var boardId = _cardStorage.GetBoardId(taskId);
-            if (!_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
             _cardStorage.Delete(taskId);
         }
