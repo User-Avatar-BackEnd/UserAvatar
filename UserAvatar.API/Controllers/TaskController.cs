@@ -11,7 +11,7 @@ using UserAvatar.Bll.Services.Interfaces;
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/Task")]
+    [Route("api/v1/task")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -41,7 +41,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask(AddTaskRequest request)
+        public IActionResult AddTask(CreateTaskRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);

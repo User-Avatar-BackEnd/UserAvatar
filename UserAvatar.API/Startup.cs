@@ -46,10 +46,14 @@ namespace UserAvatar.API
                     options =>
                         options.UseNpgsql(
                             Configuration.GetConnectionString("connectionString"),
-                            x => x.MigrationsAssembly("UserAvatar.DAL")), ServiceLifetime.Transient);
-            
-            services.AddControllers();
-            
+                            x => x.MigrationsAssembly("UserAvatar.DAL")));
+
+            services.AddControllers().ConfigureApiBehaviorOptions(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+                options.SuppressMapClientErrors = true;
+            });
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });

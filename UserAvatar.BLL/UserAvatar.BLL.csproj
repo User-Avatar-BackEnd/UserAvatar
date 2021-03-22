@@ -11,7 +11,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.Dal.csproj" />
+    <ProjectReference Include="..\UserAvatar.Infrastructure\UserAvatar.Infrastructure.csproj" />
   </ItemGroup>
 
 

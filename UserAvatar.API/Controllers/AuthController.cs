@@ -12,6 +12,7 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
+using UserAvatar.Infrastructure.Exceptions;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -36,42 +37,55 @@ namespace UserAvatar.Api.Controllers
         /// <param name="registerRequest"></param>
         /// <returns></returns>
         
-        [HttpPost]
-        [Route("/register")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(typeof(string), 400)]
-        [AllowAnonymous]
+        [HttpPost("register")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> RegisterAsync(RegisterRequest registerRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = _authService.Register(registerRequest.Email, registerRequest.Login ,registerRequest.Password);
+                var user = _authService.Register(registerRequest.Email, registerRequest.Login, registerRequest.Password);
 
-            if (user == null) Unauthorized();
+                if (user == null) Unauthorized();
 
-             return await BuildToken(user);
+                return BuildToken(user);
+            }
+            catch(InformException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
-        [HttpPost]
-        [Route("/login")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(typeof(string), 400)]
+        [HttpPost("login")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var user = _authService.Login(loginRequest.Email, loginRequest.Password);
+                var user = _authService.Login(loginRequest.Email, loginRequest.Password);
 
-            if (user == null) return Unauthorized();
+                if (user == null) return Unauthorized();
 
-            return await BuildToken(user);
+                return BuildToken(user);
+            }
+            catch (InformException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
         
-        [HttpGet]
-        [Route("/logout")]
+        [HttpGet("logout")]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public Task<HttpStatusCode> LogoutAsync()
         {
             // call gamification service to add scores for the logout
@@ -80,7 +94,7 @@ namespace UserAvatar.Api.Controllers
         #endregion
 
         #region Methods for Jwt
-        private async Task<ActionResult> BuildToken(UserModel user)
+        private ActionResult BuildToken(UserModel user)
         {
             if (user == null) return Unauthorized();
 

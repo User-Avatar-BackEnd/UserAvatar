@@ -23,6 +23,9 @@
   <ItemGroup>
     <ProjectReference Include="..\UserAvatar.BLL\UserAvatar.BLL.csproj" />
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
+    <ProjectReference Include="..\UserAvatar.Infrastructure\UserAvatar.Infrastructure.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

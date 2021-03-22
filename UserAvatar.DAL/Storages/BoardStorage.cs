@@ -25,7 +25,7 @@ namespace UserAvatar.Dal.Storages
 
             await _dbContext.SaveChangesAsync();
 
-            await AddAsMember(board.OwnerId, board.Id);
+            await AddAsMemberAsync(board.OwnerId, board.Id);
 
             await _dbContext.SaveChangesAsync();
         }
@@ -93,7 +93,7 @@ namespace UserAvatar.Dal.Storages
             return true;
         }
 
-        public async System.Threading.Tasks.Task AddAsMember(int userId, int boardId)
+        public async System.Threading.Tasks.Task AddAsMemberAsync(int userId, int boardId)
         {
             if (IsMemberExist(userId, boardId)) throw new SystemException();
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
@@ -15,7 +16,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/Board")]
+    [Route("api/v1/board")]
     public class BoardController : ControllerBase
     {
         private readonly IBoardService _boardService;
@@ -39,13 +40,18 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(List<object>), 200)]
-        [ProducesResponseType(typeof(string), 400)]
-        public async Task<IActionResult> CreateBoardAsync(BoardRequest boardRequest)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> CreateBoardAsync(string title)
         {
+            if (string.IsNullOrWhiteSpace(title)) return BadRequest("Empty title");
+            title = title.Trim();
+
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            await _boardService.CreateBoardAsync(userId, boardRequest.Title);
+            await _boardService.CreateBoardAsync(userId, title);
 
             return Ok();
         }
@@ -65,7 +71,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> RenameBoardAsync([FromBody] BoardRequest boardRequest)
+        public async Task<IActionResult> RenameBoardAsync([FromBody] UpdateBoardRequest boardRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
