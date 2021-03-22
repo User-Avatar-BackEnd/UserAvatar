@@ -82,6 +82,8 @@ namespace UserAvatar.Bll.Services
 
         public async Task<List<ColumnModel>> GetAllColumns(int userId, int boardId)
         {
+            if (!_boardStorage.IsUserBoard(userId, boardId))
+                throw new Exception($"This user {userId} does not have this board");
             var allColumns = await _columnStorage.GetAllColumns(boardId);
             if (allColumns.Count() < 0)
                 throw new Exception($"No Columns in this board {boardId}");
