@@ -6,7 +6,6 @@ using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
-using UserAvatar.Infrastructure.Exceptions;
 
 namespace UserAvatar.Bll.Services
 {
@@ -43,12 +42,12 @@ namespace UserAvatar.Bll.Services
             //todo:config
             if (boards.Count() >= 10)
             {
-                throw new InformException("You already create maximum 10 boards");
+                throw new Exception("You already create maximum 10 boards");
             }
 
             if (_boardStorage.DoesUserHasBoard(userId, board.Title))
             {
-                throw new InformException("You already create maximum 10 boards");
+                throw new Exception("You already create maximum 10 boards");
             }
 
             await _boardStorage.CreateBoardAsync(board);

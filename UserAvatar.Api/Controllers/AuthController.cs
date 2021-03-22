@@ -12,7 +12,6 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
-using UserAvatar.Infrastructure.Exceptions;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -54,7 +53,7 @@ namespace UserAvatar.Api.Controllers
 
                 return BuildToken(user);
             }
-            catch(InformException ex)
+            catch(Exception ex)
             {
                 return Conflict(ex.Message);
             }
@@ -77,7 +76,7 @@ namespace UserAvatar.Api.Controllers
 
                 return BuildToken(user);
             }
-            catch (InformException ex)
+            catch (Exception ex)
             {
                 return Conflict(ex.Message);
             }

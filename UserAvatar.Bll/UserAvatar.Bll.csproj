@@ -11,11 +11,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\UserAvatar.Infrastructure\UserAvatar.Infrastructure.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.DAL.csproj" />
   </ItemGroup>
   <ItemGroup>

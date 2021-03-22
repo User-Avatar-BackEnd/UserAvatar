@@ -5,7 +5,6 @@ using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
-using UserAvatar.Infrastructure.Exceptions;
 
 namespace UserAvatar.Bll.Services
 {
@@ -24,7 +23,7 @@ namespace UserAvatar.Bll.Services
         {
             if (_userStorage.IsUserExist(email))
             {
-                throw new InformException("User with such email already exist");
+                throw new Exception("User with such email already exist");
             }
 
             if (login != null)
@@ -39,13 +38,13 @@ namespace UserAvatar.Bll.Services
                     //Todo: config file
                     if (login.Length < 5 || login.Length > 64)
                     {
-                        throw new InformException("Login must have minimum 5 symbols and maximum 64 symbols");
+                        throw new Exception("Login must have minimum 5 symbols and maximum 64 symbols");
                     }
 
                     var isLoginTaken = _userStorage.IsLoginExist(login);
                     if (isLoginTaken)
                     {
-                        throw new InformException("User with such login already exist");
+                        throw new Exception("User with such login already exist");
                     }
                 }
             }
@@ -75,13 +74,13 @@ namespace UserAvatar.Bll.Services
 
             if (user == null)
             {
-                throw new InformException("User with this email does not exist");
+                throw new Exception("User with this email does not exist");
             }
 
             var passwordIsValid = PasswordHash.ValidatePassword(password, user.PasswordHash);
             if (!passwordIsValid)
             {
-                throw new InformException("Wrong password");
+                throw new Exception("Wrong password");
             }
 
             return _mapper.Map<User, UserModel>(user);
