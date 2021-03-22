@@ -10,7 +10,11 @@ using UserAvatar.Dal.Context;
 namespace UserAvatar.Dal.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+    [Migration("20210322181713_InitialCommit")]
+=======
     [Migration("20210322183332_InitialCommit")]
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
     partial class InitialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,7 +59,11 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Boards");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Card", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Card", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,9 +89,12 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+=======
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
 
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
@@ -131,9 +142,12 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+=======
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
 
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -290,7 +304,11 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Ranks");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.User", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.User", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -333,21 +351,35 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Card", b =>
+                {
+                    b.HasOne("UserAvatar.DAL.Entities.Column", "Column")
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Card", b =>
                 {
                     b.HasOne("UserAvatar.Dal.Entities.Column", "Column")
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                         .WithMany("Cards")
                         .HasForeignKey("ColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+                    b.HasOne("UserAvatar.DAL.Entities.User", "Owner")
+=======
                     b.HasOne("UserAvatar.Dal.Entities.User", "Owner")
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+                    b.HasOne("UserAvatar.DAL.Entities.User", "Responsible")
+=======
                     b.HasOne("UserAvatar.Dal.Entities.User", "Responsible")
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                         .WithMany()
                         .HasForeignKey("ResponsibleId");
 
@@ -358,7 +390,11 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("Responsible");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Column", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.HasOne("UserAvatar.Dal.Entities.Board", "Board")
                         .WithMany("Columns")
@@ -371,7 +407,11 @@ namespace UserAvatar.Dal.Migrations
 
             modelBuilder.Entity("UserAvatar.Dal.Entities.Comment", b =>
                 {
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+                    b.HasOne("UserAvatar.DAL.Entities.Card", "Card")
+=======
                     b.HasOne("UserAvatar.Dal.Entities.Card", "Card")
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                         .WithMany("Comments")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -445,24 +485,40 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Board", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Board", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Navigation("Columns");
 
                     b.Navigation("Members");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Card", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Card", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Navigation("Comments");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Column", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Navigation("Cards");
                 });
 
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.Designer.cs
+            modelBuilder.Entity("UserAvatar.DAL.Entities.Event", b =>
+=======
             modelBuilder.Entity("UserAvatar.Dal.Entities.Event", b =>
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.Designer.cs
                 {
                     b.Navigation("Histories");
                 });

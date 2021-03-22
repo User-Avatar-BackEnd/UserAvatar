@@ -59,8 +59,12 @@ namespace UserAvatar.Dal.Migrations
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.cs
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+=======
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.cs
                 },
                 constraints: table =>
                 {
@@ -138,8 +142,12 @@ namespace UserAvatar.Dal.Migrations
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Index = table.Column<int>(type: "integer", nullable: false),
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.cs
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+=======
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.cs
                 },
                 constraints: table =>
                 {
@@ -194,8 +202,12 @@ namespace UserAvatar.Dal.Migrations
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Priority = table.Column<int>(type: "integer", nullable: true),
                     IsHidden = table.Column<bool>(type: "boolean", nullable: false),
+<<<<<<< Updated upstream:UserAvatar.DAL/Migrations/20210322181713_InitialCommit.cs
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+=======
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     ModifiedBy = table.Column<int>(type: "integer", nullable: false)
+>>>>>>> Stashed changes:UserAvatar.Dal/Migrations/20210322183332_InitialCommit.cs
                 },
                 constraints: table =>
                 {
