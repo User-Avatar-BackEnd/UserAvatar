@@ -23,7 +23,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public CardModel CreateCard(string title, int columnId, int userId)
         {
-            //var boardId = _cardStorage.GetBoardId(taskId);
+            //var boardId = _cardStorage.GetBoardId(cardId);
             //if (_boardStorage.IsUsersBoard(userId, boardId)) return null;//isUserBoard
 
             if (string.IsNullOrEmpty(title)) return null;
@@ -51,7 +51,7 @@ namespace UserAvatar.Bll.TaskManager.Services
         public void UpdateCard(CardModel cardModel, int columnId, int? responsibleId, int userId)
         {
             var boardId = _cardStorage.GetBoardId(cardModel.Id);
-            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+            if (!_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
 
             var task = _cardStorage.GetById(cardModel.Id);
 
@@ -66,22 +66,25 @@ namespace UserAvatar.Bll.TaskManager.Services
             _cardStorage.Update(task);
         }
 
-        public CardModel GetById(int taskId, int userId)
+        public CardModel GetById(int cardId, int userId)
         {
-            var boardId = _cardStorage.GetBoardId(taskId);
-            if (_boardStorage.IsUserBoard(userId,boardId)) throw new Exception();
+            if (_cardStorage.GetById(cardId) == null)
+                return null;
+            
+            var boardId = _cardStorage.GetBoardId(cardId);
+            if (!_boardStorage.IsUserBoard(userId,boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(taskId);
+            var task = _cardStorage.GetById(cardId);
 
-            if (task == null) return null;
-
-            return _mapper.Map<Card, CardModel>(task);
+            return task == null ? null : _mapper.Map<Card, CardModel>(task);
         }
-
+        
         public void DeleteCard(int taskId, int userId)
         {
+            if (_cardStorage.GetById(taskId) == null)
+                return;
             var boardId = _cardStorage.GetBoardId(taskId);
-            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+            if (!_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
 
             _cardStorage.Delete(taskId);
         }

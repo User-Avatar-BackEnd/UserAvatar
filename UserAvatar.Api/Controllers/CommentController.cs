@@ -57,8 +57,8 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteComment(int columnId)
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteComment([FromQuery]int columnId)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 

@@ -4,7 +4,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface ICardService
     {
-        public CardModel GetById(int taskId, int userId);
+        public CardModel GetById(int cardId, int userId);
 
         public CardModel CreateCard(string title, int columnId, int userId);
 

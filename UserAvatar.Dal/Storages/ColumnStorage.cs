@@ -94,7 +94,8 @@ namespace UserAvatar.Dal.Storages
         {
             //todo: maybe change
             var task = Task.Factory.StartNew(() =>
-                _userAvatarContext.Columns.Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));
+                _userAvatarContext.Columns
+                    .Include(x=> x.Cards).Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));
             return await task;
             
         }

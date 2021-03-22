@@ -23,11 +23,13 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<IBoardStorage, BoardStorage>()
                 .AddTransient<IColumnStorage, ColumnStorage>()
                 .AddTransient<IPersonalAccountStorage,PersonalAccountStorage>()
+                .AddTransient<ICommentStorage,CommentStorage>()
                 .AddTransient<ICardStorage,CardStorage>()
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IBoardService, BoardService>()
                 .AddTransient<IColumnService, ColumnService>()
                 .AddTransient<ICardService, CardService>()
+                .AddTransient<ICommentService,CommentService>()
                 .AddTransient<IPersonalAccountService,PersonalAccountService>();
         }
     }

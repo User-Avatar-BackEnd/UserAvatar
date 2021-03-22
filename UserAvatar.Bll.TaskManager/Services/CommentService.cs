@@ -34,7 +34,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             var newComment = new Comment
             {
-                TaskId = taskId,
+                CardId = taskId,
                 UserId = userId,
                 Text = text,
                 CreatedAt = DateTime.Now,

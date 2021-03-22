@@ -29,7 +29,7 @@ namespace UserAvatar.Api.Controllers
             var userId = Convert.ToInt32(userCredentials.Value);
 
             var task = _cardService.GetById(id, userId);
-            if (task == null) BadRequest();
+            if (task == null) return BadRequest();
             
 
             var taskDto = _mapper.Map<CardModel, CardDetailedDto>(task);
@@ -71,7 +71,7 @@ namespace UserAvatar.Api.Controllers
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            _cardService.DeleteCard(userId, id);
+            _cardService.DeleteCard(id, userId);
 
             return Ok();
         }

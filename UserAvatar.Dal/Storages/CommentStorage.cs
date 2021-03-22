@@ -41,7 +41,7 @@ namespace UserAvatar.Dal.Storages
         {
             //async?
             return Task.FromResult(_userAvatarContext.Comments
-                .Where(x => x.TaskId == taskId)
+                .Where(x => x.CardId == taskId)
                 .OrderBy(x=> x.ModifiedAt)
                 .ToList());
         }
@@ -73,7 +73,7 @@ namespace UserAvatar.Dal.Storages
         {
             return _userAvatarContext.Comments
                 .Include(x => x.Card)
-                .First(x => x.Id == commentId).TaskId;
+                .First(x => x.Id == commentId).CardId;
         }
     }
 }

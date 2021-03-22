@@ -10,7 +10,7 @@ using UserAvatar.Dal.Context;
 namespace UserAvatar.Dal.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210322183332_InitialCommit")]
+    [Migration("20210322230443_InitialCommit")]
     partial class InitialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,6 +153,9 @@ namespace UserAvatar.Dal.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
+                    b.Property<int>("CardId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -161,9 +164,6 @@ namespace UserAvatar.Dal.Migrations
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -175,7 +175,7 @@ namespace UserAvatar.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaskId");
+                    b.HasIndex("CardId");
 
                     b.HasIndex("UserId");
 
@@ -373,7 +373,7 @@ namespace UserAvatar.Dal.Migrations
                 {
                     b.HasOne("UserAvatar.Dal.Entities.Card", "Card")
                         .WithMany("Comments")
-                        .HasForeignKey("TaskId")
+                        .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -22,7 +22,7 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Invite, InviteModel>();
             CreateMap<Rank, RankModel>();
             CreateMap<Card, CardModel>();
-            CreateMap<Comment, ColumnModel>();
+            CreateMap<Comment, CommentModel>();
             
             
             CreateMap<UserModel, User>();
