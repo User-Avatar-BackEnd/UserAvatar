@@ -13,6 +13,8 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         public int GetBoardId(int taskId);
 
-        public void DeleteTask(int taskId);
+        public void Delete(int taskId);
+
+        public void Update(Task task);
     }
 }
