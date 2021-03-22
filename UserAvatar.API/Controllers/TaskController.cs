@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.API.Contracts.Dtos;
@@ -12,7 +10,6 @@ using UserAvatar.Contracts.Requests;
 
 namespace UserAvatar.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/Task")]
     public class TaskController : ControllerBase
@@ -34,6 +31,7 @@ namespace UserAvatar.Api.Controllers
 
             var task = _taskService.GetById(id, userId);
             if (task == null) BadRequest();
+            
 
             var taskDto = _mapper.Map<TaskModel, TaskDetailedDto>(task);
 

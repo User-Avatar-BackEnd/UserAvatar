@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserAvatar.Dal.Context;
 
-namespace UserAvatar.Dal.Migrations
+namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210320114349_IntialCommit")]
+    [Migration("20210321211509_IntialCommit")]
     partial class IntialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace UserAvatar.Dal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.4");
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Board", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Board", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Boards");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Column", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,15 +68,16 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<int>("Index")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Title")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(64)
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("character varying(64)");
 
                     b.HasKey("Id");
 
@@ -85,7 +86,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Columns");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,7 +122,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Event", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Event", b =>
                 {
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -134,7 +135,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.History", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.History", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,7 +164,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Histories");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Invite", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Invite", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -191,7 +192,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Invites");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Member", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +217,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Rank", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Rank", b =>
                 {
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -229,7 +230,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Ranks");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Task", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Task", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -245,6 +246,9 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("boolean");
@@ -277,7 +281,7 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.User", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -309,9 +313,9 @@ namespace UserAvatar.Dal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Board", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Board", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.User", "User")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "User")
                         .WithMany("Boards")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -320,9 +324,9 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Column", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.Board", "Board")
+                    b.HasOne("UserAvatar.Dal.Entities.Board", "Board")
                         .WithMany("Columns")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -331,15 +335,15 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("Board");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Comment", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.Task", "Task")
+                    b.HasOne("UserAvatar.Dal.Entities.Task", "Task")
                         .WithMany("Comments")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "User")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -350,15 +354,15 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.History", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.History", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.Event", "Event")
+                    b.HasOne("UserAvatar.Dal.Entities.Event", "Event")
                         .WithMany("Histories")
                         .HasForeignKey("EventName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "User")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "User")
                         .WithMany("Histories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -369,15 +373,15 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Invite", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Invite", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Invited")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "Invited")
                         .WithMany("Invited")
                         .HasForeignKey("InvitedId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Inviter")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "Inviter")
                         .WithMany("Inviter")
                         .HasForeignKey("InviterId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -388,15 +392,15 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("Inviter");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Member", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Member", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.Board", "Board")
+                    b.HasOne("UserAvatar.Dal.Entities.Board", "Board")
                         .WithMany("Members")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "User")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -407,21 +411,21 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Task", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Task", b =>
                 {
-                    b.HasOne("UserAvatar.DAL.Entities.Column", "Column")
+                    b.HasOne("UserAvatar.Dal.Entities.Column", "Column")
                         .WithMany("Tasks")
                         .HasForeignKey("ColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Owner")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserAvatar.DAL.Entities.User", "Responsible")
+                    b.HasOne("UserAvatar.Dal.Entities.User", "Responsible")
                         .WithMany()
                         .HasForeignKey("ResponsibleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,29 +438,29 @@ namespace UserAvatar.Dal.Migrations
                     b.Navigation("Responsible");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Board", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Board", b =>
                 {
                     b.Navigation("Columns");
 
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Column", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Event", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Event", b =>
                 {
                     b.Navigation("Histories");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.Task", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.Task", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("UserAvatar.DAL.Entities.User", b =>
+            modelBuilder.Entity("UserAvatar.Dal.Entities.User", b =>
                 {
                     b.Navigation("Boards");
 

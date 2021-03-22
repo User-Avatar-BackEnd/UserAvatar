@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UserAvatar.Bll.Models;
+﻿using System.Collections.Generic;
 
 namespace UserAvatar.Api.Contracts.Dtos
 {

@@ -34,6 +34,6 @@ namespace UserAvatar.Dal.Entities
         
         public virtual ICollection<Task> Tasks { get; set; }
 
-        public bool isDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

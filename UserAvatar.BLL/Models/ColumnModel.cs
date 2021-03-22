@@ -6,7 +6,7 @@ namespace UserAvatar.Bll.Models
     public class ColumnModel
     {
         public int Id { get; set; }
-        public int Title { get; set; }
+        public string Title { get; set; }
         public BoardModel Board { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }

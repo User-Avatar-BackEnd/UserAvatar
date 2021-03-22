@@ -40,7 +40,7 @@ namespace UserAvatar.Dal.Storages
         {
             var column = _dbContext.Columns
                 .Include(x => x.Tasks)
-                .Where(x => x.Id == columnId &&!x.isDeleted)
+                .Where(x => x.Id == columnId &&!x.IsDeleted)
                 .FirstOrDefault();
 
             if (column == null) throw new Exception(); //column dosent exist
