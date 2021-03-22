@@ -48,11 +48,11 @@ namespace UserAvatar.Bll.Services
 
         public async System.Threading.Tasks.Task<BoardModel> GetBoardAsync(int userId, int boardId)
         {
-           var board = await _boardStorage.GetBoardAsync(userId, boardId);
+            var board = await _boardStorage.GetBoardAsync(userId, boardId);
 
             if (board == null) throw new Exception();
 
-           return _mapper.Map<Board, BoardModel>(board);
+            return _mapper.Map<Board, BoardModel>(board);
         }
 
         public async System.Threading.Tasks.Task RenameBoardAsync(int userId, int boardId, string title)

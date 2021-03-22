@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 
@@ -32,7 +33,7 @@ namespace UserAvatar.Api.Controllers
 
             var result = await _boardService.GetAllBoardsAsync(userId);
 
-            var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardDto>>(result);
+            var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardShortDto>>(result);
 
             return Ok(list);
         }
@@ -56,7 +57,11 @@ namespace UserAvatar.Api.Controllers
 
             var board = await _boardService.GetBoardAsync(userId, id);
 
-            return Ok(_mapper.Map<BoardModel, BoardDto>(board));
+            var boardDto = _mapper.Map<BoardModel, BoardDto>(board);
+
+            boardDto.IsOwner = board.User.Id == userId;
+
+            return Ok(boardDto);
         }
 
         [HttpPatch]

@@ -44,6 +44,7 @@ namespace UserAvatar.Dal.Storages
                 .FirstOrDefaultAsync(board => board.Id == boardId && board.OwnerId == userId && board.isDeleted == false);*/
             
             return await _dbContext.Boards
+                .Include(x=>x.User)
                 .Include(x=>x.Members)
                 .FirstOrDefaultAsync(board => board.Id == boardId && board.Members
                     .Any(member=>member.Id==userId));
