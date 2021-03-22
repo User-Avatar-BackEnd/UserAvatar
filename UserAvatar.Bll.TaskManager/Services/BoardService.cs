@@ -45,7 +45,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 throw new Exception("You already create maximum 10 boards");
             }
 
-            if (_boardStorage.DoesUserHasBoard(userId, board.Title))
+            if (_boardStorage.DoesUserHasBoardAsync(userId, board.Title))
             {
                 throw new Exception("You already create maximum 10 boards");
             }
@@ -68,7 +68,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (board == null) throw new Exception("This board doesn't exist");
 
-            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, title);
+            var isSameBoardExist = _boardStorage.DoesUserHasBoardAsync(userId, title);
 
             if (isSameBoardExist) throw new SystemException();
 
@@ -79,7 +79,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId)
         {
-            if (!_boardStorage.IsOwnerBoard(userId, boardId)) throw new Exception();
+            if (!_boardStorage.IsOwnerBoardAsync(userId, boardId)) throw new Exception();
 
             await _boardStorage.DeleteBoardAsync(userId, boardId);
         }

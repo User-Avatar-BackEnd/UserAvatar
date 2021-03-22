@@ -1,3 +1,4 @@
+﻿using UserAvatar.Bll.TaskManager.Models;
 ﻿using System.Threading.Tasks;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
@@ -6,6 +7,6 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
     {
         Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
         Task ChangeLoginAsync(int userId, string newLogin);
-
+        UserModel GetUsersData(int userId);
     }
 }

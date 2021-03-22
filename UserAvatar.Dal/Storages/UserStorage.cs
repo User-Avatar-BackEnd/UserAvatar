@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,15 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<User> GetByIdAsync(int id)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Users
+                .Include(user=> user.Invited)
+                .FirstOrDefaultAsync(user => user.Id == id);
         }
 
         public async Task CreateAsync(User user)
         {
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+           await _dbContext.Users.AddAsync(user);
+           await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> IsLoginExistAsync(string login)
@@ -38,6 +41,12 @@ namespace UserAvatar.Dal.Storages
             return await _dbContext.Users.AnyAsync(user => user.Login == login);
         }
 
+        public async Task UpdateAsync(User user)
+        {
+            _dbContext.Entry(user).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+        
         public async Task<bool> IsUserExistAsync(string email)
         {
             return await _dbContext.Users.AnyAsync(user => user.Email == email);
