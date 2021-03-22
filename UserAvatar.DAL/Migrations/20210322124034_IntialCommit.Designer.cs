@@ -10,7 +10,7 @@ using UserAvatar.Dal.Context;
 namespace UserAvatar.DAL.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210321211509_IntialCommit")]
+    [Migration("20210322124034_IntialCommit")]
     partial class IntialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace UserAvatar.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -41,9 +44,6 @@ namespace UserAvatar.DAL.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -96,6 +96,9 @@ namespace UserAvatar.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -109,9 +112,6 @@ namespace UserAvatar.DAL.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -202,11 +202,11 @@ namespace UserAvatar.DAL.Migrations
                     b.Property<int>("BoardId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -259,10 +259,10 @@ namespace UserAvatar.DAL.Migrations
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Priority")
+                    b.Property<int?>("Priority")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ResponsibleId")
+                    b.Property<int?>("ResponsibleId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -427,9 +427,7 @@ namespace UserAvatar.DAL.Migrations
 
                     b.HasOne("UserAvatar.Dal.Entities.User", "Responsible")
                         .WithMany()
-                        .HasForeignKey("ResponsibleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResponsibleId");
 
                     b.Navigation("Column");
 

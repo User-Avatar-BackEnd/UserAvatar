@@ -21,7 +21,7 @@ namespace UserAvatar.Dal.Context
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
