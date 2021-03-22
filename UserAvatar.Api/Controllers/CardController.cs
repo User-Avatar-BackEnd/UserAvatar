@@ -6,6 +6,7 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -23,12 +24,12 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = _cardService.GetById(id, userId);
+            var task = await _cardService.GetByIdAsync(id, userId);
             if (task == null) BadRequest();
             
 
@@ -53,14 +54,14 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPatch]
-        public IActionResult UpdateCard(UpdateCardRequest request)
+        public async Task<IActionResult> UpdateCard(UpdateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
             var taskModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
 
-            _cardService.UpdateCard(taskModel, request.ColumnId, request.ResponsibleId, userId);
+            await _cardService.UpdateCardAsync(taskModel, request.ColumnId, request.ResponsibleId, userId);
 
             return Ok();
         }

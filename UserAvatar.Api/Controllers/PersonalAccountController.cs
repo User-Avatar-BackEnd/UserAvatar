@@ -53,11 +53,11 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<UserDataDto> GetUserData()
+        public async Task<ActionResult<UserDataDto>> GetUserData()
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            var userData = _personalAccountService.GetUsersData(userId);
+            var userData = await _personalAccountService.GetUsersDataAsync(userId);
             // ToDo: get the rest of the needed data from GamificationService
 
             var userDataDto = new UserDataDto()
