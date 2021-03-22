@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -39,7 +39,7 @@ namespace UserAvatar.Bll.Services
 
             var boards = await GetAllBoardsAsync(userId);
 
-            if (boards.Count() > 10) throw new Exception();
+            if (boards.Count() >= 10) throw new Exception();
 
             if (_boardStorage.DoesUserHasBoard(userId, board.Title)) throw new Exception();
 
@@ -61,7 +61,7 @@ namespace UserAvatar.Bll.Services
 
             if (board == null) throw new Exception("This board doesn't exist");
 
-            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, board.Title);
+            var isSameBoardExist = _boardStorage.DoesUserHasBoard(userId, title);
 
             if (isSameBoardExist) throw new SystemException();
 
@@ -72,6 +72,8 @@ namespace UserAvatar.Bll.Services
 
         public async System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId)
         {
+            if (!_boardStorage.IsOwnerBoard(userId, boardId)) throw new Exception();
+
             await _boardStorage.DeleteBoardAsync(userId, boardId);
         }
     }

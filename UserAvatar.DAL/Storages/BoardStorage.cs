@@ -53,8 +53,6 @@ namespace UserAvatar.Dal.Storages
 
         public async System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId)
         {
-            if (!IsUsersBoard(userId, boardId)) throw new Exception();
-
             var board = _dbContext.Boards.First(board => board.OwnerId == userId && board.Id == boardId);
 
             board.isDeleted = true;
@@ -67,18 +65,28 @@ namespace UserAvatar.Dal.Storages
             return _dbContext.Users
                 .Include(user => user.Boards)
                     .Any(user => user.Id == userId && user.Boards.
-                        Any(board => board.Title == title && board.isDeleted == false));
+                        Any(board => board.Title == title));
         }
 
-        // does user has this board
-        // todo: fix linq
-        // this method is intended for usage in another services os starages
-        public bool IsUsersBoard(int userId, int boardId)
+        public bool IsOwnerBoard(int userId, int boardId)
         {
             var count = _dbContext.Boards
                 .Where(board => board.OwnerId == userId && board.Id == boardId && board.isDeleted == false)
                 .Count();
                
+            if (count == 0) return false;
+
+            return true;
+        }
+
+        public bool IsUserBoard(int userId, int boardId)
+        {
+            var count = _dbContext.Boards
+                .Include(board => board.Members)
+                .Where(board => board.Id == boardId && board.Members
+                .Any(member => member.Id == userId))
+                .Count();
+
             if (count == 0) return false;
 
             return true;

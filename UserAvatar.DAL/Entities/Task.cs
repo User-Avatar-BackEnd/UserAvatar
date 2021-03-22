@@ -33,7 +33,7 @@ namespace UserAvatar.Dal.Entities
         [ForeignKey("OwnerId")]
         public virtual User Owner { get; set; }
 
-        public int ResponsibleId { get; set; }
+        public int? ResponsibleId { get; set; }
 
         [ForeignKey("ResponsibleId")]
         public virtual User Responsible { get; set; }
@@ -44,7 +44,7 @@ namespace UserAvatar.Dal.Entities
         [Required]
         public DateTime ModifiedAt { get; set; }
 
-        public int Priority { get; set; }
+        public int? Priority { get; set; }
         
         public bool IsHidden { get; set; }
 

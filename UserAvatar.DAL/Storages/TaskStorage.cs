@@ -7,7 +7,7 @@ using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Dal.Storages
 {
-    public class TaskStorage:ITaskStorage
+    public class TaskStorage : ITaskStorage
     {
         private readonly UserAvatarContext _dbContext;
 
@@ -23,6 +23,48 @@ namespace UserAvatar.Dal.Storages
                 .Include(x=>x.Responsible)
                 .Include(x=>x.Comments)
                 .FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+        }
+
+        public Task Create(Task task)
+        {
+            _dbContext.Tasks.Add(task);
+            _dbContext.SaveChanges();
+            return _dbContext.Tasks
+                .Include(x => x.Column)
+                .Include(x => x.Responsible)
+                .Include(x => x.Comments)
+                .First(x => x.Id == task.Id);
+        }
+
+        public int GetTasksCountInColumn(int columnId)
+        {
+            var column = _dbContext.Columns
+                .Include(x => x.Tasks)
+                .Where(x => x.Id == columnId &&!x.isDeleted)
+                .FirstOrDefault();
+
+            if (column == null) throw new Exception(); //column dosent exist
+
+            return column.Tasks.Where(x => !x.IsDeleted).Count();
+        }
+
+        public int GetBoardId(int taskId)
+        {
+            return _dbContext.Tasks
+                .Include(x => x.Column)
+                .FirstOrDefault(x => x.Id == taskId)
+                .Column.BoardId;
+        }
+
+        public void DeleteTask(int taskId)
+        {
+            var task = _dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
+
+            if (task == null) throw new Exception();
+
+            task.IsDeleted = true;
+            //comments
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using UserAvatar.Api.Contracts;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.API.Contracts.Dtos;
@@ -39,7 +39,13 @@ namespace UserAvatar.Api.Extentions
             CreateMap<TaskModel, TaskDetailedDto>()
                 .ForMember(x => x.ColumnId, x => x.MapFrom(x => x.Column.Id))
                 .ForMember(x => x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id));
-            CreateMap<CommentModel, CommentDto>()
+            
+            CreateMap<TaskModel, TaskShortDto>()
+                .ForMember("ColumnId", opt => opt.MapFrom(src => src.Column.Id))
+                .ForMember("ResponsibleId", opt => opt.MapFrom(src => src.Responsible.Id))
+                .ForMember("CommentsCount", opt => opt.MapFrom(src => src.Comments.Count));
+           
+           CreateMap<CommentModel, CommentDto>()
                 .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
             
             CreateMap<TaskModel, TaskDto>()
@@ -48,7 +54,6 @@ namespace UserAvatar.Api.Extentions
 
             CreateMap<ColumnModel, FullColumnDto>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
-            //.ForMember(x=> x.Tasks)
         }
     }
 }

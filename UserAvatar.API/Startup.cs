@@ -42,15 +42,6 @@ namespace UserAvatar.API
             services.AddAutoMapper(c=>c.AddProfile<MappingProfile>(), typeof(Startup));
             services.AddServices();
             
-            /*var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-
-            var mapper = mapperConfig.CreateMapper();
-
-            services.AddSingleton(mapper);*/
-            
             services.AddDbContext<UserAvatarContext>(
                     options =>
                         options.UseNpgsql(
