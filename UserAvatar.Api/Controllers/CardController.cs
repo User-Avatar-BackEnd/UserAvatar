@@ -32,7 +32,6 @@ namespace UserAvatar.Api.Controllers
             var task = await _cardService.GetByIdAsync(id, userId);
             if (task == null) BadRequest();
             
-
             var taskDto = _mapper.Map<CardModel, CardDetailedDto>(task);
 
             taskDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
@@ -72,7 +71,7 @@ namespace UserAvatar.Api.Controllers
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            _cardService.DeleteCard(userId, id);
+            _cardService.DeleteCard(id, userId);
 
             return Ok();
         }

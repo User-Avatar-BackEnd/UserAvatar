@@ -42,8 +42,8 @@ namespace UserAvatar.Dal.Storages
         {
             var column = _dbContext.Columns
                 .Include(x => x.Cards)
-                .Where(x => x.Id == columnId &&!x.IsDeleted)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Id == columnId &&!x.IsDeleted);
+            //!x.IsDeleted???
 
             if (column == null) throw new Exception(); //column dosent exist
 

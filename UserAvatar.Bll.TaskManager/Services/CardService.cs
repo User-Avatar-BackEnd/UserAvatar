@@ -24,7 +24,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public CardModel CreateCard(string title, int columnId, int userId)
         {
-            //var boardId = _cardStorage.GetBoardId(taskId);
+            //var boardId = _cardStorage.GetBoardId(cardId);
             //if (_boardStorage.IsUsersBoard(userId, boardId)) return null;//isUserBoard
 
             if (string.IsNullOrEmpty(title)) return null;
@@ -52,7 +52,8 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task UpdateCardAsync(CardModel cardModel, int columnId, int? responsibleId, int userId)
         {
             var boardId = _cardStorage.GetBoardId(cardModel.Id);
-            if (await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
             var task = _cardStorage.GetById(cardModel.Id);
 
@@ -74,16 +75,16 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             var task = _cardStorage.GetById(taskId);
 
-            if (task == null) return null;
-
-            return _mapper.Map<Card, CardModel>(task);
+            return task == null ? null : _mapper.Map<Card, CardModel>(task);
         }
 
         public async Task DeleteCard(int taskId, int userId)
         {
+            if (_cardStorage.GetById(taskId) == null)
+                return;
             var boardId = _cardStorage.GetBoardId(taskId);
 
-            if (await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
             _cardStorage.Delete(taskId);
         }

@@ -22,7 +22,7 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Invite, InviteModel>();
             CreateMap<Rank, RankModel>();
             CreateMap<Card, CardModel>();
-            CreateMap<Comment, ColumnModel>();
+            CreateMap<Comment, CommentModel>();
             
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
@@ -62,9 +62,9 @@ namespace UserAvatar.Api.Extentions
                 .ForMember(x => x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id));
             
             CreateMap<CardModel, CardShortDto>()
-                .ForMember("ColumnId", opt => opt.MapFrom(src => src.Column.Id))
-                .ForMember("ResponsibleId", opt => opt.MapFrom(src => src.Responsible.Id))
-                .ForMember("CommentsCount", opt => opt.MapFrom(src => src.Comments.Count));
+                .ForMember(x=> x.ColumnId, opt => opt.MapFrom(src => src.Column.Id))
+                .ForMember(x=> x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id))
+                .ForMember(x=> x.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count));
 
             //CreateMap<IEnumerable<CardModel>, IEnumerable<CardShortDto>>();
            

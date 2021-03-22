@@ -226,7 +226,7 @@ namespace UserAvatar.Dal.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskId = table.Column<int>(type: "integer", nullable: false),
+                    CardId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     Text = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -237,8 +237,8 @@ namespace UserAvatar.Dal.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_Cards_TaskId",
-                        column: x => x.TaskId,
+                        name: "FK_Comments_Cards_CardId",
+                        column: x => x.CardId,
                         principalTable: "Cards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -276,9 +276,9 @@ namespace UserAvatar.Dal.Migrations
                 column: "BoardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_TaskId",
+                name: "IX_Comments_CardId",
                 table: "Comments",
-                column: "TaskId");
+                column: "CardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
