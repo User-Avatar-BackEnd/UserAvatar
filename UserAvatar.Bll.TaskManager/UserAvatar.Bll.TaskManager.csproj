@@ -6,11 +6,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
   </ItemGroup>
   <ItemGroup>

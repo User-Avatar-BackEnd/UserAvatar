@@ -26,7 +26,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async System.Threading.Tasks.Task<ColumnModel> Create(int userId, int boardId, string title)
         {
-            if (!_boardStorage.IsUserBoard(userId, boardId))
+            if (!_boardStorage.IsUserBoardAsync(userId, boardId))
                 throw new Exception($"This user {userId} does not have this board");
             var newColumn = new Column
             {
@@ -82,7 +82,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<List<ColumnModel>> GetAllColumns(int userId, int boardId)
         {
-            if (!_boardStorage.IsUserBoard(userId, boardId))
+            if (!_boardStorage.IsUserBoardAsync(userId, boardId))
                 throw new Exception($"This user {userId} does not have this board");
             var allColumns = await _columnStorage.GetAllColumns(boardId);
             if (allColumns.Count() < 0)

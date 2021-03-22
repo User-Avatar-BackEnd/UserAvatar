@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -15,30 +17,39 @@ namespace UserAvatar.Dal.Storages
             _dbContext = dbContext;
         }
 
-        public User GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
-            return _dbContext.Users.Where(user => user.Email == email).FirstOrDefault();
+            return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
         }
 
-        public User GetById(int id)
+        public async Task<User> GetById(int id)
         {
-            return _dbContext.Users.FirstOrDefault(x => x.Id == id);
+            return await _dbContext.Users
+                .Include(user=> user.Invited)
+                .FirstOrDefaultAsync(user => user.Id == id);
         }
 
-        public void Create(User user)
+        public async Task Create(User user)
         {
-            _dbContext.Users.Add(user);
-            _dbContext.SaveChanges();
+           await _dbContext.Users.AddAsync(user);
+           await _dbContext.SaveChangesAsync();
         }
 
-        public bool IsLoginExist(string login)
+        public async Task<bool> IsLoginExist(string login)
         {
-            return _dbContext.Users.Any(user => user.Login == login);
+            return await _dbContext.Users.AnyAsync(user => user.Login == login);
         }
 
-        public bool IsUserExist(string email)
+        public async Task<bool> IsUserExist(string email)
         {
-            return _dbContext.Users.Any(user => user.Email == email);
+            return await _dbContext.Users.AnyAsync(user => user.Email == email);
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            _dbContext.Entry(user).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
