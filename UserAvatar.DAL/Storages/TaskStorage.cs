@@ -29,6 +29,8 @@ namespace UserAvatar.Dal.Storages
         {
             _dbContext.Tasks.Add(task);
             _dbContext.SaveChanges();
+            //*************************
+            //Todo: FIX LINE 34. COLUMN C0.ISDELETED DOES NOT EXISTS;
             return _dbContext.Tasks
                 .Include(x => x.Column)
                 .Include(x => x.Responsible)

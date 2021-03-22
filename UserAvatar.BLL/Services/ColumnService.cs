@@ -14,18 +14,20 @@ namespace UserAvatar.Bll.Services
     {
         private readonly IColumnStorage _columnStorage;
         private readonly IMapper _mapper;
-        private IBoardService _boardService;
-        public ColumnService(IColumnStorage columnStorage, IMapper mapper, IBoardService boardService)
+        private readonly IBoardStorage _boardStorage;
+        public ColumnService(IColumnStorage columnStorage, IMapper mapper, IBoardStorage boardStorage)
         {
             _columnStorage = columnStorage;
             _mapper = mapper;
-            _boardService = boardService;
+            _boardStorage = boardStorage;
         }
 
        //todo: add userId
 
-        public async System.Threading.Tasks.Task<ColumnModel> Create(int boardId, string title)
+        public async System.Threading.Tasks.Task<ColumnModel> Create(int userId, int boardId, string title)
         {
+            if (!_boardStorage.IsUserBoard(userId, boardId))
+                throw new Exception($"This user {userId} does not have this board");
             var newColumn = new Column
             {
                 Title = title,
@@ -47,19 +49,21 @@ namespace UserAvatar.Bll.Services
             
             return null;
         }
-        
-
-        public async System.Threading.Tasks.Task ChangePosition(int columnId, int positionIndex)
+        public async System.Threading.Tasks.Task ChangePosition(int userId, int columnId, int positionIndex)
         {
+            if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
+                throw new Exception($"This user {userId} does not have this board");
             await _columnStorage.ChangePosition(columnId,positionIndex);
         }
 
-        public async System.Threading.Tasks.Task Delete(int columnId)
+        public async System.Threading.Tasks.Task Delete(int userId, int columnId)
         {
+            if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
+                throw new Exception($"This user {userId} does not have this board");
             await _columnStorage.DeleteApparent(columnId);
         }
         
-        public async System.Threading.Tasks.Task Update(int columnId, string title)
+        public async System.Threading.Tasks.Task Update(int userId, int columnId, string title)
         {
             var thisColumn = await _columnStorage.GetColumnById(columnId);
             if (thisColumn is null)
@@ -68,7 +72,7 @@ namespace UserAvatar.Bll.Services
             await _columnStorage.Update(thisColumn);
         }
         
-        public async System.Threading.Tasks.Task<ColumnModel> GetColumnById(int columnId)
+        public async System.Threading.Tasks.Task<ColumnModel> GetColumnById(int userId, int columnId)
         {
             var foundColumn = await _columnStorage.GetColumnById(columnId);
             if (foundColumn is null)
@@ -76,8 +80,10 @@ namespace UserAvatar.Bll.Services
             return _mapper.Map<Column, ColumnModel>(foundColumn);
         }
 
-        public async Task<List<ColumnModel>> GetAllColumns(int boardId)
+        public async Task<List<ColumnModel>> GetAllColumns(int userId, int boardId)
         {
+            if (!_boardStorage.IsUserBoard(userId, boardId))
+                throw new Exception($"This user {userId} does not have this board");
             var allColumns = await _columnStorage.GetAllColumns(boardId);
             if (allColumns.Count() < 0)
                 throw new Exception($"No Columns in this board {boardId}");
