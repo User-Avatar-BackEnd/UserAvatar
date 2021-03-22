@@ -30,7 +30,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<CommentModel> CreateNewCommentAsync(int userId, int taskId, string text)
         {
-            ValidateUserByTask(userId,taskId);
+            await ValidateUserByTask(userId,taskId);
             
             var newComment = new Comment
             {
@@ -48,7 +48,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<CommentModel> UpdateComment(int userId, int commentId, string text)
         {
-            ValidateUserByComment(userId,commentId);
+            await ValidateUserByComment(userId,commentId);
             
             var thisComment = await _commentStorage.GetCommentByCommentId(commentId);
             thisComment.Text = text;
@@ -60,7 +60,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<List<CommentModel>> GetComments(int userId,int taskId)
         {
-            ValidateUserByTask(userId,taskId);
+            await ValidateUserByTask(userId,taskId);
 
             var commentList = await _commentStorage.GetAll(taskId);
             
@@ -69,19 +69,19 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task DeleteComment(int userId, int commentId)
         {
-            ValidateUserByComment(userId, commentId);
+            await ValidateUserByComment(userId, commentId);
             await _commentStorage.DeleteApparent(commentId);
         }
-        private void ValidateUserByComment(int userId, int commentId)
+        private async Task ValidateUserByComment(int userId, int commentId)
         {
             var taskId = _commentStorage.GetTaskIdByCommentId(commentId);
-            var isUserInThisBoard = _boardStorage.IsUserBoard(userId, _taskStorage.GetBoardId(taskId));
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _taskStorage.GetBoardId(taskId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
-        private void ValidateUserByTask(int userId, int taskId)
+        private async Task ValidateUserByTask(int userId, int taskId)
         {
-            var isUserInThisBoard = _boardStorage.IsUserBoard(userId, _taskStorage.GetBoardId(taskId));
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _taskStorage.GetBoardId(taskId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
