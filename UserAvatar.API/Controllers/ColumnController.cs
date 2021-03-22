@@ -28,10 +28,13 @@ namespace UserAvatar.Api.Controllers
             _mapper = mapper;
         }
         
-        [HttpGet]
-        public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns([FromQuery] int boardId)
+        [HttpGet("{boardId:int}")]
+        public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns(int boardId)
         {
-            var foundColumn = await _columnService.GetAllColumns(boardId);
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+            
+            var foundColumn = await _columnService.GetAllColumns(userId,boardId);
 
             return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnDto>>(foundColumn));
         }
@@ -39,30 +42,41 @@ namespace UserAvatar.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
         {
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+            
             var thisColumn = await _columnService
-                .Create(createColumnRequest.BoardId,createColumnRequest.Title);
+                .Create(userId,createColumnRequest.BoardId,createColumnRequest.Title);
             return Ok(_mapper.Map<ColumnModel,FullColumnDto>(thisColumn));
         }
         
         [HttpPatch]
         public async Task<IActionResult> UpdateColumn(UpdateColumnRequest updateColumnRequest)
         {
-            await _columnService.Update(updateColumnRequest.ColumnId, updateColumnRequest.Title);
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+            
+            await _columnService.Update(userId,updateColumnRequest.ColumnId, updateColumnRequest.Title);
             return Ok();
         }
         
         [HttpDelete("{columnId:int}")]
-        public async Task<IActionResult> DeleteColumn([FromQuery]int columnId)
+        public async Task<IActionResult> DeleteColumn(int columnId)
         {
-            await _columnService.Delete(columnId);
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+            
+            await _columnService.Delete(userId,columnId);
             return Ok();
         }
         
         [HttpGet("{columnId:int}&{positionIndex:int}")]
-        public async Task<IActionResult> ChangeColumnPosition([FromQuery] int columnId,
-            [FromQuery] int positionIndex)
-        {
-            await _columnService.ChangePosition(columnId,positionIndex);
+        public async Task<IActionResult> ChangeColumnPosition(int columnId,
+            int positionIndex)
+        {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+            
+            await _columnService.ChangePosition(userId,columnId,positionIndex);
             return Ok();
         }
     }

@@ -54,10 +54,26 @@ namespace UserAvatar.Dal.Storages
             return column;
 
         }
+
+        public bool IsUserInBoardByColumnId(int userId,int columnId)
+        {
+            /*var zzz = _userAvatarContext.Columns.Where(x => x.Id == columnId)
+                .Include(x=> x.Board)
+                .ThenInclude(x=> x.Members.Count(x => x.UserId == userId));*/
+
+            var zzz = _userAvatarContext.Boards
+                .Include(x => x.Columns)
+                .Include(x => x.Members)
+                .Any(x=> x.Columns.Any(x=> x.Id == columnId) && x.Members.Any(x=> x.UserId == userId));
+
+            return zzz;
+        }
         
         public async Task DeleteApparent(int columnId)
         {
             var column = await GetColumnById(columnId);
+            if (column.IsDeleted)
+                throw new Exception($"Already Deleted!{columnId}");
             column.IsDeleted = true;
             _userAvatarContext.Update(column);
             //collection.Select(c => {c.PropertyToSet = value; return c;}).ToList();
@@ -103,7 +119,7 @@ namespace UserAvatar.Dal.Storages
             
             if (!PositionAlgorithm(previousIndex, newIndex, columnList))
                 throw new Exception();
-                
+            
             await _userAvatarContext.SaveChangesAsync();
         }
 

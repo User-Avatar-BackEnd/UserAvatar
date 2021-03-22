@@ -14,7 +14,8 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task ChangePosition(int columnId, int positionIndex);
         Task<Column> GetColumnById(int id);
         Task RecurrentlyDelete(IEnumerable<Column> columns);
-
         Task<IQueryable<Column>> GetAllColumns(int boardId);
+        bool IsUserInBoardByColumnId(int userId, int columnId);
+
     }
 }

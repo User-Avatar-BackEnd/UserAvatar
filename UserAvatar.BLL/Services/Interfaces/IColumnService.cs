@@ -9,12 +9,12 @@ namespace UserAvatar.Bll.Services.Interfaces
 {
     public interface IColumnService
     {
-        Task<ColumnModel> Create(int boardId, string title);
-        Task ChangePosition(int columnId, int positionIndex);
-        Task Update(int columnId, string title);
-        Task Delete(int columnId);
-        Task<ColumnModel> GetColumnById(int columnId);
+        Task<ColumnModel> Create(int userId, int boardId, string title);
+        Task ChangePosition(int userId, int columnId, int positionIndex);
+        Task Update(int userId, int columnId, string title);
+        Task Delete(int userId, int columnId);
+        Task<ColumnModel> GetColumnById(int userId, int columnId);
 
-        Task<List<ColumnModel>> GetAllColumns(int boardId);
+        Task<List<ColumnModel>> GetAllColumns(int userId, int boardId);
     }
 }
