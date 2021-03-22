@@ -1,5 +1,4 @@
 ﻿using UserAvatar.Bll.Models;
-using UserAvatar.Contracts.Requests;
 
 namespace UserAvatar.Bll.Services.Interfaces
 {
@@ -7,7 +6,9 @@ namespace UserAvatar.Bll.Services.Interfaces
     {
         public TaskModel GetById(int taskId, int userId);
 
-        public TaskModel CreateTask(AddTaskRequest addTaskRequest, int userId);
+        public TaskModel CreateTask(string title, int columnId, int userId);
+
+        public void UpdateTask(TaskModel task, int columnId, int? responsibleId, int userId);
 
         public void DeleteTask(int taskId, int userId);
     }

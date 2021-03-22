@@ -35,6 +35,6 @@ namespace UserAvatar.Dal.Entities
         [Required]
         public DateTime ModifiedAt { get; set; }
 
-        public bool isDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
