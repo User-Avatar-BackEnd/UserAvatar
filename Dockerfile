@@ -6,9 +6,9 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["UserAvatar.API/UserAvatar.Api.csproj", "UserAvatar.Api/"]
-COPY ["UserAvatar.BLL/UserAvatar.Bll.csproj", "UserAvatar.Bll/"]
-COPY ["UserAvatar.DAL/UserAvatar.Dal.csproj", "UserAvatar.Dal/"]
+COPY ["UserAvatar.Api/UserAvatar.Api.csproj", "UserAvatar.Api/"]
+COPY ["UserAvatar.Bll/UserAvatar.Bll.csproj", "UserAvatar.Bll/"]
+COPY ["UserAvatar.Dal/UserAvatar.Dal.csproj", "UserAvatar.Dal/"]
 RUN dotnet restore "UserAvatar.Api/UserAvatar.Api.csproj"
 COPY . .
 WORKDIR "/src/UserAvatar.Api"
