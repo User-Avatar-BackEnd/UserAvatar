@@ -3,7 +3,7 @@ using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
 {
-    public  interface IBoardStorage
+    public interface IBoardStorage
     {
         System.Threading.Tasks.Task CreateBoardAsync(Board board);
 
@@ -18,5 +18,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         bool DoesUserHasBoard(int userId, string title);
 
         bool IsOwnerBoard(int userId, int boardId);
+
+        bool IsUserBoard(int userId, int boardId);
     }
 }

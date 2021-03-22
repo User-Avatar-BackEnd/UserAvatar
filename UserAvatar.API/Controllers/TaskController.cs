@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Contracts.Requests;

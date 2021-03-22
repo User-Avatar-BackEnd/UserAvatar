@@ -77,7 +77,11 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<IQueryable<Column>> GetAllColumns(int boardId)
         {
-            return _userAvatarContext.Columns.Where(x => x.Board.Id == boardId);
+            //todo: maybe change
+            var task = Task.Factory.StartNew(() =>
+                _userAvatarContext.Columns.Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));
+            return await task;
+            
         }
 
         public async Task Update(Column column)

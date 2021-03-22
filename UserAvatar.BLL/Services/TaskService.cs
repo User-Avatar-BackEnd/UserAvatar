@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoMapper;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
@@ -55,7 +55,7 @@ namespace UserAvatar.Bll.Services
         {
             var boardId = _taskStorage.GetBoardId(taskId);
 
-            if (_boardStorage.IsUsersBoard(userId,boardId)) return null;
+            if (_boardStorage.IsUserBoard(userId,boardId)) return null;
 
             var task = _taskStorage.GetById(taskId);
 
@@ -67,7 +67,7 @@ namespace UserAvatar.Bll.Services
         public void DeleteTask(int taskId, int userId)
         {
             var boardId = _taskStorage.GetBoardId(taskId);
-            if (_boardStorage.IsUsersBoard(userId, boardId)) throw new Exception();
+            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
 
             _taskStorage.DeleteTask(taskId);
         }

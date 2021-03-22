@@ -15,7 +15,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/")]
+    [Route("api/v1/Columns")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class ColumnController : ControllerBase
@@ -29,7 +29,6 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpGet]
-        [Route("[controller]/getAll")]
         public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns([FromQuery] int boardId)
         {
             var foundColumn = await _columnService.GetAllColumns(boardId);
@@ -38,7 +37,6 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpPost]
-        [Route("[controller]/create")]
         public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
         {
             var thisColumn = await _columnService
@@ -47,23 +45,20 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpPatch]
-        [Route("[controller]/modify")]
         public async Task<IActionResult> UpdateColumn(UpdateColumnRequest updateColumnRequest)
         {
             await _columnService.Update(updateColumnRequest.ColumnId, updateColumnRequest.Title);
             return Ok();
         }
         
-        [HttpDelete]
-        [Route("[controller]/delete")]
+        [HttpDelete("{columnId:int}")]
         public async Task<IActionResult> DeleteColumn([FromQuery]int columnId)
         {
             await _columnService.Delete(columnId);
             return Ok();
         }
         
-        [HttpGet]
-        [Route("[controller]/change_position/")]
+        [HttpGet("{columnId:int}&{positionIndex:int}")]
         public async Task<IActionResult> ChangeColumnPosition([FromQuery] int columnId,
             [FromQuery] int positionIndex)
         {

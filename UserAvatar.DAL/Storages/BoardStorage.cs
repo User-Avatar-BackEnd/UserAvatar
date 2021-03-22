@@ -40,8 +40,13 @@ namespace UserAvatar.Dal.Storages
 
         public async System.Threading.Tasks.Task<Board> GetBoardAsync(int userId, int boardId)
         {
+            /*return await _dbContext.Boards
+                .FirstOrDefaultAsync(board => board.Id == boardId && board.OwnerId == userId && board.isDeleted == false);*/
+            
             return await _dbContext.Boards
-                .FirstOrDefaultAsync(board => board.Id == boardId && board.OwnerId == userId && board.isDeleted == false);
+                .Include(x=>x.Members)
+                .FirstOrDefaultAsync(board => board.Id == boardId && board.Members
+                    .Any(member=>member.Id==userId));
         }
 
         public async System.Threading.Tasks.Task UpdateAsync(int userId, Board board)
