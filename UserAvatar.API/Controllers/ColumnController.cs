@@ -15,7 +15,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/Columns")]
+    [Route("api/v1/column")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class ColumnController : ControllerBase
@@ -27,7 +27,8 @@ namespace UserAvatar.Api.Controllers
             _columnService = columnService;
             _mapper = mapper;
         }
-        
+
+        /*
         [HttpGet("{boardId:int}")]
         public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns(int boardId)
         {
@@ -38,6 +39,7 @@ namespace UserAvatar.Api.Controllers
 
             return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnDto>>(foundColumn));
         }
+        */
         
         [HttpPost]
         public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
@@ -60,7 +62,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpDelete("{columnId:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteColumn(int columnId)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
@@ -70,7 +72,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
         
-        [HttpGet("{columnId:int}&{positionIndex:int}")]
+        [HttpGet("change_position/{id:int}&{positionIndex:int}")]
         public async Task<IActionResult> ChangeColumnPosition(int columnId,
             int positionIndex)
         {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");

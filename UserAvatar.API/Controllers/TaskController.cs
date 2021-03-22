@@ -11,7 +11,7 @@ using UserAvatar.Bll.Services.Interfaces;
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/Task")]
+    [Route("api/v1/task")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;

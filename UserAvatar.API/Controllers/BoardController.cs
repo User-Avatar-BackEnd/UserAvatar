@@ -15,7 +15,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/Board")]
+    [Route("api/v1/board")]
     public class BoardController : ControllerBase
     {
         private readonly IBoardService _boardService;

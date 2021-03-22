@@ -36,8 +36,7 @@ namespace UserAvatar.Api.Controllers
         /// <param name="registerRequest"></param>
         /// <returns></returns>
         
-        [HttpPost]
-        [Route("/register")]
+        [HttpPost("register")]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         [AllowAnonymous]
@@ -52,8 +51,7 @@ namespace UserAvatar.Api.Controllers
              return await BuildToken(user);
         }
 
-        [HttpPost]
-        [Route("/login")]
+        [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(string), 400)]
         public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
@@ -67,8 +65,7 @@ namespace UserAvatar.Api.Controllers
             return await BuildToken(user);
         }
         
-        [HttpGet]
-        [Route("/logout")]
+        [HttpGet("logout")]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
