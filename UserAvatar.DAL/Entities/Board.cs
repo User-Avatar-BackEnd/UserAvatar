@@ -33,6 +33,6 @@ namespace UserAvatar.Dal.Entities
 
         public virtual ICollection<Member> Members { get; set; }
 
-        public bool isDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

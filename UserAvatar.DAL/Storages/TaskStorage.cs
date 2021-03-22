@@ -56,14 +56,21 @@ namespace UserAvatar.Dal.Storages
                 .Column.BoardId;
         }
 
-        public void DeleteTask(int taskId)
+        public void Delete(int taskId)
         {
             var task = _dbContext.Tasks.FirstOrDefault(x => x.Id == taskId);
 
             if (task == null) throw new Exception();
 
             task.IsDeleted = true;
-            //comments
+            //todo: comments soft delete
+            _dbContext.SaveChanges();
+        }
+
+        public void Update(Task task)
+        {
+            _dbContext.Entry(task).State = EntityState.Modified;
+
             _dbContext.SaveChanges();
         }
     }

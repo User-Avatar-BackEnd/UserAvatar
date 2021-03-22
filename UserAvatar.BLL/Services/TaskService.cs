@@ -2,7 +2,6 @@
 using AutoMapper;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
-using UserAvatar.Contracts.Requests;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -22,28 +21,26 @@ namespace UserAvatar.Bll.Services
             _mapper = mapper;
         }
 
-        public TaskModel CreateTask(AddTaskRequest addTaskRequest, int userId)
+        public TaskModel CreateTask(string title, int columnId, int userId)
         {
             //var boardId = _taskStorage.GetBoardId(taskId);
             //if (_boardStorage.IsUsersBoard(userId, boardId)) return null;//isUserBoard
 
-            if (string.IsNullOrEmpty(addTaskRequest.Title)) return null;
-            if (addTaskRequest.ColumnId < 1) return null;
+            if (string.IsNullOrEmpty(title)) return null;
+            if (columnId < 1) return null;
 
-            if (_taskStorage.GetTasksCountInColumn(addTaskRequest.ColumnId) > 100) throw new Exception();
+            if (_taskStorage.GetTasksCountInColumn(columnId) > 100) throw new Exception();
 
             var task = new Task
             {
-                Title = addTaskRequest.Title,
-                Description = addTaskRequest.Description,
+                Title = title,
+                Description = "",
                 OwnerId = userId,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
                 IsDeleted = false,
                 IsHidden = false,
-                ColumnId = addTaskRequest.ColumnId,
-                Priority = addTaskRequest.Priority,
-                ResponsibleId=addTaskRequest.ResponsibleId
+                ColumnId = columnId
             };
 
             task = _taskStorage.Create(task);
@@ -51,11 +48,28 @@ namespace UserAvatar.Bll.Services
             return taskModel;
         }
 
+        public void UpdateTask(TaskModel taskModel, int columnId, int? responsibleId, int userId)
+        {
+            var boardId = _taskStorage.GetBoardId(taskModel.Id);
+            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+
+            var task = _taskStorage.GetById(taskModel.Id);
+
+            task.Title = task.Title;
+            task.Description = taskModel.Description;
+            task.ColumnId = columnId;
+            task.ResponsibleId = responsibleId;
+            task.IsHidden = taskModel.IsHidden;
+            task.ModifiedAt = DateTime.UtcNow;
+            task.Priority = taskModel.Priority;
+
+            _taskStorage.Update(task);
+        }
+
         public TaskModel GetById(int taskId, int userId)
         {
             var boardId = _taskStorage.GetBoardId(taskId);
-
-            if (_boardStorage.IsUserBoard(userId,boardId)) return null;
+            if (_boardStorage.IsUserBoard(userId,boardId)) throw new Exception();
 
             var task = _taskStorage.GetById(taskId);
 
@@ -69,7 +83,7 @@ namespace UserAvatar.Bll.Services
             var boardId = _taskStorage.GetBoardId(taskId);
             if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
 
-            _taskStorage.DeleteTask(taskId);
+            _taskStorage.Delete(taskId);
         }
     }
 }

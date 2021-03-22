@@ -3,10 +3,10 @@ using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
-using UserAvatar.Contracts.Requests;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -41,12 +41,12 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask(AddTaskRequest addTaskRequest)
+        public IActionResult AddTask(AddTaskRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = _taskService.CreateTask(addTaskRequest, userId);
+            var task = _taskService.CreateTask(request.Title, request.ColumnId, userId);
 
             var taskDto = _mapper.Map<TaskModel, TaskShortDto>(task);
 
@@ -54,9 +54,16 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPatch]
-        public IActionResult UpdateTask()
+        public IActionResult UpdateTask(UpdateTaskRequest request)
         {
-            throw new NotImplementedException();
+            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
+            var userId = Convert.ToInt32(userCredentials.Value);
+
+            var taskModel = _mapper.Map<UpdateTaskRequest, TaskModel>(request);
+
+            _taskService.UpdateTask(taskModel, request.ColumnId, request.ResponsibleId, userId);
+
+            return Ok();
         }
 
         [HttpDelete]

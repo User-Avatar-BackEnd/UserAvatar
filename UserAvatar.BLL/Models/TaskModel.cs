@@ -13,7 +13,7 @@ namespace UserAvatar.Bll.Models
         public UserModel Responsible { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
-        public int Priority { get; set; }
+        public int? Priority { get; set; }
         public bool IsHidden { get; set; }
         public List<CommentModel> Comments { get; set; }
     }

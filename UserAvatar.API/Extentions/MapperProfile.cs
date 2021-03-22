@@ -1,6 +1,7 @@
 using AutoMapper;
 using UserAvatar.Api.Contracts;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.API.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Dal.Entities;
@@ -54,6 +55,8 @@ namespace UserAvatar.Api.Extentions
 
             CreateMap<ColumnModel, FullColumnDto>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
+
+            CreateMap<UpdateTaskRequest, TaskModel>();
         }
     }
 }

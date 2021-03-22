@@ -34,7 +34,7 @@ namespace UserAvatar.Dal.Storages
         {
             return await _dbContext.Boards
                 .Include(board => board.Members)
-               .Where(board => board.Members.Any(member => member.UserId == userId && member.isDeleted == false) && board.isDeleted == false)
+               .Where(board => board.Members.Any(member => member.UserId == userId))
                .ToListAsync();
         }
 
@@ -60,7 +60,7 @@ namespace UserAvatar.Dal.Storages
         {
             var board = _dbContext.Boards.First(board => board.OwnerId == userId && board.Id == boardId);
 
-            board.isDeleted = true;
+            board.IsDeleted = true;
 
             await _dbContext.SaveChangesAsync();
         }
@@ -76,7 +76,7 @@ namespace UserAvatar.Dal.Storages
         public bool IsOwnerBoard(int userId, int boardId)
         {
             var count = _dbContext.Boards
-                .Where(board => board.OwnerId == userId && board.Id == boardId && board.isDeleted == false)
+                .Where(board => board.OwnerId == userId && board.Id == boardId)
                 .Count();
                
             if (count == 0) return false;
@@ -114,7 +114,7 @@ namespace UserAvatar.Dal.Storages
 
         public bool IsMemberExist(int userId, int boardId)
         {
-            return _dbContext.Members.Any(member => member.UserId == userId && member.BoardId == boardId && member.isDeleted == false);
+            return _dbContext.Members.Any(member => member.UserId == userId && member.BoardId == boardId);
         }
     }
 }

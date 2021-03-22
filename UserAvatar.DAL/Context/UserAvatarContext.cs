@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Entities;
 
@@ -41,6 +42,12 @@ namespace UserAvatar.Dal.Context
                 .WithMany(user => user.Invited)
                 .HasForeignKey(invite => invite.InvitedId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Member>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Column>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Task>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Board>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Comment>().HasQueryFilter(p => !p.IsDeleted);
         }
     }
 }
