@@ -11,7 +11,7 @@
 
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <ProjectReference Include="..\UserAvatar.DAL\UserAvatar.Dal.csproj" />
   </ItemGroup>
 
 

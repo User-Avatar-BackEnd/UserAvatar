@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using AutoMapper;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
