@@ -1,13 +1,18 @@
-﻿using UserAvatar.Dal.Entities;
+﻿using System.Threading.Tasks;
+using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface IUserStorage
     {
-        User GetByEmail(string email);
-        void Create(User user);
-        bool IsLoginExist(string login);
-        bool IsUserExist(string email);
-        User GetById(int id);
+        public Task<User> GetByEmailAsync(string email);
+
+        public Task CreateAsync(User user);
+
+        public Task<bool> IsLoginExistAsync(string login);
+
+        public Task<bool> IsUserExistAsync(string email);
+
+        public Task<User> GetByIdAsync(int id);
     }
 }

@@ -40,23 +40,18 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> RegisterAsync(RegisterRequest registerRequest)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _authService.RegisterAsync(registerRequest.Email, registerRequest.Login, registerRequest.Password);
+
+            if (result.Code != 200)
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                var user = _authService.Register(registerRequest.Email, registerRequest.Login, registerRequest.Password);
-
-                if (user == null) Unauthorized();
-
-                return BuildToken(user);
+                return Conflict(result.Code);
             }
-            catch(Exception ex)
-            {
-                return Conflict(ex.Message);
-            }
+
+            return BuildToken(result.Value);
         }
 
         [HttpPost("login")]
@@ -66,20 +61,16 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
         {
-            try
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _authService.LoginAsync(loginRequest.Email, loginRequest.Password);
+
+            if (result.Code != 200)
             {
-                if (!ModelState.IsValid) return BadRequest(ModelState);
-
-                var user = _authService.Login(loginRequest.Email, loginRequest.Password);
-
-                if (user == null) return Unauthorized();
-
-                return BuildToken(user);
+                return Conflict(result.Code);
             }
-            catch (Exception ex)
-            {
-                return Conflict(ex.Message);
-            }
+
+            return BuildToken(result.Value);
         }
         
         [HttpGet("logout")]
@@ -95,8 +86,6 @@ namespace UserAvatar.Api.Controllers
         #region Methods for Jwt
         private ActionResult BuildToken(UserModel user)
         {
-            if (user == null) return Unauthorized();
-
             var identity = GetClaimsIdentity(user.Id, user.Role);
 
             var now = DateTime.UtcNow;

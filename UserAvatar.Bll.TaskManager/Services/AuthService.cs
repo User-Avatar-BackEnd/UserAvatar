@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using System;
+using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
@@ -19,39 +21,24 @@ namespace UserAvatar.Bll.TaskManager.Services
             _mapper = mapper;
         }
 
-        public UserModel Register(string email, string login, string password)
+        public async Task<Result<UserModel>> RegisterAsync(string email, string login, string password)
         {
-            if (_userStorage.IsUserExist(email))
+            if (await _userStorage.IsUserExistAsync(email))
             {
-                throw new Exception("User with such email already exist");
+                return new Result<UserModel>(ResultCode.EmailAlreadyExist);
             }
 
-            if (login != null)
+            if (!string.IsNullOrWhiteSpace(login))
             {
-                login = login.Trim();
-                if (login.Length == 0)
+                var isLoginTaken = await _userStorage.IsLoginExistAsync(login);
+                if (isLoginTaken)
                 {
-                    login = null;
-                }
-                else
-                {
-                    //Todo: config file
-                    if (login.Length < 5 || login.Length > 64)
-                    {
-                        throw new Exception("Login must have minimum 5 symbols and maximum 64 symbols");
-                    }
-
-                    var isLoginTaken = _userStorage.IsLoginExist(login);
-                    if (isLoginTaken)
-                    {
-                        throw new Exception("User with such login already exist");
-                    }
+                    return new Result<UserModel>(ResultCode.LoginAlreadyExist);
                 }
             }
-
-            if (login == null)
+            else
             {
-                login = GenerateLogin();
+                login = await GenerateLoginAsync();
             }
 
             var user = new User
@@ -63,36 +50,38 @@ namespace UserAvatar.Bll.TaskManager.Services
                 Role = "user"
             };
 
-            _userStorage.Create(user);
+            await _userStorage.CreateAsync(user);
             
-            return _mapper.Map<User, UserModel>(user);
+            var userModel = _mapper.Map<User, UserModel>(user);
+
+            return new Result<UserModel>(userModel);
         }
 
-        public UserModel Login(string email, string password)
+        public async Task<Result<UserModel>> LoginAsync(string email, string password)
         {
-            var user = _userStorage.GetByEmail(email);
+            var user = await _userStorage.GetByEmailAsync(email);
 
             if (user == null)
             {
-                throw new Exception("User with this email does not exist");
+                return new Result<UserModel>(ResultCode.InvalidEmail);
             }
 
             var passwordIsValid = PasswordHash.ValidatePassword(password, user.PasswordHash);
             if (!passwordIsValid)
             {
-                throw new Exception("Wrong password");
+                return new Result<UserModel>(ResultCode.InvalidPassword);
             }
 
-            return _mapper.Map<User, UserModel>(user);
+            return new Result<UserModel>(_mapper.Map<User, UserModel>(user));
         }
 
-        private string GenerateLogin()
+        private async Task<string> GenerateLoginAsync()
         {
             while (true)
             {
                 string login = "user" + RandomDigits();
 
-                if(!_userStorage.IsLoginExist(login)) return login;
+                if(! await _userStorage.IsLoginExistAsync(login)) return login;
             }
         }
 
