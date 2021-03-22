@@ -12,5 +12,7 @@ namespace UserAvatar.Bll.Models
         public DateTime ModifiedAt { get; set; }
         public List<ColumnModel> Columns { get; set; }
         public List<MemberModel> Members { get; set; }
+                
+        public int ModifiedBy { get; set; }
     }
 }

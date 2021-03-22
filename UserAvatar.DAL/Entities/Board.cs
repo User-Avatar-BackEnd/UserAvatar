@@ -34,5 +34,7 @@ namespace UserAvatar.Dal.Entities
         public virtual ICollection<Member> Members { get; set; }
 
         public bool IsDeleted { get; set; }
+        
+        public int ModifiedBy { get; set; }
     }
 }
