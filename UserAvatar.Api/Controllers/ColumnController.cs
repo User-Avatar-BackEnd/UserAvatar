@@ -41,7 +41,6 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateColumn(CreateColumnRequest createColumnRequest)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
