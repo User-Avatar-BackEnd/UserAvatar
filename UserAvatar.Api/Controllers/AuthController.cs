@@ -39,7 +39,7 @@ namespace UserAvatar.Api.Controllers
         [HttpPost("register")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> RegisterAsync(RegisterRequest registerRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -57,8 +57,7 @@ namespace UserAvatar.Api.Controllers
         [HttpPost("login")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
