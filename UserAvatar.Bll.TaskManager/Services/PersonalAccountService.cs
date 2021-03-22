@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UserAvatar.Bll.TaskManager.Models;
-using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -36,7 +32,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             user.PasswordHash = PasswordHash.CreateHash(newPassword);
 
-            _userStorage.UpdateAsync(user);
+            await _userStorage.UpdateAsync(user);
         }
 
         public async Task ChangeLoginAsync(int userId, string newLogin)
@@ -51,12 +47,12 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             user.Login = newLogin;
 
-            _userStorage.UpdateAsync(user);
+            await _userStorage.UpdateAsync(user);
         }
 
-        public UserModel GetUsersData(int userId)
+        public async Task<UserModel> GetUsersDataAsync(int userId)
         {
-            var user = _userStorage.GetById(userId);
+            var user = await _userStorage.GetByIdAsync(userId);
 
             if (user == null) throw new SystemException("User doesn't exist");
 
