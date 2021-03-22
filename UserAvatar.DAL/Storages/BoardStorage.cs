@@ -40,13 +40,13 @@ namespace UserAvatar.Dal.Storages
 
         public async System.Threading.Tasks.Task<Board> GetBoardAsync(int userId, int boardId)
         {
-            /*return await _dbContext.Boards
-                .FirstOrDefaultAsync(board => board.Id == boardId && board.OwnerId == userId && board.isDeleted == false);*/
-            
+            if (!IsUserBoard(userId, boardId)) return null;
+
             return await _dbContext.Boards
-                .Include(x=>x.Members)
-                .FirstOrDefaultAsync(board => board.Id == boardId && board.Members
-                    .Any(member=>member.Id==userId));
+                .Include(x => x.User)
+                .Include(x => x.Members)
+                .Include(x => x.Columns)
+                .FirstOrDefaultAsync(board => board.Id == boardId);
         }
 
         public async System.Threading.Tasks.Task UpdateAsync(int userId, Board board)
@@ -86,11 +86,7 @@ namespace UserAvatar.Dal.Storages
 
         public bool IsUserBoard(int userId, int boardId)
         {
-            var count = _dbContext.Boards
-                .Include(board => board.Members)
-                .Where(board => board.Id == boardId && board.Members
-                .Any(member => member.Id == userId))
-                .Count();
+            var count = _dbContext.Members.Count(x => x.BoardId == boardId && x.UserId == userId);
 
             if (count == 0) return false;
 

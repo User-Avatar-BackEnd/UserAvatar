@@ -1,4 +1,6 @@
 using AutoMapper;
+using System.Collections.Generic;
+using System.Linq;
 using UserAvatar.Api.Contracts;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
@@ -14,7 +16,7 @@ namespace UserAvatar.Api.Extentions
         {
             CreateMap<User, UserModel>();
             CreateMap<Member, MemberModel>();
-            CreateMap<Board, BoardModel>();
+           
             CreateMap<Column, ColumnModel>();
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();
@@ -26,7 +28,7 @@ namespace UserAvatar.Api.Extentions
             
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
-            CreateMap<BoardModel, Board>();
+           
             CreateMap<ColumnModel, Column>();
             CreateMap<EventModel, Event>();
             CreateMap<HistoryModel, History>();
@@ -34,9 +36,29 @@ namespace UserAvatar.Api.Extentions
             CreateMap<RankModel, Rank>();
             CreateMap<TaskModel, Task>();
             CreateMap<CommentModel, Comment>();
-            
-           
-            CreateMap<BoardModel, BoardDto>();
+
+
+            CreateMap<BoardModel, BoardShortDto>();
+
+            CreateMap<Board, BoardModel>();
+            CreateMap<UserModel, UserShortDto>();
+            // .ForMember(x=> x.Rank, x=>x.MapFrom(x=>x.))
+
+
+            CreateMap<ColumnModel, ColumnDto>()
+                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
+
+            //CreateMap<IEnumerable<ColumnModel>, IEnumerable<ColumnDto>>();
+
+
+            // CreateMap<IEnumerable<Member>>
+
+            CreateMap<UserModel, UserShortDto>();
+
+            CreateMap<BoardModel, BoardDto>()
+                .ForMember(x=> x.Members, opt=> opt.MapFrom(src=> src.Members.Select(x=>x.User)));
+
+
             CreateMap<TaskModel, TaskDetailedDto>()
                 .ForMember(x => x.ColumnId, x => x.MapFrom(x => x.Column.Id))
                 .ForMember(x => x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id));
@@ -45,6 +67,8 @@ namespace UserAvatar.Api.Extentions
                 .ForMember("ColumnId", opt => opt.MapFrom(src => src.Column.Id))
                 .ForMember("ResponsibleId", opt => opt.MapFrom(src => src.Responsible.Id))
                 .ForMember("CommentsCount", opt => opt.MapFrom(src => src.Comments.Count));
+
+            //CreateMap<IEnumerable<TaskModel>, IEnumerable<TaskShortDto>>();
            
            CreateMap<CommentModel, CommentDto>()
                 .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
