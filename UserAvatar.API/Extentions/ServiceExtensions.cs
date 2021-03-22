@@ -5,7 +5,7 @@ using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.API.Extentions
+namespace UserAvatar.Api.Extentions
 {
     public static class ServiceExtensions
     {
@@ -22,11 +22,13 @@ namespace UserAvatar.API.Extentions
                 .AddTransient<IUserStorage, UserStorage>()
                 .AddTransient<IBoardStorage, BoardStorage>()
                 .AddTransient<IColumnStorage, ColumnStorage>()
-                .AddTransient<ITaskStorage,TaskStorage>()
+                .AddTransient<IPersonalAccountStorage,PersonalAccountStorage>()
+                .AddTransient<ICardStorage,CardStorage>()
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IBoardService, BoardService>()
                 .AddTransient<IColumnService, ColumnService>()
-                .AddTransient<ITaskService, TaskService>();
+                .AddTransient<ICardService, CardService>()
+                .AddTransient<IPersonalAccountService,PersonalAccountService>();
         }
     }
 }

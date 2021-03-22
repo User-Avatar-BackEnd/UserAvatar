@@ -32,8 +32,10 @@ namespace UserAvatar.Dal.Entities
         [Required]
         public int Index { get; set; }
         
-        public virtual ICollection<Task> Tasks { get; set; }
+        public virtual ICollection<Card> Cards { get; set; }
 
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }        
+        
+        public int ModifiedBy { get; set; }
     }
 }

@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
-using UserAvatar.API.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Bll.Services.Interfaces;
 

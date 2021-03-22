@@ -30,7 +30,7 @@ namespace UserAvatar.Api.Controllers
 
         /*
         [HttpGet("{boardId:int}")]
-        public async Task<ActionResult<List<FullColumnDto>>> GetAllColumns(int boardId)
+        public async Card<ActionResult<List<FullColumnDto>>> GetAllColumns(int boardId)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);

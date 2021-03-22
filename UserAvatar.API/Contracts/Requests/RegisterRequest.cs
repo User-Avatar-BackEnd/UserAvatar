@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UserAvatar.Api.Contracts.Requests
 {
-    public class RegisterRequest:IValidatableObject
+    public class RegisterRequest
     {
         [Required(AllowEmptyStrings = false)]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
@@ -15,10 +15,5 @@ namespace UserAvatar.Api.Contracts.Requests
         [Required(AllowEmptyStrings = false)]
         [StringLength(64, MinimumLength = 5)]
         public string Password { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using UserAvatar.API;
+using UserAvatar.Api;
 
 namespace UserAvatar.Api
 {

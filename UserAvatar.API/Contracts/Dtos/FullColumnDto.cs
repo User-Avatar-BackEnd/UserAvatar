@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UserAvatar.API.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Dtos;
 
 namespace UserAvatar.Api.Contracts.Dtos
 {
@@ -8,6 +8,6 @@ namespace UserAvatar.Api.Contracts.Dtos
         public int Id { get; set; }
         public int Order { get; set; }
         public string Title { get; set; }
-        public List<TaskDto> Tasks { get; set; }
+        public List<CardDto> Cards { get; set; }
     }
 }

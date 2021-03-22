@@ -2,9 +2,8 @@ using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 using UserAvatar.Api.Contracts;
-using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
-using UserAvatar.API.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.Models;
 using UserAvatar.Dal.Entities;
 
@@ -22,7 +21,7 @@ namespace UserAvatar.Api.Extentions
             CreateMap<History, HistoryModel>();
             CreateMap<Invite, InviteModel>();
             CreateMap<Rank, RankModel>();
-            CreateMap<Task, TaskModel>();
+            CreateMap<Card, CardModel>();
             CreateMap<Comment, ColumnModel>();
             
             
@@ -34,7 +33,7 @@ namespace UserAvatar.Api.Extentions
             CreateMap<HistoryModel, History>();
             CreateMap<InviteModel, Invite>();
             CreateMap<RankModel, Rank>();
-            CreateMap<TaskModel, Task>();
+            CreateMap<CardModel, Card>();
             CreateMap<CommentModel, Comment>();
 
 
@@ -59,28 +58,28 @@ namespace UserAvatar.Api.Extentions
                 .ForMember(x=> x.Members, opt=> opt.MapFrom(src=> src.Members.Select(x=>x.User)));
 
 
-            CreateMap<TaskModel, TaskDetailedDto>()
+            CreateMap<CardModel, CardDetailedDto>()
                 .ForMember(x => x.ColumnId, x => x.MapFrom(x => x.Column.Id))
                 .ForMember(x => x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id));
             
-            CreateMap<TaskModel, TaskShortDto>()
+            CreateMap<CardModel, CardShortDto>()
                 .ForMember("ColumnId", opt => opt.MapFrom(src => src.Column.Id))
                 .ForMember("ResponsibleId", opt => opt.MapFrom(src => src.Responsible.Id))
                 .ForMember("CommentsCount", opt => opt.MapFrom(src => src.Comments.Count));
 
-            //CreateMap<IEnumerable<TaskModel>, IEnumerable<TaskShortDto>>();
+            //CreateMap<IEnumerable<CardModel>, IEnumerable<CardShortDto>>();
            
            CreateMap<CommentModel, CommentDto>()
                 .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
             
-            CreateMap<TaskModel, TaskDto>()
+            CreateMap<CardModel, CardDto>()
                 .ForMember(x => x.CommentsCount, y => y.MapFrom(x => x.Comments.Count))
                 .ForMember(x=> x.ResponsibleId, y=> y.MapFrom(x=> x.Responsible.Id));
 
             CreateMap<ColumnModel, FullColumnDto>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
-            CreateMap<UpdateTaskRequest, TaskModel>();
+            CreateMap<UpdateCardRequest, CardModel>();
         }
     }
 }

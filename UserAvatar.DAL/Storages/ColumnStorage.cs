@@ -14,7 +14,7 @@ namespace UserAvatar.Dal.Storages
     public class ColumnStorage : IColumnStorage
     {
         private readonly UserAvatarContext _userAvatarContext;
-        //private readonly ITaskStorage _taskStorage;
+        //private readonly ICardStorage _taskStorage;
 
         private static readonly SemaphoreSlim LockSlim = new(1, 1);
 

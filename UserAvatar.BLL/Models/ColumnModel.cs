@@ -11,6 +11,8 @@ namespace UserAvatar.Bll.Models
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public int Index { get; set; }
-        public List<TaskModel> Tasks { get; set; }
+        public List<CardModel> Cards { get; set; }
+                
+        public int ModifiedBy { get; set; }
     }
 }

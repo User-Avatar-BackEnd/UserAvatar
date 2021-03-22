@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace UserAvatar.API.Extentions
+namespace UserAvatar.Api.Extentions
 {
     /// <summary>
     /// Middleware to log raw data

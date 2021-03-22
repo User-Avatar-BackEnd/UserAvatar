@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,17 +11,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using UserAvatar.Api.Extentions;
-using UserAvatar.API.Extentions;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Services;
-using UserAvatar.Bll.Services.Interfaces;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
-using UserAvatar.Dal.Storages;
-using UserAvatar.Dal.Storages.Interfaces;
 
 
-namespace UserAvatar.API
+namespace UserAvatar.Api
 {
     public class Startup
     {
@@ -46,7 +41,7 @@ namespace UserAvatar.API
                     options =>
                         options.UseNpgsql(
                             Configuration.GetConnectionString("connectionString"),
-                            x => x.MigrationsAssembly("UserAvatar.DAL")));
+                            x => x.MigrationsAssembly("UserAvatar.Dal")));
 
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {

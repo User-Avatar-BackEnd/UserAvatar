@@ -29,7 +29,7 @@ namespace UserAvatar.Api.Controllers
             _jwt = jwt.Value;
         }
 
-        #region Actions
+        #region Actionspi
 
         /// <summary>
         /// Registration method

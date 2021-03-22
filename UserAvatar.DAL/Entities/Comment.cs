@@ -17,7 +17,7 @@ namespace UserAvatar.Dal.Entities
         public int TaskId { get; set; }
 
         [ForeignKey("TaskId")]
-        public virtual Task Task { get; set; }
+        public virtual Card Card { get; set; }
 
         [Required]
         public int UserId { get; set; }

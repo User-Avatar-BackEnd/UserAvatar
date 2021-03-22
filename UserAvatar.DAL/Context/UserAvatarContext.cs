@@ -16,7 +16,7 @@ namespace UserAvatar.Dal.Context
         public DbSet<Invite> Invites { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Rank> Ranks { get; set; }
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Card> Cards { get; set; }
         
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)
@@ -45,7 +45,7 @@ namespace UserAvatar.Dal.Context
 
             modelBuilder.Entity<Member>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Column>().HasQueryFilter(p => !p.IsDeleted);
-            modelBuilder.Entity<Task>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Card>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Board>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Comment>().HasQueryFilter(p => !p.IsDeleted);
         }

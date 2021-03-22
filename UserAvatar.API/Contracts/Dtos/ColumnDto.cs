@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserAvatar.API.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.Dtos
 {
     public class ColumnDto
     {
@@ -13,6 +13,6 @@ namespace UserAvatar.API.Contracts.Dtos
 
         public int Order { get; set; }
 
-        public List<TaskShortDto> Tasks { get; set; }
+        public List<CardShortDto> Cards { get; set; }
     }
 }

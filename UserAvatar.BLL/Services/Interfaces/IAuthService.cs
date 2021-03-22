@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UserAvatar.Bll.Models;
+﻿using UserAvatar.Bll.Models;
 
 namespace UserAvatar.Bll.Services.Interfaces
 {

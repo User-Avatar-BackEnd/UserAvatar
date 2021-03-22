@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserAvatar.API.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.Dtos
 {
     public class UserShortDto
     {
