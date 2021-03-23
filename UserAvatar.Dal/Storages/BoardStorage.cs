@@ -106,5 +106,10 @@ namespace UserAvatar.Dal.Storages
         {
             return await _dbContext.Members.AnyAsync(member => member.UserId == userId && member.BoardId == boardId);
         }
+
+        public async Task<bool> IsBoardExistAsync(int boardId)
+        {
+            return await _dbContext.Boards.AnyAsync(board => board.Id == boardId);
+        }
     }
 }
