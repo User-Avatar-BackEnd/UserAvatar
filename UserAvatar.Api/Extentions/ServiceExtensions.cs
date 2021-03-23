@@ -21,38 +21,10 @@ namespace UserAvatar.Api.Extentions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
-            
-            services.AddOptions<JwtOptions>();
-            var jwtOptions = services
-                .BuildServiceProvider()
-                .GetRequiredService<IOptions<JwtOptions>>()
-                .Value;
-            
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = jwtOptions.RequireHttps;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtOptions.Issuer,
 
-                        ValidateAudience = true,
-                        ValidAudience = jwtOptions.Audience,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
+            services.AddAutoMapper(c => c.AddProfile<MappingProfile>(), typeof(Startup));
 
-                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
-                        ValidateIssuerSigningKey = true
-                    };
-                });
-            
             return services
-                .AddTransient<IUserStorage, UserStorage>()
-                .AddTransient<IBoardStorage, BoardStorage>()
-                .AddTransient<IColumnStorage, ColumnStorage>()
-                .AddTransient<ICommentStorage,CommentStorage>()
-                .AddTransient<ICardStorage,CardStorage>()
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IBoardService, BoardService>()
                 .AddTransient<IColumnService, ColumnService>()

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using UserAvatar.Api.Extentions;
-using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
@@ -35,13 +29,13 @@ namespace UserAvatar.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(c=>c.AddProfile<MappingProfile>(), typeof(Startup));
+
             services.AddServices();
-            
-            services.AddDbContext<UserAvatarContext>(
-                    options =>
-                        options.UseNpgsql(
-                            Configuration.GetConnectionString("connectionString"),
-                            x => x.MigrationsAssembly("UserAvatar.Dal")));
+            services.AddStorages();
+
+            services.AddAuthentications();
+
+            services.AddDbContexts(Configuration);
 
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
@@ -49,38 +43,7 @@ namespace UserAvatar.Api
                 options.SuppressMapClientErrors = true;
             });
 
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "UserAvatar", Version = "v1" });
-
-                options.AddSecurityRequirement(
-                    new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Id = "Bearer",
-                                    Type = ReferenceType.SecurityScheme
-                                },
-                            },
-                            new string[0]
-                        }
-                    });
-
-                options.AddSecurityDefinition(
-                    "Bearer",
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.ApiKey,
-                        In = ParameterLocation.Header,
-                        Scheme = "Bearer",
-                        Name = "Authorization",
-                        Description = "JWT token",
-                        BearerFormat = "JWT"
-                    });
-            });
+            services.AddSwagger();
             
             services.AddCors();
             
@@ -110,7 +73,6 @@ namespace UserAvatar.Api
             app.UseMiddleware<LoggingMiddleware>();
             
             app.UseRouting();
-            
 
             app.UseAuthentication();
             app.UseAuthorization();
