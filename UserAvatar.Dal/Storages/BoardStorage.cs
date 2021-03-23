@@ -23,11 +23,9 @@ namespace UserAvatar.Dal.Storages
         public async Task CreateBoardAsync(Board board)
         {
             await _dbContext.Boards.AddAsync(board);
-
             await _dbContext.SaveChangesAsync();
 
             await AddAsMemberAsync(board.OwnerId, board.Id);
-
             await _dbContext.SaveChangesAsync();
         }
 
@@ -35,14 +33,12 @@ namespace UserAvatar.Dal.Storages
         {
             return await _dbContext.Boards
                 .Include(board => board.Members)
-               .Where(board => board.Members.Any(member => member.UserId == userId))
-               .ToListAsync();
+                .Where(board => board.Members.Any(member => member.UserId == userId))
+                .ToListAsync();
         }
 
-        public async Task<Board> GetBoardAsync(int userId, int boardId)
+        public async Task<Board> GetBoardAsync(int boardId)
         {
-            if (!await IsUserBoardAsync(userId, boardId)) return null;
-
             return await _dbContext.Boards
                 .Include(x => x.User)
                 .Include(x => x.Members)
@@ -55,7 +51,6 @@ namespace UserAvatar.Dal.Storages
         public async Task UpdateAsync(int userId, Board board)
         {
             _dbContext.Entry(board).State = EntityState.Modified;
-
             await _dbContext.SaveChangesAsync();
         }
 
@@ -70,14 +65,6 @@ namespace UserAvatar.Dal.Storages
             await _columnStorage.RecurrentlyDelete(board.Columns);
 
             await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<bool> DoesUserHasBoardAsync(int userId, string title)
-        {
-            return await _dbContext.Users
-                .Include(user => user.Boards)
-                    .AnyAsync(user => user.Id == userId && user.Boards.
-                        Any(board => board.Title == title));
         }
 
         public async Task<bool> IsOwnerBoardAsync(int userId, int boardId)

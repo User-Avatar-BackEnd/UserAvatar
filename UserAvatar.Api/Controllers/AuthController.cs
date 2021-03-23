@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -46,7 +47,7 @@ namespace UserAvatar.Api.Controllers
 
             var result = await _authService.RegisterAsync(registerRequest.Email, registerRequest.Login, registerRequest.Password);
 
-            if (result.Code != 200)
+            if (result.Code != ResultCode.Success)
             {
                 return Conflict(result.Code);
             }
@@ -64,7 +65,7 @@ namespace UserAvatar.Api.Controllers
 
             var result = await _authService.LoginAsync(loginRequest.Email, loginRequest.Password);
 
-            if (result.Code != 200)
+            if (result.Code != ResultCode.Success)
             {
                 return Conflict(result.Code);
             }

@@ -10,13 +10,11 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<IEnumerable<Board>> GetAllBoardsAsync(int userId);
 
-        Task<Board> GetBoardAsync(int userId, int boardId);
+        Task<Board> GetBoardAsync(int boardId);
 
         Task UpdateAsync(int userId, Board board);
 
         Task DeleteBoardAsync(int userId, int boardId);
-
-        Task<bool> DoesUserHasBoardAsync(int userId, string title);
 
         Task<bool> IsOwnerBoardAsync(int userId, int boardId);
 

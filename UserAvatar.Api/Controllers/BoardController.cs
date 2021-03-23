@@ -10,6 +10,7 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -27,13 +28,15 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<List<BoardDto>>> GetBoardsAsync()
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
             var result = await _boardService.GetAllBoardsAsync(userId);
 
-            var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardShortDto>>(result);
+            var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardShortDto>>(result.Value);
 
             return Ok(list);
         }
@@ -41,7 +44,7 @@ namespace UserAvatar.Api.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> CreateBoardAsync(string title)
         {
@@ -50,43 +53,62 @@ namespace UserAvatar.Api.Controllers
 
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            await _boardService.CreateBoardAsync(userId, title);
+            int code = await _boardService.CreateBoardAsync(userId, title);
+
+            if (code != ResultCode.Success)
+            {
+                return Conflict(code);
+            }
 
             return Ok();
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetBoardAsync(int id)
+        [ProducesResponseType(typeof(BoardDto),(int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<ActionResult<BoardDto>> GetBoardAsync(int id)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            var board = await _boardService.GetBoardAsync(userId, id);
+            var result = await _boardService.GetBoardAsync(userId, id);
 
-            var boardDto = _mapper.Map<BoardModel, BoardDto>(board);
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+            if (result.Code == ResultCode.NotFound) return NotFound();
 
-            boardDto.IsOwner = board.User.Id == userId;
+            var boardDto = _mapper.Map<BoardModel, BoardDto>(result.Value);
+
+            boardDto.IsOwner = result.Value.User.Id == userId;
 
             return Ok(boardDto);
         }
 
         [HttpPatch]
-        public async Task<IActionResult> RenameBoardAsync([FromBody] UpdateBoardRequest boardRequest)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> RenameBoardAsync(UpdateBoardRequest boardRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            await _boardService.RenameBoardAsync(userId, boardRequest.Id, boardRequest.Title);
+            int result = await _boardService.RenameBoardAsync(userId, boardRequest.Id, boardRequest.Title);
 
-            return Ok();
+            return StatusCode(result);
         }
 
         [HttpDelete("{id:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> DeleteBoardAsync(int id)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            await _boardService.DeleteBoardAsync(userId, id);
+            int result = await _boardService.DeleteBoardAsync(userId, id);
 
-            return Ok();
+            return StatusCode(result);
         }
     }
 }
