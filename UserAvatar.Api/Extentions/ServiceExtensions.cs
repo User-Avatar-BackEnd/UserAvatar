@@ -46,6 +46,9 @@ namespace UserAvatar.Api.Extentions
                         ValidateIssuerSigningKey = true
                     };
                 });
+
+            services.AddScoped<IApplicationUser, ApplicationUser>();
+            services.AddHttpContextAccessor();
             
             return services
                 .AddTransient<IUserStorage, UserStorage>()

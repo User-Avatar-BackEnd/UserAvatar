@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Bll.TaskManager.Infrastructure;
@@ -21,10 +22,12 @@ namespace UserAvatar.Api.Controllers
     {
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
-        public BoardController(IBoardService boardService, IMapper mapper)
+        private readonly IApplicationUser _applicationUser;
+        public BoardController(IBoardService boardService, IMapper mapper, IApplicationUser applicationUser)
         {
             _boardService = boardService;
             _mapper = mapper;
+            _applicationUser = applicationUser;
         }
 
         [HttpGet]
@@ -32,8 +35,9 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
         {
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
+            //var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
+            var userId = _applicationUser.GetUserId();
             var result = await _boardService.GetAllBoardsAsync(userId);
 
             var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardShortVm>>(result.Value);
