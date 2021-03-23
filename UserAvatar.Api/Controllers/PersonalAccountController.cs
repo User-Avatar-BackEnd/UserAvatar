@@ -18,6 +18,7 @@ namespace UserAvatar.Api.Controllers
         private readonly IPersonalAccountService _personalAccountService;
         // unnesessary di
         private readonly IMapper _mapper;
+        
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper)
         {

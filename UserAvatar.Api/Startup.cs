@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,10 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using UserAvatar.Api.Extentions;
-using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
@@ -86,16 +81,13 @@ namespace UserAvatar.Api
             
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
-                context?.Database.Migrate();
-                EnsureAdminCreated(context);
-            }
-
-            if (env.IsDevelopment())
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
+        { 
+            //var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
+            userAvatarContext?.Database.Migrate();
+            EnsureAdminCreated(userAvatarContext);
+            
+            if (env.IsDevelopment()) 
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();

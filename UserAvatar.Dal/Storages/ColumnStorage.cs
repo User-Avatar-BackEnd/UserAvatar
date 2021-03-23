@@ -17,6 +17,7 @@ namespace UserAvatar.Dal.Storages
         //private readonly ICardStorage _taskStorage;
 
         private static readonly SemaphoreSlim LockSlim = new(1, 1);
+        private static readonly SemaphoreSlim LockSlimForRecheck = new(1, 1);
 
         public ColumnStorage(UserAvatarContext userAvatarContext)
         {
@@ -75,8 +76,8 @@ namespace UserAvatar.Dal.Storages
             var column = await GetColumnByIdAsync(columnId);
             if (column.IsDeleted)
                 throw new Exception($"Already Deleted!{columnId}");
+            
             column.IsDeleted = true;
-
             var columnList = InternalGetAllColumns(column);
             await RecheckPositionAsync(columnList.ToList(),column.Index);
 
@@ -143,19 +144,19 @@ namespace UserAvatar.Dal.Storages
 
         private static async Task RecheckPositionAsync(List<Column> columnList, int deletedPosition)
         {
-            await LockSlim.WaitAsync();
+            await LockSlimForRecheck.WaitAsync();
             try
             {
                 if (deletedPosition == columnList.Count)
                     return;
-                foreach (var column in columnList.Where(column => column.Index >= deletedPosition))
+                foreach (var column in columnList.Where(column => column.Index > deletedPosition))
                 {
                     column.Index--;
                 }
             }
             finally
             {
-                LockSlim.Release();
+                LockSlimForRecheck.Release();
             }
         }
 
