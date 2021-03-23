@@ -28,6 +28,7 @@ namespace UserAvatar.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHealthChecks();
             services.AddServices();
             services.AddStorages();
 
@@ -73,6 +74,7 @@ namespace UserAvatar.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
         }
