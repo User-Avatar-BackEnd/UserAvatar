@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace UserAvatar.Api.Contracts.Dtos
 {
-    public class TitleBoardDto
+    public class TitleDto
     {
-        public TitleBoardDto()
-        {
-        }
+        [Required(AllowEmptyStrings=false)]
+        [StringLength(64, MinimumLength = 1)]
+        public string Title { get; set; }
     }
 }

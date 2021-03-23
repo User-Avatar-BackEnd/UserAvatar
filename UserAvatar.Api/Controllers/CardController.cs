@@ -7,71 +7,64 @@ using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Api.Options;
 
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/card")]
+    [Route("api/v1/boards/{boardId:int}/columns/{columnId:int}/cards")]
     public class CardController : ControllerBase
     {
         private readonly ICardService _cardService;
         private readonly IMapper _mapper;
+        private readonly IApplicationUser _applicationUser;
 
-        public CardController(ICardService cardService, IMapper mapper)
+        public CardController(ICardService cardService, IMapper mapper, IApplicationUser applicationUser)
         {
             _cardService = cardService;
             _mapper = mapper;
+            _applicationUser = applicationUser;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
-        {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
+        private int UserId => _applicationUser.Id;
 
-            var card = await _cardService.GetByIdAsync(id, userId);
+        [HttpGet("{cardId:int}")]
+        public async Task<IActionResult> GetByIdAsync(int boardId, int columnId, int cardId)
+        {
+            var card = await _cardService.GetByIdAsync(cardId, UserId);
             if (card == null) BadRequest();
             
             var cardVm = _mapper.Map<CardModel, CardDetailedVm>(card);
 
-            cardVm.Comments.ForEach(x => x.Editable = x.UserId == userId);
+            cardVm.Comments.ForEach(x => x.Editable = x.UserId == UserId);
 
             return Ok(cardVm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCardAsync(CreateCardDto createCardDto)
+        public async Task<IActionResult> AddCardAsync(int boardId, int columnId, TitleDto titleDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-
-            var card = await _cardService.CreateCardAsync(createCardDto.Title, createCardDto.ColumnId, userId);
+            var card = await _cardService.CreateCardAsync(titleDto.Title, columnId, UserId);
 
             var cardVm = _mapper.Map<CardModel, CardShortVm>(card);
 
             return Ok(cardVm);
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> UpdateCardAsync(UpdateCardDto updateCardDto)
+        [HttpPut("{cardId:int}")]
+        public async Task<IActionResult> UpdateCardAsync(int boardId, int columnId, int cardId, UpdateCardDto updateCardDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-
             var cardModel = _mapper.Map<UpdateCardDto, CardModel>(updateCardDto);
 
-            await _cardService.UpdateCardAsync(cardModel, updateCardDto.ColumnId, updateCardDto.ResponsibleId, userId);
+            await _cardService.UpdateCardAsync(cardModel, columnId, updateCardDto.ResponsibleId, UserId);
 
             return Ok();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCardAsync(int id)
+        [HttpDelete("{cardId:int}")]
+        public async Task<IActionResult> DeleteCardAsync(int boardId, int columnId, int cardId)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-
-            await _cardService.DeleteCardAsync(id, userId);
+            await _cardService.DeleteCardAsync(cardId, UserId);
 
             return Ok();
         }

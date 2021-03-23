@@ -4,12 +4,12 @@ namespace UserAvatar.Api.Contracts.Requests
 {
     public class ChangePasswordRequest
     {
-        [Required(AllowEmptyStrings = false)]
-        [StringLength(64, MinimumLength = 5)]
+        [Required]
+        [RegularExpression(@"^[a-zA-Z0-9_.-]{5,}$", ErrorMessage = "Invalid old password")]
         public string OldPassword { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
-        [StringLength(64, MinimumLength = 5)]
+        [Required]
+        [RegularExpression(@"^[a-zA-Z0-9_.-]{5,}$", ErrorMessage = "Invalid new password")]
         public string NewPassword { get; set; }
     }
 }
