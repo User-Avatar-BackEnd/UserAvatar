@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -39,6 +40,14 @@ namespace UserAvatar.Api.Controllers
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
             var list = await _commentService.GetCommentsAsync(userId,cardId);
+
+            if (list.Code != ResultCode.Success)
+            {
+                return Forbid();
+            }
+            return Ok(_mapper.Map<List<CommentModel>,List<CommentDto>>(list.Value));
+
+
 
             return Ok(_mapper.Map<List<CommentModel>,List<CommentDto>>(list));
         }

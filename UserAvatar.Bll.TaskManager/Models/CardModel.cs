@@ -6,11 +6,11 @@ namespace UserAvatar.Bll.TaskManager.Models
     public class CardModel
     {
         public int Id { get; set; }
-        public ColumnModel Column { get; set; }
+        public int ColumnId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public UserModel Owner { get; set; }
-        public UserModel Responsible { get; set; }
+        public int OwnerId { get; set; }
+        public int ResponsibleId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public int? Priority { get; set; }

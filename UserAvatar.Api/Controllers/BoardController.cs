@@ -77,7 +77,8 @@ namespace UserAvatar.Api.Controllers
 
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
-            boardVm.IsOwner = result.Value.User.Id == UserId;
+            boardVm.IsOwner = result.Value.OwnerId == userId;
+
 
             return Ok(boardVm);
         }

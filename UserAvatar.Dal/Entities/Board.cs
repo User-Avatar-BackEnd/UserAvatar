@@ -28,11 +28,10 @@ namespace UserAvatar.Dal.Entities
 
         [Required]
         public DateTime ModifiedAt { get; set; }
-        
         public virtual ICollection<Column> Columns { get; set; }
-
         public virtual ICollection<Member> Members { get; set; }
-
+        
+        public virtual ICollection<Invite> Invites { get; set; }
         public bool IsDeleted { get; set; }
         
         public int ModifiedBy { get; set; }

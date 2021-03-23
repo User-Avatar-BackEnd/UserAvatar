@@ -26,6 +26,7 @@ namespace UserAvatar.Api.Extentions
           
             services
                 .AddTransient<IAuthService, AuthService>()
+                .AddTransient<IInviteService,InviteService>()
                 .AddTransient<IBoardService, BoardService>()
                 .AddTransient<IColumnService, ColumnService>()
                 .AddTransient<ICardService, CardService>()

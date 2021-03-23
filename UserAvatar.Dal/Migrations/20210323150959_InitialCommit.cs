@@ -102,32 +102,6 @@ namespace UserAvatar.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Invites",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    InviterId = table.Column<int>(type: "integer", nullable: false),
-                    InvitedId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Issued = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invites", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invites_Users_InvitedId",
-                        column: x => x.InvitedId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invites_Users_InviterId",
-                        column: x => x.InviterId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Columns",
                 columns: table => new
                 {
@@ -150,6 +124,39 @@ namespace UserAvatar.Dal.Migrations
                         principalTable: "Boards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    InviterId = table.Column<int>(type: "integer", nullable: false),
+                    BoardId = table.Column<int>(type: "integer", nullable: false),
+                    InvitedId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Issued = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invites", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invites_Boards_BoardId",
+                        column: x => x.BoardId,
+                        principalTable: "Boards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invites_Users_InvitedId",
+                        column: x => x.InvitedId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invites_Users_InviterId",
+                        column: x => x.InviterId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -294,6 +301,11 @@ namespace UserAvatar.Dal.Migrations
                 name: "IX_Histories_UserId",
                 table: "Histories",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invites_BoardId",
+                table: "Invites",
+                column: "BoardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invites_InvitedId",

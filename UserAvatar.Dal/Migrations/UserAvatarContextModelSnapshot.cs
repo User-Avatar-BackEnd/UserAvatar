@@ -229,6 +229,9 @@ namespace UserAvatar.Dal.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
+                    b.Property<int>("BoardId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("InvitedId")
                         .HasColumnType("integer");
 
@@ -242,6 +245,8 @@ namespace UserAvatar.Dal.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
 
                     b.HasIndex("InvitedId");
 
@@ -407,6 +412,12 @@ namespace UserAvatar.Dal.Migrations
 
             modelBuilder.Entity("UserAvatar.Dal.Entities.Invite", b =>
                 {
+                    b.HasOne("UserAvatar.Dal.Entities.Board", "Board")
+                        .WithMany("Invites")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("UserAvatar.Dal.Entities.User", "Invited")
                         .WithMany("Invited")
                         .HasForeignKey("InvitedId")
@@ -418,6 +429,8 @@ namespace UserAvatar.Dal.Migrations
                         .HasForeignKey("InviterId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Board");
 
                     b.Navigation("Invited");
 
@@ -446,6 +459,8 @@ namespace UserAvatar.Dal.Migrations
             modelBuilder.Entity("UserAvatar.Dal.Entities.Board", b =>
                 {
                     b.Navigation("Columns");
+
+                    b.Navigation("Invites");
 
                     b.Navigation("Members");
                 });

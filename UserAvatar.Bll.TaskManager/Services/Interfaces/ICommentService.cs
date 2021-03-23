@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
@@ -10,7 +11,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 
         Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text);
 
-        Task<List<CommentModel>> GetCommentsAsync(int userId, int cardId);
+        Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId);
 
         Task DeleteCommentAsync(int userId, int commentId);
     }
