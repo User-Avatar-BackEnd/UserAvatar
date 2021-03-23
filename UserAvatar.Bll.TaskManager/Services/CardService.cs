@@ -24,7 +24,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             _columnStorage = columnStorage;
         }
 
-        public async Task<Result<CardModel>> CreateCardAsync(string title, int boardId, int columnId, int userId)
+        public async Task<Result<CardModel>> CreateCardAsync(string title, int boardId,int columnId, int userId)
         {
             var column = await _columnStorage.GetColumnByIdAsync(columnId);
             if(column==null || column.BoardId != boardId)
@@ -61,7 +61,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<CardModel>(cardModel);
         }
 
-        public async Task<int> UpdateCardAsync(CardModel cardModel, int boardId, int columnId, int? responsibleId, int userId)
+        public async Task<int> UpdateCardAsync(CardModel cardModel, int boardId, int userId)
         {
             var card = await _cardStorage.GetByIdAsync(cardModel.Id);
             if (card == null)
@@ -76,8 +76,8 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             card.Title = card.Title;
             card.Description = cardModel.Description;
-            card.ColumnId = columnId;
-            card.ResponsibleId = responsibleId;
+            card.ColumnId = cardModel.ColumnId;
+            card.ResponsibleId = cardModel.ResponsibleId;
             card.IsHidden = cardModel.IsHidden;
             card.ModifiedAt = DateTime.UtcNow;
             card.Priority = cardModel.Priority;
