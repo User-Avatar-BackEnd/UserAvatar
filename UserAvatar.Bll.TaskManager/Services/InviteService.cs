@@ -14,15 +14,17 @@ namespace UserAvatar.Bll.TaskManager.Services
     {
         private readonly IInviteStorage _inviteStorage;
         private readonly IUserStorage _userStorage;
+        private readonly IBoardStorage _boardStorage;
         private readonly IMapper _mapper;
 
         public InviteService(
             IInviteStorage inviteStorage, 
-            IMapper mapper, IUserStorage userStorage)
+            IMapper mapper, IUserStorage userStorage, IBoardStorage boardStorage)
         {
             _inviteStorage = inviteStorage;
             _mapper = mapper;
             _userStorage = userStorage;
+            _boardStorage = boardStorage;
         }
 
         private async Task<int> GetUserIdByPayload(string payload)
@@ -37,42 +39,45 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         private async Task<Invite> GetInvite(int boardId, int userId)
         {
-            if (userId != 0)
-                return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
-            return null;
+            return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
         }
 
         public async Task<int> CreateInviteAsync(int boardId, int userId, string payload)
         {
-            // Check if inviter id or invited id exists!
             var invitedId = await GetUserIdByPayload(payload);
             if (invitedId == -1)
                 return ResultCode.NotFound;
+            if (userId == invitedId)
+                return ResultCode.Forbidden;
+            if (await _boardStorage.GetBoardAsync(boardId) == null)
+                return ResultCode.NotFound;
+
+            var thisInvite = await _inviteStorage.GetInviteByBoardAsync(invitedId, boardId);
             
-            var thisInvite = await GetInvite(boardId, invitedId);
-            
-            if (thisInvite != null)
-            {
-                thisInvite.Status = 0;
-            }
-            else
-            {
-                thisInvite = new Invite
+            if(!await _boardStorage.IsUserBoardAsync(invitedId, boardId))
+                if (thisInvite == null)
                 {
-                    InviterId = userId,
-                    BoardId = boardId,
-                    InvitedId = invitedId,
-                    Status = 0,
-                    Issued = DateTime.UtcNow
-                };
-            }
-            thisInvite.Issued = DateTime.UtcNow;
+                    thisInvite = new Invite
+                    {
+                        InviterId = userId,
+                        BoardId = boardId,
+                        InvitedId = invitedId,
+                        Issued = DateTime.UtcNow,
+                        Status = 0
+                    };
+                }
+                else
+                {
+                    thisInvite.Status = 0;
+                    thisInvite.Issued = DateTime.UtcNow;
+                    await _inviteStorage.UpdateAsync(thisInvite);
+                    return ResultCode.Success;
+                }
 
             await _inviteStorage.CreateAsync(thisInvite);
             return ResultCode.Success;
         }
         
-
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);

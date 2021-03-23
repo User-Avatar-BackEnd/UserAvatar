@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -34,13 +35,17 @@ namespace UserAvatar.Dal.Storages
         public async Task<Invite> GetInviteByBoardAsync(int userId, int boardId)
         { 
             //todo: implement!
-            return await Task.FromResult(_userAvatarContext.Invites.FirstOrDefault(x => x.InvitedId == userId && x.BoardId == boardId));
+            return await Task.FromResult(_userAvatarContext.Invites
+                .FirstOrDefault(x => x.InvitedId == userId && x.BoardId == boardId));
         }
         
         public async Task<List<Invite>> GetInvitesAsync(int userId)
         {
             //???????????????????????????????????????????????????
-            return await Task.FromResult(_userAvatarContext.Invites.Where(x => x.InvitedId == userId && x.Status == 0).ToList());
+            return await Task.FromResult(_userAvatarContext.Invites
+                .Include(x=> x.Board)
+                .Include(x=> x.Inviter)
+                .Where(x => x.InvitedId == userId && x.Status == 0).ToList());
         }
     }
 }

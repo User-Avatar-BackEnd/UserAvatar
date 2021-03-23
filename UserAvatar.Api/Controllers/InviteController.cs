@@ -1,9 +1,12 @@
-﻿using System.Net.Mime;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -40,6 +43,12 @@ namespace UserAvatar.Api.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet("/login")]
+        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(string query)
+        {
+            throw new NotImplementedException();
         }
         
         [HttpPatch]

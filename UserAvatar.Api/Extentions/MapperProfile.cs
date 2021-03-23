@@ -69,16 +69,22 @@ namespace UserAvatar.Api.Extentions
             //CreateMap<IEnumerable<CardModel>, IEnumerable<CardShortDto>>();
            
            CreateMap<CommentModel, CommentVm>()
-                .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
-            
-            CreateMap<CardModel, CardVm>()
-                .ForMember(x => x.CommentsCount, y => y.MapFrom(x => x.Comments.Count))
-                .ForMember(x=> x.ResponsibleId, y=> y.MapFrom(x=> x.Responsible.Id));
+               .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
+           
+           CreateMap<CardModel, CardVm>()
+               .ForMember(x => x.CommentsCount, y => y.MapFrom(x => x.Comments.Count))
+               .ForMember(x=> x.ResponsibleId, y=> y.MapFrom(x=> x.Responsible.Id));
 
-            CreateMap<ColumnModel, FullColumnVm>()
-                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
+           CreateMap<ColumnModel, FullColumnVm>()
+               .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
-            CreateMap<UpdateCardDto, CardModel>();
+           CreateMap<Invite, InviteModel>()
+               .ForMember(x => x.Inviter,
+                   y => y.MapFrom(z => z.Inviter));
+
+           CreateMap<InviteModel, InviteVm>();
+
+
         }
     }
 }

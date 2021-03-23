@@ -10,6 +10,7 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -90,7 +91,7 @@ namespace UserAvatar.Api.Controllers
             var result = await _inviteService.GetAllInvitesAsync(UserId);
             if (result.Code != ResultCode.Success)
                 return NotFound(result);
-            return Ok(result);
+            return Ok(_mapper.Map<List<InviteModel>,List<InviteVm>>(result.Value));
         }
     }
 }
