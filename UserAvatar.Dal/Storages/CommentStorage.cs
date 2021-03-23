@@ -18,45 +18,48 @@ namespace UserAvatar.Dal.Storages
             _userAvatarContext = userAvatarContext;
         }
 
-        public async Task<Comment> Create(Comment comment)
+        public async Task<Comment> CreateAsync(Comment comment)
         {
             await _userAvatarContext.AddAsync(comment);
             await _userAvatarContext.SaveChangesAsync();
 
-            return _userAvatarContext.Comments
+            return await _userAvatarContext.Comments
                 .Include(x => x.User)
-                .First(x => x.Id == comment.Id);
+                .FirstAsync(x => x.Id == comment.Id);
         }
 
-        public async Task DeleteApparent(int commentId)
+        public async Task DeleteApparentAsync(int commentId)
         {
-            var thisComment = await GetCommentByCommentId(commentId);
+            var thisComment = await GetCommentByCommentIdAsync(commentId);
 
             thisComment.IsDeleted = true;
             _userAvatarContext.Comments.Update(thisComment);
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public Task<List<Comment>> GetAll(int cardId)
+        public async Task<List<Comment>> GetAllAsync(int cardId)
         {
             //async?
-            return Task.FromResult(_userAvatarContext.Comments
+            //return Task.FromResult(_userAvatarContext.Comments
+            //    .Where(x => x.CardId == cardId)
+            //    .OrderBy(x=> x.ModifiedAt)
+            //    .ToList());
+            return await _userAvatarContext.Comments
                 .Where(x => x.CardId == cardId)
-                .OrderBy(x=> x.ModifiedAt)
-                .ToList());
+                .OrderBy(x => x.ModifiedAt)
+                .ToListAsync();
         }
 
-        public async Task UpdateComment(Comment comment)
+        public async Task UpdateCommentAsync(Comment comment)
         {
             var previousComment = await _userAvatarContext.Comments.FindAsync(comment.Id);
             previousComment.ModifiedAt = DateTime.Now;
             previousComment.Text = comment.Text;
 
             await _userAvatarContext.SaveChangesAsync();
-
         }
 
-        public async Task RecursivelyDelete(IEnumerable<Comment> comments)
+        public async Task RecursivelyDeleteAsync(IEnumerable<Comment> comments)
         {
             foreach (var comment in comments)
             {
@@ -64,16 +67,19 @@ namespace UserAvatar.Dal.Storages
             }
             await _userAvatarContext.SaveChangesAsync();
         }
-        public async Task<Comment> GetCommentByCommentId(int commentId)
+
+        public async Task<Comment> GetCommentByCommentIdAsync(int commentId)
         {
             return await _userAvatarContext.Comments.FindAsync(commentId);
         }
 
-        public int GetTaskIdByCommentId(int commentId)
+        public async Task<int> GetTaskIdByCommentIdAsync(int commentId)
         {
-            return _userAvatarContext.Comments
-                .Include(x => x.Card)
-                .First(x => x.Id == commentId).CardId;
+            var comment = await _userAvatarContext.Comments
+                 .Include(x => x.Card)
+                 .FirstAsync(x => x.Id == commentId);
+
+            return comment.CardId;
         }
     }
 }

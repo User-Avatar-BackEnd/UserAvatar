@@ -16,6 +16,7 @@ namespace UserAvatar.Api.Controllers
     public class PersonalAccountController : ControllerBase
     {
         private readonly IPersonalAccountService _personalAccountService;
+        // unnesessary di
         private readonly IMapper _mapper;
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper)
@@ -26,7 +27,7 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("change_login")]
-        public async Task<ActionResult> ChangeLogin([FromBody] string login)
+        public async Task<ActionResult> ChangeLoginAsync([FromBody] string login)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
@@ -41,7 +42,7 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("change_password")]
-        public async Task<ActionResult> ChangePasword(ChangePasswordRequest request)
+        public async Task<ActionResult> ChangePaswordAsync(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -53,7 +54,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserDataDto>> GetUserData()
+        public async Task<ActionResult<UserDataDto>> GetUserDataAsync()
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 

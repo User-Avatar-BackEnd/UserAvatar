@@ -46,15 +46,21 @@ namespace UserAvatar.Dal.Storages
             {
                 LockSlim.Release();
             }
-            
-
         }
 
+        // there can be change on async as well
         public bool IsUserInBoardByColumnId(int userId,int columnId)
         {
             /*var zzz = _userAvatarContext.Columns.Where(x => x.Id == columnId)
                 .Include(x=> x.Board)
                 .ThenInclude(x=> x.Members.Count(x => x.UserId == userId));*/
+
+            // why don't you want to return in at once instead creating a variable and returning this variable?
+
+
+            // Дима сказал: там инклуд не нужен вроде, если вы не вытягиваете данные наружу, а я не уверенна ибо не делала это :D
+            // Поэтому осталю пока это тут)
+
 
             var zzz = _userAvatarContext.Boards
                 .Include(x => x.Columns)
@@ -93,6 +99,7 @@ namespace UserAvatar.Dal.Storages
         public async Task<IQueryable<Column>> GetAllColumnsAsync(int boardId)
         {
             //todo: maybe change
+            // I don't know if i can change there?
             var card = Task.Factory.StartNew(() =>
                 _userAvatarContext.Columns
                     .Include(x=> x.Cards).Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));

@@ -8,10 +8,10 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
     {
         Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text);
 
-        Task<CommentModel> UpdateComment(int userId, int commentId, string text);
+        Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text);
 
-        Task<List<CommentModel>> GetComments(int userId, int cardId);
+        Task<List<CommentModel>> GetCommentsAsync(int userId, int cardId);
 
-        Task DeleteComment(int userId, int commentId);
+        Task DeleteCommentAsync(int userId, int commentId);
     }
 }

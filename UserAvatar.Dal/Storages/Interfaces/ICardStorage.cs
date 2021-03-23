@@ -1,19 +1,20 @@
-﻿using UserAvatar.Dal.Entities;
+﻿using System.Threading.Tasks;
+using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface ICardStorage
     {
-        public Card GetById(int id);
+        Task<Card> GetByIdAsync(int id);
 
-        public Card Create(Card card);
+        Task<Card> CreateAsync(Card card);
 
-        public int GetCardsCountInColumn(int columnId);
+        Task<int> GetCardsCountInColumnAsync(int columnId);
 
-        public int GetBoardId(int cardId);
+        Task<int> GetBoardIdAsync(int cardId);
 
-        public void Delete(int cardId);
+        Task DeleteAsync(int cardId);
 
-        public void Update(Card card);
+        Task UpdateAsync(Card card);
     }
 }

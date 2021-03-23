@@ -30,7 +30,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text)
         {
-            await ValidateUserByCard(userId, cardId);
+            await ValidateUserByCardAsync(userId, cardId);
 
             var newComment = new Comment
             {
@@ -41,49 +41,49 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ModifiedAt = DateTime.Now
             };
 
-            await _commentStorage.Create(newComment);
+            await _commentStorage.CreateAsync(newComment);
 
             return _mapper.Map<Comment, CommentModel>(newComment);
         }
 
-        public async Task<CommentModel> UpdateComment(int userId, int commentId, string text)
+        public async Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text)
         {
-            await ValidateUserByComment(userId, commentId);
+            await ValidateUserByCommentAsync(userId, commentId);
 
-            var thisComment = await _commentStorage.GetCommentByCommentId(commentId);
+            var thisComment = await _commentStorage.GetCommentByCommentIdAsync(commentId);
             thisComment.Text = text;
 
-            await _commentStorage.UpdateComment(thisComment);
+            await _commentStorage.UpdateCommentAsync(thisComment);
 
             return _mapper.Map<Comment, CommentModel>(thisComment);
         }
 
-        public async Task<List<CommentModel>> GetComments(int userId, int cardId)
+        public async Task<List<CommentModel>> GetCommentsAsync(int userId, int cardId)
         {
-            await ValidateUserByCard(userId, cardId);
+            await ValidateUserByCardAsync(userId, cardId);
 
-            var commentList = await _commentStorage.GetAll(cardId);
+            var commentList = await _commentStorage.GetAllAsync(cardId);
 
             return _mapper.Map<List<Comment>, List<CommentModel>>(commentList);
         }
 
-        public async Task DeleteComment(int userId, int commentId)
+        public async Task DeleteCommentAsync(int userId, int commentId)
         {
-            await ValidateUserByComment(userId, commentId);
-            await _commentStorage.DeleteApparent(commentId);
+            await ValidateUserByCommentAsync(userId, commentId);
+            await _commentStorage.DeleteApparentAsync(commentId);
         }
 
-        private async Task ValidateUserByComment(int userId, int commentId)
+        private async Task ValidateUserByCommentAsync(int userId, int commentId)
         {
-            var cardId = _commentStorage.GetTaskIdByCommentId(commentId);
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _cardStorage.GetBoardId(cardId));
+            var cardId = await _commentStorage.GetTaskIdByCommentIdAsync(commentId);
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
 
-        private async Task ValidateUserByCard(int userId, int cardId)
+        private async Task ValidateUserByCardAsync(int userId, int cardId)
         {
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _cardStorage.GetBoardId(cardId));
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }

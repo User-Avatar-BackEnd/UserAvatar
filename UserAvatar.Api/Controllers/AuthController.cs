@@ -78,8 +78,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public Task<HttpStatusCode> LogoutAsync()
         {
-            // call gamification service to add scores for the logout
-            return System.Threading.Tasks.Task.FromResult(HttpStatusCode.OK);
+            // todo: call gamification service to add scores for the logout
+            return Task.FromResult(HttpStatusCode.OK);
         }
         #endregion
 

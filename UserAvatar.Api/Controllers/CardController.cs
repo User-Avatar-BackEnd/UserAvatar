@@ -24,7 +24,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
@@ -40,12 +40,12 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCard(CreateCardRequest request)
+        public async Task<IActionResult> AddCardAsync(CreateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var card = _cardService.CreateCard(request.Title, request.ColumnId, userId);
+            var card = await _cardService.CreateCardAsync(request.Title, request.ColumnId, userId);
 
             var cardDto = _mapper.Map<CardModel, CardShortDto>(card);
 
@@ -53,7 +53,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateCard(UpdateCardRequest request)
+        public async Task<IActionResult> UpdateCardAsync(UpdateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
@@ -66,12 +66,12 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteCard(int id)
+        public async Task<IActionResult> DeleteCardAsync(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            _cardService.DeleteCard(id, userId);
+            await _cardService.DeleteCardAsync(id, userId);
 
             return Ok();
         }
