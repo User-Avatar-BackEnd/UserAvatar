@@ -45,7 +45,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("/login")]
+        [HttpGet("/findLogin")]
         public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(string query)
         {
             throw new NotImplementedException();

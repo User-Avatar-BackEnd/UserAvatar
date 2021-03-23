@@ -61,8 +61,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId)
         {
-            if(!await ValidateUserByCardAsync(userId, cardId))
-                return new Result<List<CommentModel>>(ResultCode.Forbidden);
+            await ValidateUserByCardAsync(userId, cardId);
 
             var commentList = await _commentStorage.GetAllAsync(cardId);
 
@@ -83,13 +82,11 @@ namespace UserAvatar.Bll.TaskManager.Services
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
 
-        private async Task<bool> ValidateUserByCardAsync(int userId, int cardId)
+        private async Task ValidateUserByCardAsync(int userId, int cardId)
         {
-            var thisBoard = await _cardStorage.GetBoardIdAsync(cardId);
-            if (thisBoard == 0)
-                return false;
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, thisBoard);
-            return isUserInThisBoard;
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
+            if (!isUserInThisBoard)
+                throw new Exception($"You {userId} are not allowed to do this!");
         }
     }
 }
