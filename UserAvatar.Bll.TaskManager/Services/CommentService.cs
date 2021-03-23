@@ -13,28 +13,28 @@ namespace UserAvatar.Bll.TaskManager.Services
     {
         private readonly ICommentStorage _commentStorage;
         private readonly IBoardStorage _boardStorage;
-        private readonly ICardStorage _taskStorage;
+        private readonly ICardStorage _cardStorage;
         private readonly IMapper _mapper;
 
         public CommentService(
             ICommentStorage commentStorage,
             IBoardStorage boardStorage,
-            ICardStorage taskStorage,
+            ICardStorage cardStorage,
             IMapper mapper)
         {
             _commentStorage = commentStorage;
             _boardStorage = boardStorage;
-            _taskStorage = taskStorage;
+            _cardStorage = cardStorage;
             _mapper = mapper;
         }
 
-        public async Task<CommentModel> CreateNewCommentAsync(int userId, int taskId, string text)
+        public async Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text)
         {
-            await ValidateUserByTask(userId,taskId);
-            
+            await ValidateUserByCard(userId, cardId);
+
             var newComment = new Comment
             {
-                CardId = taskId,
+                CardId = cardId,
                 UserId = userId,
                 Text = text,
                 CreatedAt = DateTime.Now,
@@ -48,22 +48,22 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<CommentModel> UpdateComment(int userId, int commentId, string text)
         {
-            await ValidateUserByComment(userId,commentId);
-            
+            await ValidateUserByComment(userId, commentId);
+
             var thisComment = await _commentStorage.GetCommentByCommentId(commentId);
             thisComment.Text = text;
 
             await _commentStorage.UpdateComment(thisComment);
-            
+
             return _mapper.Map<Comment, CommentModel>(thisComment);
         }
 
-        public async Task<List<CommentModel>> GetComments(int userId,int taskId)
+        public async Task<List<CommentModel>> GetComments(int userId, int cardId)
         {
-            await ValidateUserByTask(userId,taskId);
+            await ValidateUserByCard(userId, cardId);
 
-            var commentList = await _commentStorage.GetAll(taskId);
-            
+            var commentList = await _commentStorage.GetAll(cardId);
+
             return _mapper.Map<List<Comment>, List<CommentModel>>(commentList);
         }
 
@@ -72,16 +72,18 @@ namespace UserAvatar.Bll.TaskManager.Services
             await ValidateUserByComment(userId, commentId);
             await _commentStorage.DeleteApparent(commentId);
         }
+
         private async Task ValidateUserByComment(int userId, int commentId)
         {
-            var taskId = _commentStorage.GetTaskIdByCommentId(commentId);
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _taskStorage.GetBoardId(taskId));
+            var cardId = _commentStorage.GetTaskIdByCommentId(commentId);
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _cardStorage.GetBoardId(cardId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
-        private async Task ValidateUserByTask(int userId, int taskId)
+
+        private async Task ValidateUserByCard(int userId, int cardId)
         {
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _taskStorage.GetBoardId(taskId));
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, _cardStorage.GetBoardId(cardId));
             if (!isUserInThisBoard)
                 throw new Exception($"You {userId} are not allowed to do this!");
         }

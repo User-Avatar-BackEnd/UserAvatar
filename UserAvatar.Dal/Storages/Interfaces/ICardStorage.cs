@@ -1,5 +1,4 @@
-﻿using System;
-using UserAvatar.Dal.Entities;
+﻿using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
 {
@@ -11,9 +10,9 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         public int GetCardsCountInColumn(int columnId);
 
-        public int GetBoardId(int taskId);
+        public int GetBoardId(int cardId);
 
-        public void Delete(int taskId);
+        public void Delete(int cardId);
 
         public void Update(Card card);
     }

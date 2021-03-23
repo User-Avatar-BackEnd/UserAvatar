@@ -37,11 +37,11 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public Task<List<Comment>> GetAll(int taskId)
+        public Task<List<Comment>> GetAll(int cardId)
         {
             //async?
             return Task.FromResult(_userAvatarContext.Comments
-                .Where(x => x.CardId == taskId)
+                .Where(x => x.CardId == cardId)
                 .OrderBy(x=> x.ModifiedAt)
                 .ToList());
         }

@@ -23,7 +23,7 @@ namespace UserAvatar.Dal.Storages
            _userAvatarContext = userAvatarContext;
         }
 
-        public async Task<Column> Create(Column column)
+        public async Task<Column> CreateAsync(Column column)
         {
             await LockSlim.WaitAsync();
             try
@@ -64,15 +64,15 @@ namespace UserAvatar.Dal.Storages
             return zzz;
         }
         
-        public async Task DeleteApparent(int columnId)
+        public async Task DeleteApparentAsync(int columnId)
         {
-            var column = await GetColumnById(columnId);
+            var column = await GetColumnByIdAsync(columnId);
             if (column.IsDeleted)
                 throw new Exception($"Already Deleted!{columnId}");
             column.IsDeleted = true;
 
             var columnList = InternalGetAllColumns(column);
-            await RecheckPosition(columnList.ToList(),column.Index);
+            await RecheckPositionAsync(columnList.ToList(),column.Index);
 
             //column.Index = -1;
             //_userAvatarContext.Update(column);
@@ -80,7 +80,7 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public async Task RecurrentlyDelete(IEnumerable<Column> columns)
+        public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
         {
             foreach (var column in columns)
             {
@@ -90,17 +90,17 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public async Task<IQueryable<Column>> GetAllColumns(int boardId)
+        public async Task<IQueryable<Column>> GetAllColumnsAsync(int boardId)
         {
             //todo: maybe change
-            var task = Task.Factory.StartNew(() =>
+            var card = Task.Factory.StartNew(() =>
                 _userAvatarContext.Columns
                     .Include(x=> x.Cards).Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));
-            return await task;
+            return await card;
             
         }
 
-        public async Task Update(Column column)
+        public async Task UpdateAsync(Column column)
         {
             _userAvatarContext.Entry(column).State = EntityState.Modified;
             await _userAvatarContext.SaveChangesAsync();
@@ -112,9 +112,9 @@ namespace UserAvatar.Dal.Storages
                 .Where(x => x.BoardId == column.BoardId);
         }
 
-        public async Task ChangePosition(int columnId, int newIndex)
+        public async Task ChangePositionAsync(int columnId, int newIndex)
         {
-            var thisColumn = await GetColumnById(columnId);
+            var thisColumn = await GetColumnByIdAsync(columnId);
             
             var columnList = _userAvatarContext.Columns
                 .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id && !x.IsDeleted);
@@ -129,12 +129,12 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public async Task<Column> GetColumnById(int id)
+        public async Task<Column> GetColumnByIdAsync(int id)
         {
             return await _userAvatarContext.Columns.FindAsync(id);
         }
 
-        private static async Task RecheckPosition(List<Column> columnList, int deletedPosition)
+        private static async Task RecheckPositionAsync(List<Column> columnList, int deletedPosition)
         {
             await LockSlim.WaitAsync();
             try
@@ -151,6 +151,7 @@ namespace UserAvatar.Dal.Storages
                 LockSlim.Release();
             }
         }
+
         private static bool PositionAlgorithm(int previousIndex, int newIndex, IQueryable<Column> columnList)
         {
             if(previousIndex - newIndex == 0)

@@ -67,7 +67,7 @@ namespace UserAvatar.Dal.Storages
 
             board.IsDeleted = true;
 
-            await _columnStorage.RecurrentlyDelete(board.Columns);
+            await _columnStorage.RecurrentlyDeleteAsync(board.Columns);
 
             await _dbContext.SaveChangesAsync();
         }

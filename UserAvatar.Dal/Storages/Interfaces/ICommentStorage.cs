@@ -16,7 +16,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<Comment> GetCommentByCommentId(int commentId);
 
-        Task<List<Comment>> GetAll(int taskId);
+        Task<List<Comment>> GetAll(int cardId);
 
         int GetTaskIdByCommentId(int commentId);
     }

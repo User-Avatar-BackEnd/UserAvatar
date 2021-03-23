@@ -4,7 +4,6 @@ using AutoMapper;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
-using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Bll.TaskManager.Services
@@ -32,7 +31,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (_cardStorage.GetCardsCountInColumn(columnId) > 100) throw new Exception();
 
-            var task = new Card
+            var card = new Card
             {
                 Title = title,
                 Description = "",
@@ -44,9 +43,9 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ColumnId = columnId
             };
 
-            task = _cardStorage.Create(task);
-            var taskModel = _mapper.Map<Card, CardModel>(task);
-            return taskModel;
+            card = _cardStorage.Create(card);
+            var cardModel = _mapper.Map<Card, CardModel>(card);
+            return cardModel;
         }
 
         public async Task UpdateCardAsync(CardModel cardModel, int columnId, int? responsibleId, int userId)
@@ -55,38 +54,38 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(cardModel.Id);
+            var card = _cardStorage.GetById(cardModel.Id);
 
-            task.Title = task.Title;
-            task.Description = cardModel.Description;
-            task.ColumnId = columnId;
-            task.ResponsibleId = responsibleId;
-            task.IsHidden = cardModel.IsHidden;
-            task.ModifiedAt = DateTime.UtcNow;
-            task.Priority = cardModel.Priority;
+            card.Title = card.Title;
+            card.Description = cardModel.Description;
+            card.ColumnId = columnId;
+            card.ResponsibleId = responsibleId;
+            card.IsHidden = cardModel.IsHidden;
+            card.ModifiedAt = DateTime.UtcNow;
+            card.Priority = cardModel.Priority;
 
-            _cardStorage.Update(task);
+            _cardStorage.Update(card);
         }
 
-        public async Task<CardModel> GetByIdAsync(int taskId, int userId)
+        public async Task<CardModel> GetByIdAsync(int cardId, int userId)
         {
-            var boardId = _cardStorage.GetBoardId(taskId);
-            if (!await _boardStorage.IsUserBoardAsync(userId,boardId)) throw new Exception();
+            var boardId = _cardStorage.GetBoardId(cardId);
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(taskId);
+            var card = _cardStorage.GetById(cardId);
 
-            return task == null ? null : _mapper.Map<Card, CardModel>(task);
+            return card == null ? null : _mapper.Map<Card, CardModel>(card);
         }
 
-        public async Task DeleteCard(int taskId, int userId)
+        public async Task DeleteCard(int cardId, int userId)
         {
-            if (_cardStorage.GetById(taskId) == null)
+            if (_cardStorage.GetById(cardId) == null)
                 return;
-            var boardId = _cardStorage.GetBoardId(taskId);
+            var boardId = _cardStorage.GetBoardId(cardId);
 
             if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
-            _cardStorage.Delete(taskId);
+            _cardStorage.Delete(cardId);
         }
     }
 }

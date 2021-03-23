@@ -50,21 +50,21 @@ namespace UserAvatar.Dal.Storages
             return column.Cards.Where(x => !x.IsDeleted).Count();
         }
 
-        public int GetBoardId(int taskId)
+        public int GetBoardId(int cardId)
         {
             return _dbContext.Cards
                 .Include(x => x.Column)
-                .FirstOrDefault(x => x.Id == taskId)
+                .FirstOrDefault(x => x.Id == cardId)
                 .Column.BoardId;
         }
 
-        public void Delete(int taskId)
+        public void Delete(int cardId)
         {
-            var task = _dbContext.Cards.FirstOrDefault(x => x.Id == taskId);
+            var card = _dbContext.Cards.FirstOrDefault(x => x.Id == cardId);
 
-            if (task == null) throw new Exception();
+            if (card == null) throw new Exception();
 
-            task.IsDeleted = true;
+            card.IsDeleted = true;
             //todo: comments soft delete
             _dbContext.SaveChanges();
         }
