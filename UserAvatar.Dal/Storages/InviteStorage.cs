@@ -22,18 +22,15 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.AddAsync(invite);
             await _userAvatarContext.SaveChangesAsync();
         }
-
         public async Task UpdateAsync(Invite invite)
         {
             _userAvatarContext.Update(invite);
             await _userAvatarContext.SaveChangesAsync();
         }
-        
         public async Task<Invite> GetByIdAsync(int inviteId)
         {
             return await _userAvatarContext.Invites.FindAsync(inviteId);
-        } 
-        
+        }
         public async Task<Invite> GetInviteByBoardAsync(int userId, int boardId)
         { 
             //todo: implement!
@@ -44,15 +41,6 @@ namespace UserAvatar.Dal.Storages
         {
             //???????????????????????????????????????????????????
             return await Task.FromResult(_userAvatarContext.Invites.Where(x => x.InvitedId == userId && x.Status == 0).ToList());
-        }
-        
-        public bool IsUserInviteD(int inviteId, int userId)
-        {
-            return _userAvatarContext.Invites.Any(x => x.Id == inviteId && x.InvitedId == userId);
-        }
-        public bool IsUserInviteR(int inviteId, int userId)
-        {
-            return _userAvatarContext.Invites.Any(x => x.Id == inviteId && x.InviterId == userId);
         }
     }
 }
