@@ -1,6 +1,6 @@
 ﻿namespace UserAvatar.Api.Contracts.Requests
 {
-    public class UpdateCommentRequest
+    public class UpdateCommentDto
     {
         public int CommentId { get; set; }
         

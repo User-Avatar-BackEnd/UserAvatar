@@ -36,14 +36,14 @@ namespace UserAvatar.Api.Extentions
             CreateMap<CommentModel, Comment>();
 
 
-            CreateMap<BoardModel, BoardShortDto>();
+            CreateMap<BoardModel, BoardShortVm>();
 
             CreateMap<Board, BoardModel>();
-            CreateMap<UserModel, UserShortDto>();
+            CreateMap<UserModel, UserShortVm>();
             // .ForMember(x=> x.Rank, x=>x.MapFrom(x=>x.))
 
 
-            CreateMap<ColumnModel, ColumnDto>()
+            CreateMap<ColumnModel, ColumnVm>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
             //CreateMap<IEnumerable<ColumnModel>, IEnumerable<ColumnDto>>();
@@ -51,34 +51,34 @@ namespace UserAvatar.Api.Extentions
 
             // CreateMap<IEnumerable<Member>>
 
-            CreateMap<UserModel, UserShortDto>();
+            CreateMap<UserModel, UserShortVm>();
 
-            CreateMap<BoardModel, BoardDto>()
+            CreateMap<BoardModel, BoardVm>()
                 .ForMember(x=> x.Members, opt=> opt.MapFrom(src=> src.Members.Select(x=>x.User)));
 
 
-            CreateMap<CardModel, CardDetailedDto>()
+            CreateMap<CardModel, CardDetailedVm>()
                 .ForMember(x => x.ColumnId, x => x.MapFrom(x => x.Column.Id))
                 .ForMember(x => x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id));
             
-            CreateMap<CardModel, CardShortDto>()
+            CreateMap<CardModel, CardShortVm>()
                 .ForMember(x=> x.ColumnId, opt => opt.MapFrom(src => src.Column.Id))
                 .ForMember(x=> x.ResponsibleId, opt => opt.MapFrom(src => src.Responsible.Id))
                 .ForMember(x=> x.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count));
 
             //CreateMap<IEnumerable<CardModel>, IEnumerable<CardShortDto>>();
            
-           CreateMap<CommentModel, CommentDto>()
+           CreateMap<CommentModel, CommentVm>()
                 .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
             
-            CreateMap<CardModel, CardDto>()
+            CreateMap<CardModel, CardVm>()
                 .ForMember(x => x.CommentsCount, y => y.MapFrom(x => x.Comments.Count))
                 .ForMember(x=> x.ResponsibleId, y=> y.MapFrom(x=> x.Responsible.Id));
 
-            CreateMap<ColumnModel, FullColumnDto>()
+            CreateMap<ColumnModel, FullColumnVm>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
-            CreateMap<UpdateCardRequest, CardModel>();
+            CreateMap<UpdateCardDto, CardModel>();
         }
     }
 }
