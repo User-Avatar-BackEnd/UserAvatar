@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -52,6 +53,10 @@ namespace UserAvatar.Api.Controllers
         */
 
         [HttpPost]
+        [ProducesResponseType(typeof(CommentVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int cardId, CommentDto commentDto)
         {
             var result = await _commentService.CreateNewCommentAsync(UserId, boardId, cardId, commentDto.Text);
@@ -63,6 +68,10 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpPatch("{commentId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> UpdateCommentAsync(int boardId, int cardId, int commentId, CommentDto commentDto)
         {
             var result = await _commentService.UpdateCommentAsync(UserId, boardId, cardId, commentId, commentDto.Text);
@@ -74,6 +83,10 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpDelete("{commentId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult> DeleteCommentAsync(int boardId, int cardId, int commentId)
         {
             var result = await _commentService.DeleteCommentAsync(UserId, boardId, cardId, commentId);
