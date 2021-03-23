@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
-using UserAvatar.Api.Contracts.ViewModel;
+using UserAvatar.Api.Contracts.ViewModels;
 
 namespace UserAvatar.Api.Controllers
 {

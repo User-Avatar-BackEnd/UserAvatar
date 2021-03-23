@@ -1,4 +1,4 @@
-﻿namespace UserAvatar.Api.Contracts.ViewModel
+﻿namespace UserAvatar.Api.Contracts.ViewModels
 {
     public class UserDataVm
     {

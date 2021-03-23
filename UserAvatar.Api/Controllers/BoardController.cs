@@ -11,7 +11,7 @@ using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Bll.TaskManager.Infrastructure;
-using UserAvatar.Api.Contracts.ViewModel;
+using UserAvatar.Api.Contracts.ViewModels;
 
 namespace UserAvatar.Api.Controllers
 {

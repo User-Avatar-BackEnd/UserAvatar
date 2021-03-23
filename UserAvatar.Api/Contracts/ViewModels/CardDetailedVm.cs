@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UserAvatar.Api.Contracts.ViewModel
+namespace UserAvatar.Api.Contracts.ViewModels
 {
     public class CardDetailedVm
     {
