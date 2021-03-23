@@ -1,6 +1,6 @@
-﻿namespace UserAvatar.Api.Contracts.Requests
+﻿namespace UserAvatar.Api.Contracts.Dtos
 {
-    public class CreateColumnRequest
+    public class CreateColumnDto
     {
         public int BoardId { get; set; }
         public string Title { get; set; }

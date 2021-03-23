@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UserAvatar.Api.Contracts;
-using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
+using UserAvatar.Api.Contracts.ViewModel;
 
 namespace UserAvatar.Api.Extentions
 {

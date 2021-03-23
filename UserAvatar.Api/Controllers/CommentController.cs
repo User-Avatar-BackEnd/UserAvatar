@@ -7,7 +7,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -40,19 +39,19 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CommentDto>> CreateCommentAsync(CommentRequest commentRequest)
+        public async Task<ActionResult<CommentDto>> CreateCommentAsync(CommentDto commentDto)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            var comment = await _commentService.CreateNewCommentAsync(userId, commentRequest.CardId, commentRequest.Text);
+            var comment = await _commentService.CreateNewCommentAsync(userId, commentDto.CardId, commentDto.Text);
             
             return Ok(_mapper.Map<CommentModel,CommentDto>(comment));
         }
         
         [HttpPatch]
-        public async Task<IActionResult> UpdateCommentAsync(UpdateCommentRequest updateCommentRequest)
+        public async Task<IActionResult> UpdateCommentAsync(UpdateCommentDto updateCommentDto)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            await _commentService.UpdateCommentAsync(userId, updateCommentRequest.CommentId, updateCommentRequest.Text);
+            await _commentService.UpdateCommentAsync(userId, updateCommentDto.CommentId, updateCommentDto.Text);
 
             return Ok();
         }

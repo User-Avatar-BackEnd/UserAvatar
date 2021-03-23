@@ -23,7 +23,7 @@ namespace UserAvatar.Api.Extentions
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             services.AddAutoMapper(c => c.AddProfile<MappingProfile>(), typeof(Startup));
-
+          
             return services
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IBoardService, BoardService>()

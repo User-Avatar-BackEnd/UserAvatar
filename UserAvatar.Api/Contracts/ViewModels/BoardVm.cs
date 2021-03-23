@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Dtos;
 
-namespace UserAvatar.Api.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.ViewModel
 {
     public class BoardVm
     {
@@ -14,8 +14,8 @@ namespace UserAvatar.Api.Contracts.Dtos
 
         public string Title { get; set; }
 
-        public List<UserShortDto> Members { get; set; }
+        public List<UserShortVm> Members { get; set; }
 
-        public List<FullColumnDto> Columns { get; set; }
+        public List<FullColumnVm> Columns { get; set; }
     }
 }
