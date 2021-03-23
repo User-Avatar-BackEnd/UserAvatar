@@ -32,7 +32,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<CardModel>(ResultCode.NotFound);
             }
 
-            if (await _boardStorage.IsUserBoardAsync(userId, boardId))
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
             {
                 return new Result<CardModel>(ResultCode.Forbidden);
             }
