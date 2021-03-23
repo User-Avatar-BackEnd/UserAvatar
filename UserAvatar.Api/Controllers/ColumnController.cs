@@ -8,27 +8,33 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
-    
+
     [ApiController]
     [Authorize]
-    [Route("api/v1/column")]
+    [Route("api/v1/boards/{boardId:int}/columns")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class ColumnController : ControllerBase
     {
         private readonly IColumnService _columnService;
         private readonly IMapper _mapper;
-        public ColumnController(IColumnService columnService, IMapper mapper)
+        private readonly IApplicationUser _applicationUser;
+        public ColumnController(IColumnService columnService, IMapper mapper, IApplicationUser applicationUser)
         {
             _columnService = columnService;
             _mapper = mapper;
+            _applicationUser = applicationUser;
         }
 
+        private int UserId => _applicationUser.Id;
+
+        /*
         [HttpGet("{boardId:int}")]
         public async Task<ActionResult<List<ColumnVm>>> GetAllColumnsAsync(int boardId)
         {
@@ -39,44 +45,35 @@ namespace UserAvatar.Api.Controllers
 
             return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnVm>>(foundColumn));
         }
-        
+        */
+
         [HttpPost]
-        public async Task<IActionResult> CreateColumnAsync(CreateColumnDto createColumnRequest)
+        public async Task<IActionResult> CreateColumnAsync(int boardId, TitleDto titleDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            var thisColumn = await _columnService
-                .CreateAsync(userId,createColumnRequest.BoardId,createColumnRequest.Title);
-            return Ok(_mapper.Map<ColumnModel,FullColumnVm>(thisColumn));
+            titleDto.Title = titleDto.Title.Trim();
+            var thisColumn = await _columnService.CreateAsync(UserId, boardId, titleDto.Title);
+            return Ok(_mapper.Map<ColumnModel, FullColumnVm>(thisColumn));
         }
-        
-        [HttpPatch]
-        public async Task<IActionResult> UpdateColumnAsync(UpdateColumnDto updateColumnDto)
+
+        [HttpPatch("{columnId:int}")]
+        public async Task<IActionResult> UpdateColumnAsync(int boardId, int columnId, TitleDto titleDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.UpdateAsync(userId,updateColumnDto.ColumnId, updateColumnDto.Title);
+            titleDto.Title = titleDto.Title.Trim();
+            await _columnService.UpdateAsync(UserId,columnId, titleDto.Title);
             return Ok();
         }
         
-        [HttpDelete]
-        public async Task<IActionResult> DeleteColumnAsync([FromQuery]int columnId)
+        [HttpDelete("{columnId:int}")]
+        public async Task<IActionResult> DeleteColumnAsync(int boardId, int columnId)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.DeleteAsync(userId,columnId);
+            await _columnService.DeleteAsync(UserId, columnId);
             return Ok();
         }
         
-        [HttpPost("[controller]/changePosition/")]
-        public async Task<IActionResult> ChangeColumnPositionAsync(int columnId, int positionIndex)
-        {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.ChangePositionAsync(userId,columnId,positionIndex);
+        [HttpPost("{columnId:int}/position")]
+        public async Task<IActionResult> ChangeColumnPositionAsync(int boardId, int columnId, [FromQuery]int to)
+        {   
+            await _columnService.ChangePositionAsync(UserId,columnId,to);
             return Ok();
         }
     }
