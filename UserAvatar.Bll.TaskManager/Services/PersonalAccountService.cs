@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using UserAvatar.Bll.TaskManager.Services;
+using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Bll.TaskManager.Services
@@ -13,14 +11,11 @@ namespace UserAvatar.Bll.TaskManager.Services
     public class PersonalAccountService : IPersonalAccountService
     {
         private readonly IUserStorage _userStorage;
-        // There is just to use Update
-        private readonly IPersonalAccountStorage _personalAccountStorage;
         private readonly IMapper _mapper;
 
-        public PersonalAccountService(IUserStorage userStorage, IPersonalAccountStorage personalAccountStorage, IMapper mapper)
+        public PersonalAccountService(IUserStorage userStorage, IMapper mapper)
         {
             _userStorage = userStorage;
-            _personalAccountStorage = personalAccountStorage;
             _mapper = mapper;
         }
 
@@ -33,13 +28,11 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (!PasswordHash.ValidatePassword(oldPassword, user.PasswordHash)) throw new SystemException("Invalid old password");
 
-            var newPasswordHash = PasswordHash.CreateHash(newPassword);
+            if (PasswordHash.ValidatePassword(newPassword,user.PasswordHash)) throw new SystemException("New password can't be the same as the old password");
 
-            if (user.PasswordHash == newPasswordHash) throw new SystemException("New password can't be the same as the old password");
+            user.PasswordHash = PasswordHash.CreateHash(newPassword);
 
-            user.PasswordHash = newPasswordHash;
-
-             _personalAccountStorage.Update(user);
+            await _userStorage.UpdateAsync(user);
         }
 
         public async Task ChangeLoginAsync(int userId, string newLogin)
@@ -54,8 +47,16 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             user.Login = newLogin;
 
-            _personalAccountStorage.Update(user);
+            await _userStorage.UpdateAsync(user);
         }
 
+        public async Task<UserModel> GetUsersDataAsync(int userId)
+        {
+            var user = await _userStorage.GetByIdAsync(userId);
+
+            if (user == null) throw new SystemException("User doesn't exist");
+
+            return _mapper.Map<User, UserModel>(user);
+        }
     }
 }

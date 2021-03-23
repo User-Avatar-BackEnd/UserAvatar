@@ -84,35 +84,7 @@ namespace UserAvatar.Api
             
             services.AddCors();
             
-            services.AddOptions<JwtOptions>();
-            var jwtOptions = services
-                .BuildServiceProvider()
-                .GetRequiredService<IOptions<JwtOptions>>()
-                .Value;
-            
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = jwtOptions.RequireHttps;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = jwtOptions.Issuer,
-
-                        ValidateAudience = true,
-                        ValidAudience = jwtOptions.Audience,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
-
-                        IssuerSigningKey = jwtOptions.GetSymmetricSecurityKey(),
-                        ValidateIssuerSigningKey = true
-                    };
-                });
-
-
         }
-        
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

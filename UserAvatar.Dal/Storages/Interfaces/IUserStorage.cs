@@ -5,14 +5,16 @@ namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface IUserStorage
     {
-        public Task<User> GetByEmailAsync(string email);
+        Task<User> GetByEmailAsync(string email);
 
-        public Task CreateAsync(User user);
+        Task CreateAsync(User user);
 
-        public Task<bool> IsLoginExistAsync(string login);
+        Task<bool> IsLoginExistAsync(string login);
 
-        public Task<bool> IsUserExistAsync(string email);
+        Task<bool> IsUserExistAsync(string email);
 
-        public Task<User> GetByIdAsync(int id);
+        Task<User> GetByIdAsync(int id);
+
+        Task UpdateAsync(User user);
     }
 }

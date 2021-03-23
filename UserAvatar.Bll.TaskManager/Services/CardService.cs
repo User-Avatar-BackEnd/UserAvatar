@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
-using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Bll.TaskManager.Services
@@ -23,7 +23,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public CardModel CreateCard(string title, int columnId, int userId)
         {
-            //var boardId = _cardStorage.GetBoardId(taskId);
+            //var boardId = _cardStorage.GetBoardId(cardId);
             //if (_boardStorage.IsUsersBoard(userId, boardId)) return null;//isUserBoard
 
             if (string.IsNullOrEmpty(title)) return null;
@@ -31,7 +31,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (_cardStorage.GetCardsCountInColumn(columnId) > 100) throw new Exception();
 
-            var task = new Card
+            var card = new Card
             {
                 Title = title,
                 Description = "",
@@ -43,47 +43,49 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ColumnId = columnId
             };
 
-            task = _cardStorage.Create(task);
-            var taskModel = _mapper.Map<Card, CardModel>(task);
-            return taskModel;
+            card = _cardStorage.Create(card);
+            var cardModel = _mapper.Map<Card, CardModel>(card);
+            return cardModel;
         }
 
-        public void UpdateCard(CardModel cardModel, int columnId, int? responsibleId, int userId)
+        public async Task UpdateCardAsync(CardModel cardModel, int columnId, int? responsibleId, int userId)
         {
             var boardId = _cardStorage.GetBoardId(cardModel.Id);
-            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(cardModel.Id);
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
-            task.Title = task.Title;
-            task.Description = cardModel.Description;
-            task.ColumnId = columnId;
-            task.ResponsibleId = responsibleId;
-            task.IsHidden = cardModel.IsHidden;
-            task.ModifiedAt = DateTime.UtcNow;
-            task.Priority = cardModel.Priority;
+            var card = _cardStorage.GetById(cardModel.Id);
 
-            _cardStorage.Update(task);
+            card.Title = card.Title;
+            card.Description = cardModel.Description;
+            card.ColumnId = columnId;
+            card.ResponsibleId = responsibleId;
+            card.IsHidden = cardModel.IsHidden;
+            card.ModifiedAt = DateTime.UtcNow;
+            card.Priority = cardModel.Priority;
+
+            _cardStorage.Update(card);
         }
 
-        public CardModel GetById(int taskId, int userId)
+        public async Task<CardModel> GetByIdAsync(int cardId, int userId)
         {
-            var boardId = _cardStorage.GetBoardId(taskId);
-            if (_boardStorage.IsUserBoard(userId,boardId)) throw new Exception();
+            var boardId = _cardStorage.GetBoardId(cardId);
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
 
-            var task = _cardStorage.GetById(taskId);
+            var card = _cardStorage.GetById(cardId);
 
-            if (task == null) return null;
-
-            return _mapper.Map<Card, CardModel>(task);
+            return card == null ? null : _mapper.Map<Card, CardModel>(card);
         }
 
-        public void DeleteCard(int taskId, int userId)
+        public async Task DeleteCard(int cardId, int userId)
         {
-            var boardId = _cardStorage.GetBoardId(taskId);
-            if (_boardStorage.IsUserBoard(userId, boardId)) throw new Exception();
+            if (_cardStorage.GetById(cardId) == null)
+                return;
+            var boardId = _cardStorage.GetBoardId(cardId);
 
-            _cardStorage.Delete(taskId);
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId)) throw new Exception();
+
+            _cardStorage.Delete(cardId);
         }
     }
 }

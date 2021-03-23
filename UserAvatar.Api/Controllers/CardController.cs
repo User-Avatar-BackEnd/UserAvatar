@@ -6,6 +6,7 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using System.Threading.Tasks;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -23,20 +24,19 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = _cardService.GetById(id, userId);
-            if (task == null) BadRequest();
+            var card = await _cardService.GetByIdAsync(id, userId);
+            if (card == null) BadRequest();
             
+            var cardDto = _mapper.Map<CardModel, CardDetailedDto>(card);
 
-            var taskDto = _mapper.Map<CardModel, CardDetailedDto>(task);
+            cardDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
 
-            taskDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
-
-            return Ok(taskDto);
+            return Ok(cardDto);
         }
 
         [HttpPost]
@@ -45,22 +45,22 @@ namespace UserAvatar.Api.Controllers
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = _cardService.CreateCard(request.Title, request.ColumnId, userId);
+            var card = _cardService.CreateCard(request.Title, request.ColumnId, userId);
 
-            var taskDto = _mapper.Map<CardModel, CardShortDto>(task);
+            var cardDto = _mapper.Map<CardModel, CardShortDto>(card);
 
-            return Ok(taskDto);
+            return Ok(cardDto);
         }
 
         [HttpPatch]
-        public IActionResult UpdateCard(UpdateCardRequest request)
+        public async Task<IActionResult> UpdateCard(UpdateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var taskModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
+            var cardModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
 
-            _cardService.UpdateCard(taskModel, request.ColumnId, request.ResponsibleId, userId);
+            await _cardService.UpdateCardAsync(cardModel, request.ColumnId, request.ResponsibleId, userId);
 
             return Ok();
         }
@@ -71,7 +71,7 @@ namespace UserAvatar.Api.Controllers
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            _cardService.DeleteCard(userId, id);
+            _cardService.DeleteCard(id, userId);
 
             return Ok();
         }
