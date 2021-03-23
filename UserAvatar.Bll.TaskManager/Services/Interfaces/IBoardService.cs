@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IBoardService
     {
-        System.Threading.Tasks.Task<IEnumerable<BoardModel>> GetAllBoardsAsync(int userId);
+        Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId);
 
-        System.Threading.Tasks.Task CreateBoardAsync(int userId, string title);
+        Task<int> CreateBoardAsync(int userId, string title);
 
-        System.Threading.Tasks.Task<BoardModel> GetBoardAsync(int userId, int boardId);
+        Task<Result<BoardModel>> GetBoardAsync(int userId, int boardId);
 
-        System.Threading.Tasks.Task RenameBoardAsync(int userId, int boardId, string title);
+        Task<int> RenameBoardAsync(int userId, int boardId, string title);
 
-        System.Threading.Tasks.Task DeleteBoardAsync(int userId, int boardId);
+        Task<int> DeleteBoardAsync(int userId, int boardId);
     }
 }

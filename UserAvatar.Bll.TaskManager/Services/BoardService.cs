@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
@@ -21,14 +22,16 @@ namespace UserAvatar.Bll.TaskManager.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<BoardModel>> GetAllBoardsAsync(int userId)
+        public async Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId)
         {
             var boards = await _boardStorage.GetAllBoardsAsync(userId);
 
-            return _mapper.Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
+            var boardsModel = _mapper.Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
+
+            return new Result<IEnumerable<BoardModel>>(boardsModel);
         }
 
-        public async Task CreateBoardAsync(int userId, string title)
+        public async Task<int> CreateBoardAsync(int userId, string title)
         {
             var board = new Board()
             {
@@ -41,48 +44,60 @@ namespace UserAvatar.Bll.TaskManager.Services
             var boards = await GetAllBoardsAsync(userId);
 
             //todo:config
-            if (boards.Count() >= 10)
+            if (boards.Value.Count() >= 10)
             {
-                throw new Exception("You already create maximum 10 boards");
-            }
-
-            if (await _boardStorage.DoesUserHasBoardAsync(userId, board.Title))
-            {
-                throw new Exception("You already create maximum 10 boards");
+                return ResultCode.MaxBoardCount;
             }
 
             await _boardStorage.CreateBoardAsync(board);
+            return ResultCode.Success;
         }
 
-        public async Task<BoardModel> GetBoardAsync(int userId, int boardId)
+        public async Task<Result<BoardModel>> GetBoardAsync(int userId, int boardId)
         {
-            var board = await _boardStorage.GetBoardAsync(userId, boardId);
+            var board = await _boardStorage.GetBoardAsync(boardId);
+            if (board == null)
+            {
+                return new Result<BoardModel>(ResultCode.NotFound);
+            }
 
-            if (board == null) throw new Exception();
+            var permission = await _boardStorage.IsUserBoardAsync(userId, boardId);
+            if (!permission)
+            {
+                return new Result<BoardModel>(ResultCode.Forbidden);
+            }
 
-            return _mapper.Map<Board, BoardModel>(board);
+            return new Result<BoardModel>(_mapper.Map<Board, BoardModel>(board));
         }
 
-        public async Task RenameBoardAsync(int userId, int boardId, string title)
+        public async Task<int> RenameBoardAsync(int userId, int boardId, string title)
         {
-            var board = await _boardStorage.GetBoardAsync(userId, boardId);
+            var board = await _boardStorage.GetBoardAsync(boardId);
+            if (board == null)
+            {
+                return ResultCode.NotFound;
+            }
 
-            if (board == null) throw new Exception("This board doesn't exist");
-
-            var isSameBoardExist = _boardStorage.DoesUserHasBoardAsync(userId, title);
-
-            if (await isSameBoardExist) throw new SystemException();
+            var permission = await _boardStorage.IsUserBoardAsync(userId, boardId);
+            if (!permission)
+            {
+                return ResultCode.Forbidden;
+            }
 
             board.Title = title;
 
-           await _boardStorage.UpdateAsync(userId, board);
+            await _boardStorage.UpdateAsync(userId, board);
+            return ResultCode.Success;
         }
 
-        public async Task DeleteBoardAsync(int userId, int boardId)
+        public async Task<int> DeleteBoardAsync(int userId, int boardId)
         {
-            if (!await _boardStorage.IsOwnerBoardAsync(userId, boardId)) throw new Exception();
-
+            if (!await _boardStorage.IsOwnerBoardAsync(userId, boardId))
+            {
+                return ResultCode.Forbidden;
+            }
             await _boardStorage.DeleteBoardAsync(userId, boardId);
+            return ResultCode.Success;
         }
     }
 }
