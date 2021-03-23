@@ -6,6 +6,7 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
+using System;
 
 namespace UserAvatar.Api.Extentions
 {
@@ -84,5 +85,6 @@ namespace UserAvatar.Api.Extentions
 
 
         }
+
     }
 }

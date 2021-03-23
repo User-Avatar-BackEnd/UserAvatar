@@ -14,7 +14,7 @@ using UserAvatar.Bll.TaskManager.Infrastructure;
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/boards/{boardId:int}/columns/{columnId:int}/cards")]
+    [Route("api/v1/boards/{boardId:int}/cards")]
     public class CardController : ControllerBase
     {
         private readonly ICardService _cardService;
@@ -35,7 +35,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> GetByIdAsync(int boardId, int columnId, int cardId)
+        public async Task<IActionResult> GetByIdAsync(int boardId, int cardId)
         {
             var result = await _cardService.GetByIdAsync(boardId, cardId, UserId);
 
@@ -50,6 +50,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
+        [Route("~/api/v1/boards/{boardI:int}/columns/{columnId:int}/cards")]
         [ProducesResponseType(typeof(CardShortVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -74,11 +75,12 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> UpdateCardAsync(int boardId, int columnId, int cardId, UpdateCardDto updateCardDto)
+        public async Task<IActionResult> UpdateCardAsync(int boardId, int cardId, UpdateCardDto updateCardDto)
         {
             var cardModel = _mapper.Map<UpdateCardDto, CardModel>(updateCardDto);
+            cardModel.Id = cardId;
 
-            var result = await _cardService.UpdateCardAsync(cardModel, boardId, columnId, updateCardDto.ResponsibleId, UserId);
+            var result = await _cardService.UpdateCardAsync(cardModel, boardId, UserId);
 
             return StatusCode(result);
         }
@@ -87,7 +89,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteCardAsync(int boardId, int columnId, int cardId)
+        public async Task<IActionResult> DeleteCardAsync(int boardId, int cardId)
         {
             var result = await _cardService.DeleteCardAsync(boardId, cardId, UserId);
 
