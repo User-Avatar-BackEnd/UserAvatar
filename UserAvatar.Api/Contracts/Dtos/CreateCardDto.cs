@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UserAvatar.Api.Contracts.Requests
+namespace UserAvatar.Api.Contracts.Dtos
 {
     public class CreateCardDto
     {

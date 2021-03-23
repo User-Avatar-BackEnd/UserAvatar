@@ -14,7 +14,7 @@ namespace UserAvatar.Api.Options
 
         public int Id => GetUserId();
         
-        public int GetUserId()
+        private int GetUserId()
         {
             var request = _httpContextAccessor.HttpContext
                 ?.User.Claims.FirstOrDefault(x => x.Type == "id");

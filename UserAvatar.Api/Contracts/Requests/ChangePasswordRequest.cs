@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UserAvatar.Api.Contracts.Requests
 {
-    public class ChangePasswordDto
+    public class ChangePasswordRequest
     {
         [Required(AllowEmptyStrings = false)]
         [StringLength(64, MinimumLength = 5)]

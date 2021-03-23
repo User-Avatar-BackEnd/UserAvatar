@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UserAvatar.Api.Contracts.Dtos
+namespace UserAvatar.Api.Contracts.ViewModel
 {
     public class CommentVm
     {

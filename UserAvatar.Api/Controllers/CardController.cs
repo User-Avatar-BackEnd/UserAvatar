@@ -2,11 +2,11 @@
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using System.Threading.Tasks;
+using UserAvatar.Api.Contracts.ViewModel;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -32,35 +32,35 @@ namespace UserAvatar.Api.Controllers
             var card = await _cardService.GetByIdAsync(id, userId);
             if (card == null) BadRequest();
             
-            var cardDto = _mapper.Map<CardModel, CardDetailedDto>(card);
+            var cardVm = _mapper.Map<CardModel, CardDetailedVm>(card);
 
-            cardDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
+            cardVm.Comments.ForEach(x => x.Editable = x.UserId == userId);
 
-            return Ok(cardDto);
+            return Ok(cardVm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCardAsync(CreateCardRequest request)
+        public async Task<IActionResult> AddCardAsync(CreateCardDto createCardDto)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var card = await _cardService.CreateCardAsync(request.Title, request.ColumnId, userId);
+            var card = await _cardService.CreateCardAsync(createCardDto.Title, createCardDto.ColumnId, userId);
 
-            var cardDto = _mapper.Map<CardModel, CardShortDto>(card);
+            var cardVm = _mapper.Map<CardModel, CardShortVm>(card);
 
-            return Ok(cardDto);
+            return Ok(cardVm);
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateCardAsync(UpdateCardRequest request)
+        public async Task<IActionResult> UpdateCardAsync(UpdateCardDto updateCardDto)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var cardModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
+            var cardModel = _mapper.Map<UpdateCardDto, CardModel>(updateCardDto);
 
-            await _cardService.UpdateCardAsync(cardModel, request.ColumnId, request.ResponsibleId, userId);
+            await _cardService.UpdateCardAsync(cardModel, updateCardDto.ColumnId, updateCardDto.ResponsibleId, userId);
 
             return Ok();
         }
