@@ -12,6 +12,11 @@ namespace UserAvatar.Api.Extentions
 {
     public static class AuthenticationExtension
     {
+        /// <summary>
+        /// Register authentication
+        /// </summary>
+        /// <param name="services">Service collection</param>
+        /// <returns></returns>
         public static IServiceCollection AddAuthentications(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));

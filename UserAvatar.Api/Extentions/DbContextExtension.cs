@@ -12,6 +12,12 @@ namespace UserAvatar.Api.Extentions
 {
     public static class DbContextExtension
     {
+    /// <summary>
+    /// Register Db contexts
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="configuration">Configuration</param>
+    /// <returns></returns>
         public static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));

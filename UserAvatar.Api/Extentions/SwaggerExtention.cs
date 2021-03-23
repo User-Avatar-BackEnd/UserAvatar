@@ -6,6 +6,11 @@ namespace UserAvatar.Api.Extentions
 {
     public static class SwaggerExtention
     {
+        /// <summary>
+        /// Registers swagger.
+        /// </summary>
+        /// <param name="services">Service collection.</param>
+        /// <returns>Service collection.</returns>
         public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
