@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Api.Contracts.ViewModel;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -21,10 +22,12 @@ namespace UserAvatar.Api.Controllers
     {
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
-        public BoardController(IBoardService boardService, IMapper mapper)
+        private readonly IApplicationUser _applicationUser;
+        public BoardController(IBoardService boardService, IMapper mapper, IApplicationUser applicationUser)
         {
             _boardService = boardService;
             _mapper = mapper;
+            _applicationUser = applicationUser;
         }
 
         [HttpGet]
@@ -32,7 +35,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
         {
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
+            var userId = _applicationUser.Id;
 
             var result = await _boardService.GetAllBoardsAsync(userId);
 
@@ -77,11 +80,11 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            var boardDto = _mapper.Map<BoardModel, BoardVm>(result.Value);
+            var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
-            boardDto.IsOwner = result.Value.User.Id == userId;
+            boardVm.IsOwner = result.Value.User.Id == userId;
 
-            return Ok(boardDto);
+            return Ok(boardVm);
         }
 
         [HttpPatch]
@@ -89,11 +92,11 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> RenameBoardAsync(UpdateBoardDto boardRequest)
+        public async Task<IActionResult> RenameBoardAsync(UpdateBoardDto boardDto)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            int result = await _boardService.RenameBoardAsync(userId, boardRequest.Id, boardRequest.Title);
+            int result = await _boardService.RenameBoardAsync(userId, boardDto.Id, boardDto.Title);
 
             return StatusCode(result);
         }

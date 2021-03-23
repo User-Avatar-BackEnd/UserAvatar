@@ -28,8 +28,6 @@ namespace UserAvatar.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(c=>c.AddProfile<MappingProfile>(), typeof(Startup));
-
             services.AddServices();
             services.AddStorages();
 
@@ -49,16 +47,12 @@ namespace UserAvatar.Api
             
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
         {
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var context = serviceScope.ServiceProvider.GetService<UserAvatarContext>();
-                context?.Database.Migrate();
-                EnsureAdminCreated(context);
-            }
-
-            if (env.IsDevelopment())
+            userAvatarContext?.Database.Migrate();
+            EnsureAdminCreated(userAvatarContext);
+            
+            if (env.IsDevelopment()) 
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
@@ -73,7 +67,7 @@ namespace UserAvatar.Api
             app.UseMiddleware<LoggingMiddleware>();
             
             app.UseRouting();
-
+          
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
-using UserAvatar.Api.Contracts.Dtos;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using UserAvatar.Api.Contracts.ViewModel;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -18,6 +18,7 @@ namespace UserAvatar.Api.Controllers
         private readonly IPersonalAccountService _personalAccountService;
         // unnesessary di
         private readonly IMapper _mapper;
+        
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper)
         {
@@ -54,14 +55,14 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserDataDto>> GetUserDataAsync()
+        public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
             var userData = await _personalAccountService.GetUsersDataAsync(userId);
             // ToDo: get the rest of the needed data from GamificationService
 
-            var userDataDto = new UserDataDto()
+            var userDataVm = new UserDataVm()
             {
                 Email = userData.Email,
                 Login = userData.Login,
@@ -76,7 +77,7 @@ namespace UserAvatar.Api.Controllers
                 NextLevelScore = 300
             };
 
-            return Ok(userDataDto);
+            return Ok(userDataVm);
         }
     }
 }

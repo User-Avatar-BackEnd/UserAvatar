@@ -7,7 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.Api.Contracts.Requests;
+using UserAvatar.Api.Contracts.ViewModel;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -30,34 +30,34 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{boardId:int}")]
-        public async Task<ActionResult<List<ColumnDto>>> GetAllColumnsAsync(int boardId)
+        public async Task<ActionResult<List<ColumnVm>>> GetAllColumnsAsync(int boardId)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
             
             var foundColumn = await _columnService.GetAllColumnsAsync(userId,boardId);
 
-            return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnDto>>(foundColumn));
+            return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnVm>>(foundColumn));
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateColumnAsync(CreateColumnRequest createColumnRequest)
+        public async Task<IActionResult> CreateColumnAsync(CreateColumnDto createColumnRequest)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
             
             var thisColumn = await _columnService
                 .CreateAsync(userId,createColumnRequest.BoardId,createColumnRequest.Title);
-            return Ok(_mapper.Map<ColumnModel,FullColumnDto>(thisColumn));
+            return Ok(_mapper.Map<ColumnModel,FullColumnVm>(thisColumn));
         }
         
         [HttpPatch]
-        public async Task<IActionResult> UpdateColumnAsync(UpdateColumnRequest updateColumnRequest)
+        public async Task<IActionResult> UpdateColumnAsync(UpdateColumnDto updateColumnDto)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
             
-            await _columnService.UpdateAsync(userId,updateColumnRequest.ColumnId, updateColumnRequest.Title);
+            await _columnService.UpdateAsync(userId,updateColumnDto.ColumnId, updateColumnDto.Title);
             return Ok();
         }
         
