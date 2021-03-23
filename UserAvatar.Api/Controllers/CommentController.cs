@@ -4,7 +4,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -52,24 +54,34 @@ namespace UserAvatar.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int cardId, CommentDto commentDto)
         {
-            var comment = await _commentService.CreateNewCommentAsync(UserId, boardId, cardId, commentDto.Text);
+            var result = await _commentService.CreateNewCommentAsync(UserId, boardId, cardId, commentDto.Text);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+            if (result.Code == ResultCode.Forbidden) return Forbid();
             
-            return Ok(_mapper.Map<CommentModel,CommentDto>(comment));
+            return Ok(_mapper.Map<CommentModel,CommentVm>(result.Value));
         }
         
         [HttpPatch("{commentId:int}")]
-        public async Task<IActionResult> UpdateCommentAsync(int boardId, int cardId, int commentId, CommentDto commentDto)
+        public async Task<ActionResult> UpdateCommentAsync(int boardId, int cardId, int commentId, CommentDto commentDto)
         {
-            await _commentService.UpdateCommentAsync(UserId, boardId, cardId, commentId, commentDto.Text);
+            var result = await _commentService.UpdateCommentAsync(UserId, boardId, cardId, commentId, commentDto.Text);
 
-            return Ok();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+
+            return Ok(_mapper.Map<CommentModel, CommentVm>(result.Value));
         }
         
         [HttpDelete("{commentId:int}")]
-        public async Task<IActionResult> DeleteCommentAsync(int boardId, int cardId, int commentId)
+        public async Task<ActionResult> DeleteCommentAsync(int boardId, int cardId, int commentId)
         {
-            await _commentService.DeleteCommentAsync(UserId, boardId, cardId, commentId);
-            return Ok();
+            var result = await _commentService.DeleteCommentAsync(UserId, boardId, cardId, commentId);
+
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
     }
 }
