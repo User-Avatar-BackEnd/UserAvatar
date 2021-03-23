@@ -44,9 +44,6 @@ namespace UserAvatar.Dal.Storages
             var column = await _dbContext.Columns
                 .Include(x => x.Cards)
                 .FirstOrDefaultAsync(x => x.Id == columnId &&!x.IsDeleted);
-            //!x.IsDeleted???
-
-            if (column == null) throw new Exception(); //column dosent exist
 
             return column.Cards.Where(x => !x.IsDeleted).Count();
         }

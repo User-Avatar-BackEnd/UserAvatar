@@ -23,5 +23,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<List<Column>> GetAllColumnsAsync(int boardId);
 
         bool IsUserInBoardByColumnId(int userId, int columnId);
+
+        Task<int> GetColumnsCountInBoardAsync(int boardId);
     }
 }

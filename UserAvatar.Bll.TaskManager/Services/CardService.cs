@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -15,13 +16,20 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IBoardStorage _boardStorage;
         private readonly IColumnStorage _columnStorage;
         private readonly IMapper _mapper;
+        private readonly LimitationOptions _limitations;
 
-        public CardService(ICardStorage cardStorage, IMapper mapper, IBoardStorage boardStorage, IColumnStorage columnStorage)
+        public CardService(
+            ICardStorage cardStorage,
+            IMapper mapper,
+            IBoardStorage boardStorage,
+            IColumnStorage columnStorage,
+            IOptions<LimitationOptions> limitations)
         {
             _cardStorage = cardStorage;
             _boardStorage = boardStorage;
             _mapper = mapper;
             _columnStorage = columnStorage;
+            _limitations = limitations.Value;
         }
 
         public async Task<Result<CardModel>> CreateCardAsync(string title, int boardId,int columnId, int userId)
@@ -37,7 +45,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<CardModel>(ResultCode.Forbidden);
             }
 
-            if (await _cardStorage.GetCardsCountInColumnAsync(columnId) > 100)
+            if (await _cardStorage.GetCardsCountInColumnAsync(columnId) > _limitations.MaxCardCount)
             {
                 return new Result<CardModel>(ResultCode.MaxColumnCount);
             }

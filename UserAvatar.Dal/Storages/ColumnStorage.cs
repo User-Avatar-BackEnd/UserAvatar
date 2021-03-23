@@ -87,6 +87,13 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
+        public async Task<int> GetColumnsCountInBoardAsync(int boardId)
+        {
+            return (await _userAvatarContext.Boards
+                .Include(x => x.Columns)
+                .FirstAsync(x => x.Id == boardId)).Columns.Count;
+        }
+
         public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
         {
             foreach (var column in columns)

@@ -9,7 +9,8 @@ using UserAvatar.Api.Extentions;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
-
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 
 namespace UserAvatar.Api
 {
@@ -28,6 +29,9 @@ namespace UserAvatar.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .Configure<LimitationOptions>(Configuration.GetSection("Limitation"));
+
             services.AddHealthChecks();
             services.AddServices();
             services.AddStorages();
