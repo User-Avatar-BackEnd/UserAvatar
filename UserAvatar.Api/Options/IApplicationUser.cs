@@ -2,6 +2,6 @@
 {
     public interface IApplicationUser
     {
-        int GetUserId();
+        int Id { get; }
     }
 }
