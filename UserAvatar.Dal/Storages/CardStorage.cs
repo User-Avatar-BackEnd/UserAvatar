@@ -77,5 +77,11 @@ namespace UserAvatar.Dal.Storages
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> IsCardComment(int cardId, int commentId)
+        {
+            return await _dbContext.Comments
+                .AnyAsync(x => x.Id == commentId && x.CardId == cardId);
+        }
     }
 }

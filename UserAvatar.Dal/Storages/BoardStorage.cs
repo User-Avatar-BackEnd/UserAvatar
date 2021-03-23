@@ -117,5 +117,16 @@ namespace UserAvatar.Dal.Storages
             return await _dbContext.Columns
                  .AnyAsync(x => x.BoardId == boardId && x.Id == columnId);
         }
+
+        public async Task<bool> IsBoardCard(int boardId, int cardId)
+        {
+            return await _dbContext.Boards
+                .Where(x=>x.Id == boardId)
+                .Include(x=>x.Columns)
+                .ThenInclude(x=> x.Cards)
+                 .AnyAsync(x => x.Columns
+                    .Any(x=> x.Cards.
+                         Any(x=>x.Id == cardId)));
+        }
     }
 }

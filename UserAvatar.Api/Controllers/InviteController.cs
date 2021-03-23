@@ -33,17 +33,17 @@ namespace UserAvatar.Api.Controllers
         
         private int UserId => _applicationUser.Id;
         
-        [HttpPost]
-        public async Task<IActionResult> CreateInvitationAsync(InviteDto inviteDto)
-        {
-            var resultCode = await _inviteService.CreateInviteAsync(inviteDto.BoardId, UserId, inviteDto.Payload);
-            if (resultCode != ResultCode.Success)
-            {
-                return Conflict(resultCode);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> CreateInvitationAsync(InviteDto inviteDto)
+        //{
+        //    var resultCode = await _inviteService.CreateInviteAsync(inviteDto.BoardId, UserId, inviteDto.Payload);
+        //    if (resultCode != ResultCode.Success)
+        //    {
+        //        return Conflict(resultCode);
+        //    }
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         [HttpGet("/login")]
         public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(string query)
@@ -63,6 +63,5 @@ namespace UserAvatar.Api.Controllers
 
             return Ok();
         }
-        
     }
 }

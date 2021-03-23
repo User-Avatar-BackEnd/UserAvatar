@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
+﻿using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -16,7 +12,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/boards/{boardId:int}/columns/{columnId:int}/cards/{cardId:int}/comments")]
+    [Route("api/v1/boards/{boardId:int}/cards/{cardId:int}/comments")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class CommentController:ControllerBase
@@ -54,25 +50,25 @@ namespace UserAvatar.Api.Controllers
         */
 
         [HttpPost]
-        public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int columnId, int cardId, CommentDto commentDto)
+        public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int cardId, CommentDto commentDto)
         {
-            var comment = await _commentService.CreateNewCommentAsync(UserId, cardId, commentDto.Text);
+            var comment = await _commentService.CreateNewCommentAsync(UserId, boardId, cardId, commentDto.Text);
             
             return Ok(_mapper.Map<CommentModel,CommentDto>(comment));
         }
         
         [HttpPatch("{commentId:int}")]
-        public async Task<IActionResult> UpdateCommentAsync(int boardId, int columnId, int cardId, int commentId, CommentDto commentDto)
+        public async Task<IActionResult> UpdateCommentAsync(int boardId, int cardId, int commentId, CommentDto commentDto)
         {
-            await _commentService.UpdateCommentAsync(UserId, commentId, commentDto.Text);
+            await _commentService.UpdateCommentAsync(UserId, boardId, cardId, commentId, commentDto.Text);
 
             return Ok();
         }
         
         [HttpDelete("{commentId:int}")]
-        public async Task<IActionResult> DeleteCommentAsync(int boardId, int columnId, int cardId, int commentId)
+        public async Task<IActionResult> DeleteCommentAsync(int boardId, int cardId, int commentId)
         {
-            await _commentService.DeleteCommentAsync(UserId,commentId);
+            await _commentService.DeleteCommentAsync(UserId, boardId, cardId, commentId);
             return Ok();
         }
     }

@@ -12,6 +12,7 @@ using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Api.Contracts.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -21,11 +22,18 @@ namespace UserAvatar.Api.Controllers
     public class BoardController : ControllerBase
     {
         private readonly IBoardService _boardService;
+        private readonly IInviteService _inviteService;
+
+
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-        public BoardController(IBoardService boardService, IMapper mapper, IApplicationUser applicationUser)
+        public BoardController(IBoardService boardService, 
+            IInviteService inviteService, 
+            IMapper mapper, 
+            IApplicationUser applicationUser)
         {
             _boardService = boardService;
+            _inviteService = inviteService;
             _mapper = mapper;
             _applicationUser = applicationUser;
         }
@@ -106,6 +114,21 @@ namespace UserAvatar.Api.Controllers
             int result = await _boardService.DeleteBoardAsync(UserId, boardId);
 
             return StatusCode(result);
+        }
+
+        [HttpPost("{boardId:int}/invite")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> CreateInvitationAsync(int boardId, [Required] string payload)
+        {
+            var resultCode = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
+            if (resultCode != ResultCode.Success)
+            {
+                return Conflict(resultCode);
+            }
+
+            return Ok();
         }
     }
 }

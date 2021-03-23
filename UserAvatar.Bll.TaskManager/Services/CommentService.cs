@@ -29,9 +29,24 @@ namespace UserAvatar.Bll.TaskManager.Services
             _mapper = mapper;
         }
 
-        public async Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text)
+        public async Task<Result<CommentModel>> CreateNewCommentAsync(int userId, int boardId, int cardId, string text)
         {
-            await ValidateUserByCardAsync(userId, cardId);
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return new Result<CommentModel>(ResultCode.NotFound);
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return new Result<CommentModel>(ResultCode.Forbidden);
+            }
+
+            if (!await _boardStorage.IsBoardCard(boardId, cardId))
+            {
+                return new Result<CommentModel>(ResultCode.Forbidden);
+            }
+
+            //await ValidateUserByCardAsync(userId, cardId);
 
             var newComment = new Comment
             {
@@ -41,14 +56,32 @@ namespace UserAvatar.Bll.TaskManager.Services
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now
             };
+            // TODO: It returns
+            var comment = await _commentStorage.CreateAsync(newComment);
 
-            await _commentStorage.CreateAsync(newComment);
-
-            return _mapper.Map<Comment, CommentModel>(newComment);
+            return new Result<CommentModel>(_mapper.Map<Comment, CommentModel>(comment));
         }
 
-        public async Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text)
+        public async Task<Result<CommentModel>> UpdateCommentAsync(int userId, int boardId, int cardId, int commentId, string text)
         {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return new Result<CommentModel>(ResultCode.NotFound);
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return new Result<CommentModel>(ResultCode.Forbidden);
+            }
+
+            if (!await _boardStorage.IsBoardCard(boardId, cardId))
+            {
+                return new Result<CommentModel>(ResultCode.Forbidden);
+            }
+
+            if(!await _cardStorage.)
+
+
             await ValidateUserByCommentAsync(userId, commentId);
 
             var thisComment = await _commentStorage.GetCommentByCommentIdAsync(commentId);
@@ -59,17 +92,17 @@ namespace UserAvatar.Bll.TaskManager.Services
             return _mapper.Map<Comment, CommentModel>(thisComment);
         }
 
-        public async Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId)
-        {
-            if(!await ValidateUserByCardAsync(userId, cardId))
-                return new Result<List<CommentModel>>(ResultCode.Forbidden);
+        //public async Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId)
+        //{
+        //    if(!await ValidateUserByCardAsync(userId, cardId))
+        //        return new Result<List<CommentModel>>(ResultCode.Forbidden);
 
-            var commentList = await _commentStorage.GetAllAsync(cardId);
+        //    var commentList = await _commentStorage.GetAllAsync(cardId);
 
-            return new Result<List<CommentModel>>(_mapper.Map<List<Comment>, List<CommentModel>>(commentList));
-        }
+        //    return new Result<List<CommentModel>>(_mapper.Map<List<Comment>, List<CommentModel>>(commentList));
+        //}
 
-        public async Task DeleteCommentAsync(int userId, int commentId)
+        public async Task DeleteCommentAsync(int userId, int boardId, int cardId, int commentId)
         {
             await ValidateUserByCommentAsync(userId, commentId);
             await _commentStorage.DeleteApparentAsync(commentId);
