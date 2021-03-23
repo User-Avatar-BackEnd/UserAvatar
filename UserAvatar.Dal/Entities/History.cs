@@ -21,9 +21,9 @@ namespace UserAvatar.Dal.Entities
 
         [Required]
         public string EventName { get; set; }
-
-        [ForeignKey("EventName")]
-        public virtual Event Event { get; set; }
+        
+        [Required]
+        public int Score { get; set; }
 
         [Required]
         public DateTime DateTime { get; set; }

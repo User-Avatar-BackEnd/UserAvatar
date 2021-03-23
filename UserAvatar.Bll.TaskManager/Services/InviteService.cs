@@ -32,7 +32,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             if (int.TryParse(payload, out var invitedId) && await _userStorage.GetByIdAsync(invitedId) != null)
                 return invitedId;
             
-            var thisUser = await _userStorage.GetByEmailAsync(payload);
+            var thisUser = await _userStorage.GetByEmailAsync(payload?.ToLower());
             return thisUser?.Id ?? -1;
             
         }
@@ -44,6 +44,8 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<int> CreateInviteAsync(int boardId, int userId, string payload)
         {
+            if (payload == null)
+                return ResultCode.NotFound;
             var invitedId = await GetUserIdByPayload(payload);
             if (invitedId == -1)
                 return ResultCode.NotFound;

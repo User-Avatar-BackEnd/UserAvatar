@@ -18,7 +18,7 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
+            return await _dbContext.Users.Where(user => user.Email.ToLower() == email).FirstOrDefaultAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)

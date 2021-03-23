@@ -163,27 +163,5 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
         }
-
-        public async Task<Result<List<ColumnModel>>> GetAllColumnsAsync(int userId, int boardId)
-        {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
-            {
-                return new Result<List<ColumnModel>>(ResultCode.NotFound);
-            }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<List<ColumnModel>>(ResultCode.Forbidden);
-            }
-
-            var allColumns = await _columnStorage.GetAllColumnsAsync(boardId);
-
-            if (allColumns.Count() < 0)
-            {
-                return new Result<List<ColumnModel>>(ResultCode.NotFound);
-            }
-
-            return new Result<List<ColumnModel>>(_mapper.Map<List<Column>, List<ColumnModel>>(allColumns));
-        }
     }
 }

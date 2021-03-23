@@ -18,9 +18,11 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<Column> GetColumnByIdAsync(int id);
 
-        Task RecurrentlyDeleteAsync(IEnumerable<Column> columns);
+        //Task RecurrentlyDeleteAsync(IEnumerable<Column> columns);
 
-        Task<List<Column>> GetAllColumnsAsync(int boardId);
+        Task<List<int>> GetAllColumnsAsync(int boardId);
+        
+        Task<int> GetColumnIdByBoardId(int boardId);
 
         bool IsUserInBoardByColumnId(int userId, int columnId);
     }

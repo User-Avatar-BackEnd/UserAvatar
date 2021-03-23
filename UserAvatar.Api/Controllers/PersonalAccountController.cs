@@ -52,7 +52,7 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("change_password")]
-        public async Task<ActionResult> ChangePaswordAsync(ChangePasswordRequest request)
+        public async Task<ActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -74,6 +74,11 @@ namespace UserAvatar.Api.Controllers
                 InvitesAmount = userData.Invited
                               .Where(invite => invite.Status == -1)
                               .Count(),
+                
+                //Here needs to me
+                
+                /*InvitesAmount = userData.Invited
+                    .Count(invite => invite.Status == -1),*/
 
                 // ToDo: set the rest of the properties =>
                 Rank = "Cossack",

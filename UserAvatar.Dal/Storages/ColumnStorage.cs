@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
+using Z.EntityFramework.Plus;
 using Task = System.Threading.Tasks.Task;
 
 namespace UserAvatar.Dal.Storages
@@ -50,6 +51,11 @@ namespace UserAvatar.Dal.Storages
         }
 
         // there can be change on async as well
+        public async Task<int> GetColumnIdByBoardId(int boardId)
+        {
+            return await Task.FromResult(_userAvatarContext.Columns.FirstOrDefaultAsync(x => x.BoardId == boardId).Id);
+        }
+
         public bool IsUserInBoardByColumnId(int userId,int columnId)
         {
             /*var zzz = _userAvatarContext.Columns.Where(x => x.Id == columnId)
@@ -63,12 +69,13 @@ namespace UserAvatar.Dal.Storages
             // Поэтому осталю пока это тут)
 
 
-            var zzz = _userAvatarContext.Boards
+            return _userAvatarContext.Boards
                 .Include(x => x.Columns)
                 .Include(x => x.Members)
-                .Any(x=> x.Columns.Any(x=> x.Id == columnId) && x.Members.Any(x=> x.UserId == userId));
+                .Any(x=> x.Columns.Any(x=> x.Id == columnId) && x.Members
+                    .Any(x=> x.UserId == userId));
 
-            return zzz;
+            
         }
         
         public async Task DeleteApparentAsync(int columnId)
@@ -80,14 +87,11 @@ namespace UserAvatar.Dal.Storages
             column.IsDeleted = true;
             var columnList = InternalGetAllColumns(column);
             await RecheckPositionAsync(columnList.ToList(),column.Index);
-
-            //column.Index = -1;
-            //_userAvatarContext.Update(column);
-            // recurrently delete all tasks
+            
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
+        /*public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
         {
             foreach (var column in columns)
             {
@@ -95,19 +99,24 @@ namespace UserAvatar.Dal.Storages
             }
             //todo: make recurrently 'isDeleted' tasks!
             await _userAvatarContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Column>> GetAllColumnsAsync(int boardId)
+        }*/
+        
+        /*public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
         {
-            //todo: maybe change
-            // I don't know if i can change there?
-            var card = Task.Factory.StartNew(() =>
-                _userAvatarContext.Columns
-                    .Include(x => x.Cards).Where(x => x.Board.Id == boardId)
-                    .OrderBy(x => x.Index)
-                    .ToList());
+            _userAvatarContext.Users.Where(x=> )
+            /*foreach (var column in columns)
+            {
+                column.IsDeleted = true;
+            }
+            //todo: make recurrently 'isDeleted' tasks!
+            await _userAvatarContext.SaveChangesAsync();#1#
+        }*/
 
-            return await card;
+        public async Task<List<int>> GetAllColumnsAsync(int boardId)
+        {
+            return await Task.FromResult(_userAvatarContext.Columns
+                .Where(x => x.BoardId == boardId)
+                .Select(x => x.Id).ToList());
         }
 
         public async Task UpdateAsync(Column column)
