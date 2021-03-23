@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -8,27 +6,34 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
-    
+
     [ApiController]
     [Authorize]
-    [Route("api/v1/column")]
+    [Route("api/v1/boards/{boardId:int}/columns")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class ColumnController : ControllerBase
     {
         private readonly IColumnService _columnService;
         private readonly IMapper _mapper;
-        public ColumnController(IColumnService columnService, IMapper mapper)
+        private readonly IApplicationUser _applicationUser;
+        public ColumnController(IColumnService columnService, IMapper mapper, IApplicationUser applicationUser)
         {
             _columnService = columnService;
             _mapper = mapper;
+            _applicationUser = applicationUser;
         }
 
+        private int UserId => _applicationUser.Id;
+
+        /*
         [HttpGet("{boardId:int}")]
         public async Task<ActionResult<List<ColumnVm>>> GetAllColumnsAsync(int boardId)
         {
@@ -39,45 +44,70 @@ namespace UserAvatar.Api.Controllers
 
             return Ok(_mapper.Map<List<ColumnModel>,List<FullColumnVm>>(foundColumn));
         }
-        
+        */
+
         [HttpPost]
-        public async Task<IActionResult> CreateColumnAsync(CreateColumnDto createColumnRequest)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> CreateColumnAsync(int boardId, TitleDto titleDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            var thisColumn = await _columnService
-                .CreateAsync(userId,createColumnRequest.BoardId,createColumnRequest.Title);
-            return Ok(_mapper.Map<ColumnModel,FullColumnVm>(thisColumn));
+            titleDto.Title = titleDto.Title.Trim();
+
+            var thisColumn = await _columnService.CreateAsync(UserId, boardId, titleDto.Title);
+
+            if (thisColumn.Code == ResultCode.NotFound) return NotFound();
+            if (thisColumn.Code == ResultCode.Forbidden) return Forbid();
+
+            return Ok(_mapper.Map<ColumnModel, FullColumnVm>(thisColumn.Value));
         }
-        
-        [HttpPatch]
-        public async Task<IActionResult> UpdateColumnAsync(UpdateColumnDto updateColumnDto)
+
+        [HttpPatch("{columnId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> UpdateColumnAsync(int boardId, int columnId, TitleDto titleDto)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.UpdateAsync(userId,updateColumnDto.ColumnId, updateColumnDto.Title);
-            return Ok();
+            titleDto.Title = titleDto.Title.Trim();
+
+            var result = await _columnService.UpdateAsync(UserId, boardId, columnId, titleDto.Title);
+
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
-        
-        [HttpDelete]
-        public async Task<IActionResult> DeleteColumnAsync([FromQuery]int columnId)
+
+        [HttpDelete("{columnId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> DeleteColumnAsync(int boardId, int columnId)
         {
-            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.DeleteAsync(userId,columnId);
-            return Ok();
+            var result = await _columnService.DeleteAsync(UserId, boardId, columnId);
+
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
-        
-        [HttpPost("[controller]/changePosition/")]
-        public async Task<IActionResult> ChangeColumnPositionAsync(int columnId, int positionIndex)
-        {            var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
-            var userId = Convert.ToInt32(userCredentials.Value);
-            
-            await _columnService.ChangePositionAsync(userId,columnId,positionIndex);
-            return Ok();
+
+        [HttpPost("{columnId:int}/position")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> ChangeColumnPositionAsync(int boardId, int columnId, [FromQuery] int to)
+        {
+            var result = await _columnService.ChangePositionAsync(UserId, boardId, columnId, to);
+
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
     }
 }

@@ -19,5 +19,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<bool> IsOwnerBoardAsync(int userId, int boardId);
 
         Task<bool> IsUserBoardAsync(int userId, int boardId);
+
+        Task<bool> IsBoardExistAsync(int boardId);
     }
 }

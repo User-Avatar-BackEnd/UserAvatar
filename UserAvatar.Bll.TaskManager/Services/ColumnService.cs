@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
@@ -22,12 +23,20 @@ namespace UserAvatar.Bll.TaskManager.Services
             _boardStorage = boardStorage;
         }
 
-       //todo: add userId
+        //todo: add userId
 
-        public async Task<ColumnModel> CreateAsync(int userId, int boardId, string title)
+        public async Task<Result<ColumnModel>> CreateAsync(int userId, int boardId, string title)
         {
-            if (! await _boardStorage.IsUserBoardAsync(userId, boardId))
-                throw new Exception($"This user {userId} does not have this board");
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return new Result<ColumnModel>(ResultCode.NotFound);
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return new Result<ColumnModel>(ResultCode.Forbidden);
+            }
+
             var newColumn = new Column
             {
                 Title = title,
@@ -35,64 +44,146 @@ namespace UserAvatar.Bll.TaskManager.Services
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now
             };
-            
+
             var column = await _columnStorage.CreateAsync(newColumn);
-            try
-            {
-                var mapped = _mapper.Map<Column, ColumnModel>(column);
-                return mapped;
-            }
-            catch(Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
-            
-            return null;
+
+            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(column));
         }
 
-        public async Task ChangePositionAsync(int userId, int columnId, int positionIndex)
+        public async Task<int> ChangePositionAsync(int userId, int boardId, int columnId, int positionIndex)
         {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return ResultCode.NotFound;
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return ResultCode.Forbidden;
+            }
+
+            // что у этой борды есть такая колонка
+
+            // todo: new method !
+            // NotFound
+
             // IsUserInBoardByColumnId maybe may be async
 
-            if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
-                throw new Exception($"This user {userId} does not have this board");
-            await _columnStorage.ChangePositionAsync(columnId,positionIndex);
+            if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
+            {
+                return ResultCode.Forbidden;
+            }
+
+            await _columnStorage.ChangePositionAsync(columnId, positionIndex);
+
+            return ResultCode.Success;
         }
 
-        public async Task DeleteAsync(int userId, int columnId)
+        public async Task<int> DeleteAsync(int userId, int boardId, int columnId)
         {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return ResultCode.NotFound;
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return ResultCode.Forbidden;
+            }
+
+            // check: что у этой борды есть такая колонка
+            // todo: new method !
+            // NotFound
+
             // IsUserInBoardByColumnId maybe may be async
 
-            if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
-                throw new Exception($"This user {userId} does not have this board");
+            if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
+            {
+                return ResultCode.Forbidden;
+            }
+
             await _columnStorage.DeleteApparentAsync(columnId);
+
+            return ResultCode.Success;
         }
-        
-        public async Task UpdateAsync(int userId, int columnId, string title)
+
+        public async Task<int> UpdateAsync(int userId, int boardId, int columnId, string title)
         {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return ResultCode.NotFound;
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return ResultCode.Forbidden;
+            }
+
+            // что у этой борды есть такая колонка
+            // todo: new method !
+            // NotFound
+
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
+
             if (thisColumn is null)
-                throw new Exception($"Found column with id {columnId} is not found!");
+            {
+                return ResultCode.NotFound;
+            }
+
             thisColumn.Title = title;
             await _columnStorage.UpdateAsync(thisColumn);
-        }
-        
-        public async Task<ColumnModel> GetColumnByIdAsync(int userId, int columnId)
-        {
-            var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
-            if (foundColumn is null)
-                throw new Exception($"Found column with id {columnId} is not found!");
-            return _mapper.Map<Column, ColumnModel>(foundColumn);
+
+            return ResultCode.Success;
         }
 
-        public async Task<List<ColumnModel>> GetAllColumnsAsync(int userId, int boardId)
+        public async Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId)
         {
-            if (! await _boardStorage.IsUserBoardAsync(userId, boardId))
-                throw new Exception($"This user {userId} does not have this board");
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return new Result<ColumnModel>(ResultCode.NotFound);
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return new Result<ColumnModel>(ResultCode.Forbidden);
+            }
+
+            // что у этой борды есть такая колонка
+            // что у этой борды есть такая колонка
+            // todo: new method !
+            // NotFound
+
+
+            var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
+
+            if (foundColumn is null)
+            {
+                return new Result<ColumnModel>(ResultCode.NotFound);
+            }
+
+            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
+        }
+
+        public async Task<Result<List<ColumnModel>>> GetAllColumnsAsync(int userId, int boardId)
+        {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return new Result<List<ColumnModel>>(ResultCode.NotFound);
+            }
+
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return new Result<List<ColumnModel>>(ResultCode.Forbidden);
+            }
+
             var allColumns = await _columnStorage.GetAllColumnsAsync(boardId);
+
             if (allColumns.Count() < 0)
-                throw new Exception($"No Columns in this board {boardId}");
-            return _mapper.Map<List<Column>, List<ColumnModel>>(allColumns.ToList());
+            {
+                return new Result<List<ColumnModel>>(ResultCode.NotFound);
+            }
+
+            return new Result<List<ColumnModel>>(_mapper.Map<List<Column>, List<ColumnModel>>(allColumns));
         }
     }
 }

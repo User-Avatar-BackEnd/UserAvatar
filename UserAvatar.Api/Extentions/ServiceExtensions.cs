@@ -24,7 +24,7 @@ namespace UserAvatar.Api.Extentions
 
             services.AddAutoMapper(c => c.AddProfile<MappingProfile>(), typeof(Startup));
           
-            return services
+            services
                 .AddTransient<IAuthService, AuthService>()
                 .AddTransient<IInviteService,InviteService>()
                 .AddTransient<IBoardService, BoardService>()
@@ -32,6 +32,11 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<ICardService, CardService>()
                 .AddTransient<ICommentService,CommentService>()
                 .AddTransient<IPersonalAccountService,PersonalAccountService>();
+
+            services.AddScoped<IApplicationUser, ApplicationUser>();
+            services.AddHttpContextAccessor();
+
+            return services;
         }
     }
 }
