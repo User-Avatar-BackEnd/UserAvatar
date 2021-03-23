@@ -71,7 +71,7 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<CardModel> GetByIdAsync(int taskId, int userId)
         {
             var boardId = _cardStorage.GetBoardId(taskId);
-            if (await _boardStorage.IsUserBoardAsync(userId,boardId)) throw new Exception();
+            if (!await _boardStorage.IsUserBoardAsync(userId,boardId)) throw new Exception();
 
             var task = _cardStorage.GetById(taskId);
 
