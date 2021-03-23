@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
@@ -58,13 +59,14 @@ namespace UserAvatar.Bll.TaskManager.Services
             return _mapper.Map<Comment, CommentModel>(thisComment);
         }
 
-        public async Task<List<CommentModel>> GetCommentsAsync(int userId, int cardId)
+        public async Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId)
         {
-            await ValidateUserByCardAsync(userId, cardId);
+            if(!await ValidateUserByCardAsync(userId, cardId))
+                return new Result<List<CommentModel>>(ResultCode.Forbidden);
 
             var commentList = await _commentStorage.GetAllAsync(cardId);
 
-            return _mapper.Map<List<Comment>, List<CommentModel>>(commentList);
+            return new Result<List<CommentModel>>(_mapper.Map<List<Comment>, List<CommentModel>>(commentList));
         }
 
         public async Task DeleteCommentAsync(int userId, int commentId)
@@ -81,11 +83,13 @@ namespace UserAvatar.Bll.TaskManager.Services
                 throw new Exception($"You {userId} are not allowed to do this!");
         }
 
-        private async Task ValidateUserByCardAsync(int userId, int cardId)
+        private async Task<bool> ValidateUserByCardAsync(int userId, int cardId)
         {
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
-            if (!isUserInThisBoard)
-                throw new Exception($"You {userId} are not allowed to do this!");
+            var thisBoard = await _cardStorage.GetBoardIdAsync(cardId);
+            if (thisBoard == 0)
+                return false;
+            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, thisBoard);
+            return isUserInThisBoard;
         }
     }
 }

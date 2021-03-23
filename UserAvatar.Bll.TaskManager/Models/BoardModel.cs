@@ -7,7 +7,7 @@ namespace UserAvatar.Bll.TaskManager.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public UserModel User { get; set; }
+        public int OwnerId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public List<ColumnModel> Columns { get; set; }

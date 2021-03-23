@@ -57,7 +57,7 @@ namespace UserAvatar.Dal.Storages
                 .Include(x => x.Column)
                 .FirstOrDefaultAsync(x => x.Id == cardId);
 
-            return card.Column.BoardId;
+           return card?.Column.BoardId ?? 0;
         }
 
         public async Task DeleteAsync(int cardId)
