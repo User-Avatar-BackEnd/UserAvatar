@@ -4,8 +4,6 @@
     {
         public int Id { get; set; }
         
-        public UserShortVm Invited { get; set; }
-        
         public UserShortVm Inviter { get; set; }
         
         public BoardShortVm BoardShortVm { get; set; }
