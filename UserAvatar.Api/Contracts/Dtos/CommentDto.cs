@@ -1,12 +1,14 @@
-﻿using System;
-namespace UserAvatar.Api.Contracts.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UserAvatar.Api.Contracts.Requests
 {
     public class CommentDto
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
+        [Required]
+        public int CardId { get; set; }
+        
+        [Required]
+        //todo: add validator
         public string Text { get; set; }
-        public bool Editable { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }

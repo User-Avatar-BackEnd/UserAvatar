@@ -6,7 +6,7 @@ using UserAvatar.Api.Contracts.Dtos;
 
 namespace UserAvatar.Api.Contracts.Dtos
 {
-    public class BoardDto
+    public class BoardVm
     {
         public int Id { get; set; }
 

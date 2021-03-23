@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 
 namespace UserAvatar.Api.Contracts.Dtos
 {
-    public class UserShortDto
+    public class ColumnVm
     {
         public int Id { get; set; }
-        public string Login { get; set; }
-        public string Rank { get; set; }
+
+        public string Title { get; set; }
+
+        public int Order { get; set; }
+
+        public List<CardShortVm> Cards { get; set; }
     }
 }

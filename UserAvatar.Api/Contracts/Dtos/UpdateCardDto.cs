@@ -1,7 +1,7 @@
 ﻿using System;
 namespace UserAvatar.Api.Contracts.Requests
 {
-    public class UpdateCardRequest
+    public class UpdateCardDto
     {
         public int Id { get; set; }
         public int ColumnId { get; set; }

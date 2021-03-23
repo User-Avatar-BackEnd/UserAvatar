@@ -1,6 +1,6 @@
 ﻿namespace UserAvatar.Api.Contracts.Dtos
 {
-    public class UserDataDto
+    public class UserDataVm
     {
         public string Email { get; set; }
 
