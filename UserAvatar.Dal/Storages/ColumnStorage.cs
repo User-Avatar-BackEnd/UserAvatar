@@ -97,15 +97,17 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.SaveChangesAsync();
         }
 
-        public async Task<IQueryable<Column>> GetAllColumnsAsync(int boardId)
+        public async Task<List<Column>> GetAllColumnsAsync(int boardId)
         {
             //todo: maybe change
             // I don't know if i can change there?
             var card = Task.Factory.StartNew(() =>
                 _userAvatarContext.Columns
-                    .Include(x=> x.Cards).Where(x => x.Board.Id == boardId).OrderBy(x => x.Index));
+                    .Include(x => x.Cards).Where(x => x.Board.Id == boardId)
+                    .OrderBy(x => x.Index)
+                    .ToList());
+
             return await card;
-            
         }
 
         public async Task UpdateAsync(Column column)
@@ -113,7 +115,7 @@ namespace UserAvatar.Dal.Storages
             _userAvatarContext.Entry(column).State = EntityState.Modified;
             await _userAvatarContext.SaveChangesAsync();
         }
-        
+
         private IEnumerable<Column> InternalGetAllColumns(Column column)
         {
             return _userAvatarContext.Columns

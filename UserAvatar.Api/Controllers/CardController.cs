@@ -8,6 +8,8 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
+using System.Net;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -29,12 +31,18 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpGet("{cardId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetByIdAsync(int boardId, int columnId, int cardId)
         {
-            var card = await _cardService.GetByIdAsync(cardId, UserId);
-            if (card == null) BadRequest();
-            
-            var cardVm = _mapper.Map<CardModel, CardDetailedVm>(card);
+            var result = await _cardService.GetByIdAsync(boardId, cardId, UserId);
+
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            var cardVm = _mapper.Map<CardModel, CardDetailedVm>(result.Value);
 
             cardVm.Comments.ForEach(x => x.Editable = x.UserId == UserId);
 
@@ -42,31 +50,48 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCardAsync(int boardId, int columnId, TitleDto titleDto)
+        [ProducesResponseType(typeof(CardShortVm),(int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<ActionResult<CardShortVm>> AddCardAsync(int boardId, int columnId, TitleDto titleDto)
         {
-            var card = await _cardService.CreateCardAsync(titleDto.Title, columnId, UserId);
+            var result = await _cardService.CreateCardAsync(titleDto.Title, boardId, columnId, UserId);
 
-            var cardVm = _mapper.Map<CardModel, CardShortVm>(card);
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+            if (result.Code != ResultCode.Success)
+            {
+                return Conflict(result.Code);
+            }
 
+            var cardVm = _mapper.Map<CardModel, CardShortVm>(result.Value);
             return Ok(cardVm);
         }
 
         [HttpPut("{cardId:int}")]
+        [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UpdateCardAsync(int boardId, int columnId, int cardId, UpdateCardDto updateCardDto)
         {
             var cardModel = _mapper.Map<UpdateCardDto, CardModel>(updateCardDto);
 
-            await _cardService.UpdateCardAsync(cardModel, columnId, updateCardDto.ResponsibleId, UserId);
+            var result = await _cardService.UpdateCardAsync(cardModel, boardId, columnId, updateCardDto.ResponsibleId, UserId);
 
-            return Ok();
+            return StatusCode(result);
         }
 
         [HttpDelete("{cardId:int}")]
+        [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCardAsync(int boardId, int columnId, int cardId)
         {
-            await _cardService.DeleteCardAsync(cardId, UserId);
+            var result = await _cardService.DeleteCardAsync(boardId, cardId, UserId);
 
-            return Ok();
+            return StatusCode(result);
         }
     }
 }

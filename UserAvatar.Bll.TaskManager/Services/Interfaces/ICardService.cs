@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface ICardService
     {
-        Task<CardModel> GetByIdAsync(int cardId, int userId);
+        Task<Result<CardModel>> GetByIdAsync(int boardId, int cardId, int userId);
 
-        Task<CardModel> CreateCardAsync(string title, int columnId, int userId);
+        Task<Result<CardModel>> CreateCardAsync(string title, int boardId, int columnId, int userId);
 
-        Task UpdateCardAsync(CardModel cardModel, int columnId, int? responsibleId, int userId);
+        Task<int> DeleteCardAsync(int boardId, int cardId, int userId);
 
-        Task DeleteCardAsync(int cardId, int userId);
+        Task<int> UpdateCardAsync(CardModel cardModel, int boardId, int columnId, int? responsibleId, int userId);
     }
 }

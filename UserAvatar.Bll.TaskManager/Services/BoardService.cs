@@ -43,7 +43,6 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             var boards = await GetAllBoardsAsync(userId);
 
-            //todo:config
             if (boards.Value.Count() >= 10)
             {
                 return ResultCode.MaxBoardCount;

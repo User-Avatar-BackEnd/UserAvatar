@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
-//using Task = System.Threading.Tasks.Task;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IColumnService
     {
-        Task<ColumnModel> CreateAsync(int userId, int boardId, string title);
+        Task<Result<ColumnModel>> CreateAsync(int userId, int boardId, string title);
 
-        Task ChangePositionAsync(int userId, int columnId, int positionIndex);
+        Task<int> ChangePositionAsync(int userId, int boardId, int columnId, int positionIndex);
 
-        Task UpdateAsync(int userId, int columnId, string title);
+        Task<int> DeleteAsync(int userId, int boardId, int columnId);
 
-        Task DeleteAsync(int userId, int columnId);
+        Task<int> UpdateAsync(int userId, int boardId, int columnId, string title);
 
-        Task<ColumnModel> GetColumnByIdAsync(int userId, int columnId);
+        Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId);
 
-        Task<List<ColumnModel>> GetAllColumnsAsync(int userId, int boardId);
+        Task<Result<List<ColumnModel>>> GetAllColumnsAsync(int userId, int boardId);
     }
 }
