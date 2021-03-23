@@ -6,18 +6,18 @@ namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface ICommentStorage
     {
-        Task<Comment> Create(Comment comment);
+        Task<Comment> CreateAsync(Comment comment);
 
-        Task DeleteApparent(int commentId);
+        Task DeleteApparentAsync(int commentId);
 
-        Task UpdateComment(Comment comment);
+        Task UpdateCommentAsync(Comment comment);
 
-        Task RecursivelyDelete(IEnumerable<Comment> comments);
+        Task RecursivelyDeleteAsync(IEnumerable<Comment> comments);
 
-        Task<Comment> GetCommentByCommentId(int commentId);
+        Task<Comment> GetCommentByCommentIdAsync(int commentId);
 
-        Task<List<Comment>> GetAll(int taskId);
+        Task<List<Comment>> GetAllAsync(int cardId);
 
-        int GetTaskIdByCommentId(int commentId);
+        Task<int> GetTaskIdByCommentIdAsync(int commentId);
     }
 }

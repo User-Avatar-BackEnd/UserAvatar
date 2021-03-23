@@ -24,7 +24,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
        //todo: add userId
 
-        public async Task<ColumnModel> Create(int userId, int boardId, string title)
+        public async Task<ColumnModel> CreateAsync(int userId, int boardId, string title)
         {
             if (! await _boardStorage.IsUserBoardAsync(userId, boardId))
                 throw new Exception($"This user {userId} does not have this board");
@@ -36,7 +36,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ModifiedAt = DateTime.Now
             };
             
-            var column = await _columnStorage.Create(newColumn);
+            var column = await _columnStorage.CreateAsync(newColumn);
             try
             {
                 var mapped = _mapper.Map<Column, ColumnModel>(column);
@@ -49,46 +49,50 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             return null;
         }
-        public async System.Threading.Tasks.Task ChangePosition(int userId, int columnId, int positionIndex)
+
+        public async Task ChangePositionAsync(int userId, int columnId, int positionIndex)
         {
+            // IsUserInBoardByColumnId maybe may be async
+
             if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
                 throw new Exception($"This user {userId} does not have this board");
-            await _columnStorage.ChangePosition(columnId,positionIndex);
+            await _columnStorage.ChangePositionAsync(columnId,positionIndex);
         }
 
-        public async System.Threading.Tasks.Task Delete(int userId, int columnId)
+        public async Task DeleteAsync(int userId, int columnId)
         {
+            // IsUserInBoardByColumnId maybe may be async
+
             if (!_columnStorage.IsUserInBoardByColumnId(userId,columnId))
                 throw new Exception($"This user {userId} does not have this board");
-            await _columnStorage.DeleteApparent(columnId);
+            await _columnStorage.DeleteApparentAsync(columnId);
         }
         
-        public async System.Threading.Tasks.Task Update(int userId, int columnId, string title)
+        public async Task UpdateAsync(int userId, int columnId, string title)
         {
-            var thisColumn = await _columnStorage.GetColumnById(columnId);
+            var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
             if (thisColumn is null)
                 throw new Exception($"Found column with id {columnId} is not found!");
             thisColumn.Title = title;
-            await _columnStorage.Update(thisColumn);
+            await _columnStorage.UpdateAsync(thisColumn);
         }
         
-        public async System.Threading.Tasks.Task<ColumnModel> GetColumnById(int userId, int columnId)
+        public async Task<ColumnModel> GetColumnByIdAsync(int userId, int columnId)
         {
-            var foundColumn = await _columnStorage.GetColumnById(columnId);
+            var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
             if (foundColumn is null)
                 throw new Exception($"Found column with id {columnId} is not found!");
             return _mapper.Map<Column, ColumnModel>(foundColumn);
         }
 
-        public async Task<List<ColumnModel>> GetAllColumns(int userId, int boardId)
+        public async Task<List<ColumnModel>> GetAllColumnsAsync(int userId, int boardId)
         {
             if (! await _boardStorage.IsUserBoardAsync(userId, boardId))
                 throw new Exception($"This user {userId} does not have this board");
-            var allColumns = await _columnStorage.GetAllColumns(boardId);
+            var allColumns = await _columnStorage.GetAllColumnsAsync(boardId);
             if (allColumns.Count() < 0)
                 throw new Exception($"No Columns in this board {boardId}");
             return _mapper.Map<List<Column>, List<ColumnModel>>(allColumns.ToList());
-
         }
     }
 }

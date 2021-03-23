@@ -30,17 +30,17 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CommentDto>> GetComments(int cardId)
+        public async Task<ActionResult<CommentDto>> GetCommentsAsync(int cardId)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            var list = await _commentService.GetComments(userId,cardId);
+            var list = await _commentService.GetCommentsAsync(userId,cardId);
 
             return Ok(_mapper.Map<List<CommentModel>,List<CommentDto>>(list));
 
         }
 
         [HttpPost]
-        public async Task<ActionResult<CommentDto>> CreateComment(CommentRequest commentRequest)
+        public async Task<ActionResult<CommentDto>> CreateCommentAsync(CommentRequest commentRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
             var comment = await _commentService.CreateNewCommentAsync(userId, commentRequest.CardId, commentRequest.Text);
@@ -49,20 +49,20 @@ namespace UserAvatar.Api.Controllers
         }
         
         [HttpPatch]
-        public async Task<IActionResult> UpdateComment(UpdateCommentRequest updateCommentRequest)
+        public async Task<IActionResult> UpdateCommentAsync(UpdateCommentRequest updateCommentRequest)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            await _commentService.UpdateComment(userId, updateCommentRequest.CommentId, updateCommentRequest.Text);
+            await _commentService.UpdateCommentAsync(userId, updateCommentRequest.CommentId, updateCommentRequest.Text);
 
             return Ok();
         }
         
         [HttpDelete()]
-        public async Task<IActionResult> DeleteComment([FromQuery]int columnId)
+        public async Task<IActionResult> DeleteCommentAsync([FromQuery]int columnId)
         {
             var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
 
-            await _commentService.DeleteComment(userId,columnId);
+            await _commentService.DeleteCommentAsync(userId,columnId);
             return Ok();
         }
     }

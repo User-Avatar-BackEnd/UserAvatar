@@ -85,7 +85,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             }
         }
 
-        private string RandomDigits()
+        //was not static: visual studio suggestion
+        private static string RandomDigits()
         {
             var random = new Random();
             string s = string.Empty;

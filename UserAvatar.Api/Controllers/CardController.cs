@@ -24,54 +24,54 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = await _cardService.GetByIdAsync(id, userId);
-            if (task == null) BadRequest();
+            var card = await _cardService.GetByIdAsync(id, userId);
+            if (card == null) BadRequest();
             
-            var taskDto = _mapper.Map<CardModel, CardDetailedDto>(task);
+            var cardDto = _mapper.Map<CardModel, CardDetailedDto>(card);
 
-            taskDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
+            cardDto.Comments.ForEach(x => x.Editable = x.UserId == userId);
 
-            return Ok(taskDto);
+            return Ok(cardDto);
         }
 
         [HttpPost]
-        public IActionResult AddCard(CreateCardRequest request)
+        public async Task<IActionResult> AddCardAsync(CreateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var task = _cardService.CreateCard(request.Title, request.ColumnId, userId);
+            var card = await _cardService.CreateCardAsync(request.Title, request.ColumnId, userId);
 
-            var taskDto = _mapper.Map<CardModel, CardShortDto>(task);
+            var cardDto = _mapper.Map<CardModel, CardShortDto>(card);
 
-            return Ok(taskDto);
+            return Ok(cardDto);
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateCard(UpdateCardRequest request)
+        public async Task<IActionResult> UpdateCardAsync(UpdateCardRequest request)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            var taskModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
+            var cardModel = _mapper.Map<UpdateCardRequest, CardModel>(request);
 
-            await _cardService.UpdateCardAsync(taskModel, request.ColumnId, request.ResponsibleId, userId);
+            await _cardService.UpdateCardAsync(cardModel, request.ColumnId, request.ResponsibleId, userId);
 
             return Ok();
         }
 
         [HttpDelete]
-        public IActionResult DeleteCard(int id)
+        public async Task<IActionResult> DeleteCardAsync(int id)
         {
             var userCredentials = HttpContext.User.Claims.First(claim => claim.Type == "id");
             var userId = Convert.ToInt32(userCredentials.Value);
 
-            _cardService.DeleteCard(id, userId);
+            await _cardService.DeleteCardAsync(id, userId);
 
             return Ok();
         }

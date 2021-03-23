@@ -6,9 +6,12 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface ICommentService
     {
-        Task<CommentModel> CreateNewCommentAsync(int userId, int taskId, string text);
-        Task<CommentModel> UpdateComment(int userId, int commentId, string text);
-        Task<List<CommentModel>> GetComments(int userId, int taskId);
-        Task DeleteComment(int userId, int commentId);
+        Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text);
+
+        Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text);
+
+        Task<List<CommentModel>> GetCommentsAsync(int userId, int cardId);
+
+        Task DeleteCommentAsync(int userId, int commentId);
     }
 }
