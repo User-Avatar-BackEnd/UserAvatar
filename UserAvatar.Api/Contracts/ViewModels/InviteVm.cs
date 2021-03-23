@@ -7,7 +7,5 @@
         public UserShortVm Inviter { get; set; }
         
         public BoardShortVm Board { get; set; }
-        
-        public int Status { get; set; }
     }
 }
