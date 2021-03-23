@@ -2,11 +2,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -16,27 +19,32 @@ namespace UserAvatar.Api.Controllers
     public class PersonalAccountController : ControllerBase
     {
         private readonly IPersonalAccountService _personalAccountService;
+
+        private readonly IInviteService _inviteService;
         // unnesessary di
         private readonly IMapper _mapper;
+        private readonly IApplicationUser _applicationUser;
         
 
-        public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper)
+        public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper, IInviteService inviteService, IApplicationUser applicationUser)
         {
             _personalAccountService = personalAccountService;
             _mapper = mapper;
+            _inviteService = inviteService;
+            _applicationUser = applicationUser;
         }
+        
+        private int UserId => _applicationUser.Id;
 
         [HttpPatch]
         [Route("change_login")]
         public async Task<ActionResult> ChangeLoginAsync([FromBody] string login)
         {
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-
             login = login.Trim();
 
             if (login.Length < 5 || login.Length > 64) throw new SystemException("Login length should be between 5 and 64 characters");
 
-            await _personalAccountService.ChangeLoginAsync(userId, login);
+            await _personalAccountService.ChangeLoginAsync(UserId, login);
 
             return Ok();
         }
@@ -47,9 +55,7 @@ namespace UserAvatar.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-
-            await _personalAccountService.ChangePasswordAsync(userId, request.OldPassword, request.NewPassword);
+            await _personalAccountService.ChangePasswordAsync(UserId, request.OldPassword, request.NewPassword);
 
             return Ok();
         }
@@ -57,9 +63,7 @@ namespace UserAvatar.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-
-            var userData = await _personalAccountService.GetUsersDataAsync(userId);
+            var userData = await _personalAccountService.GetUsersDataAsync(UserId);
             // ToDo: get the rest of the needed data from GamificationService
 
             var userDataVm = new UserDataVm()
@@ -78,6 +82,15 @@ namespace UserAvatar.Api.Controllers
             };
 
             return Ok(userDataVm);
+        }
+
+        [HttpGet("/invites")]
+        public async Task<ActionResult<List<InviteVm>>> GetAllInvitesAsync()
+        {
+            var result = await _inviteService.GetAllInvitesAsync(UserId);
+            if (result.Code != ResultCode.Success)
+                return NotFound(result);
+            return Ok(result);
         }
     }
 }

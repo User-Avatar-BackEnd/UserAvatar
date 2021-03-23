@@ -17,6 +17,12 @@ namespace UserAvatar.Dal.Entities
 
         [ForeignKey("InviterId")]
         public virtual User Inviter { get; set; }
+        
+        [Required]
+        public int BoardId { get; set; }
+        
+        [ForeignKey("BoardId")]
+        public virtual Board Board { get; set; }
 
         [Required]
         public int InvitedId { get; set; }
