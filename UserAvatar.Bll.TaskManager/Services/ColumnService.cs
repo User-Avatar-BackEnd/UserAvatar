@@ -62,10 +62,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // что у этой борды есть такая колонка
-
-            // todo: new method !
-            // NotFound
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
 
             // IsUserInBoardByColumnId maybe may be async
 
@@ -91,9 +91,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // check: что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
 
             // IsUserInBoardByColumnId maybe may be async
 
@@ -119,9 +120,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
 
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
@@ -148,10 +150,11 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<ColumnModel>(ResultCode.Forbidden);
             }
 
-            // что у этой борды есть такая колонка
-            // что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
+
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return new Result<ColumnModel>(ResultCode.NotFound);
+            }
 
 
             var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
