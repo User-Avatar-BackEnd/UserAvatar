@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +26,11 @@ namespace UserAvatar.Dal.Storages
             return await _dbContext.Users
                 .Where(user => user.Email.ToLower() == email.ToLower())
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<User>> FindByQuery(string query)
+        {
+            return await _dbContext.Users.Where(x => x.Login.Contains(query)).Take(10).ToListAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)

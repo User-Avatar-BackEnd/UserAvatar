@@ -92,7 +92,7 @@ namespace UserAvatar.Dal.Storages
             
         }
 
-        private async Task AddAsMemberAsync(int userId, int boardId)
+        public async Task AddAsMemberAsync(int userId, int boardId)
         {
             if (await IsMemberExistAsync(userId, boardId)) throw new SystemException();
 

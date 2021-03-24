@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using UserAvatar.Bll.TaskManager.Infrastructure;
@@ -35,8 +36,8 @@ namespace UserAvatar.Bll.TaskManager.Services
                 && await _userStorage.GetByIdAsync(invitedId) != null)
                 return invitedId;
             
-            var thisUser = await _userStorage.GetByEmailAsync(payload?.ToLower());
-            return thisUser?.Id ?? -1;
+            var thisUser = await _userStorage.GetByEmailAsync(payload);
+            return thisUser?.Id ?? ResultCode.UserNotFound;
         }
         private async Task<Invite> GetInvite(int boardId, int userId)
         {
@@ -48,8 +49,10 @@ namespace UserAvatar.Bll.TaskManager.Services
             if (payload == null)
                 return ResultCode.NotFound;
             var invitedId = await GetUserIdByPayload(payload);
-            if (invitedId == -1)
+            
+            if (invitedId == ResultCode.UserNotFound)
                 return ResultCode.NotFound;
+            
             if (userId == invitedId)
                 return ResultCode.Forbidden;
             if (await _boardStorage.GetBoardAsync(boardId) == null)
@@ -66,12 +69,12 @@ namespace UserAvatar.Bll.TaskManager.Services
                         BoardId = boardId,
                         InvitedId = invitedId,
                         Issued = DateTimeOffset.UtcNow,
-                        Status = 0
+                        Status = InviteStatus.Pending
                     };
                 }
                 else
                 {
-                    thisInvite.Status = 0;
+                    thisInvite.Status = InviteStatus.Pending;
                     thisInvite.Issued = DateTimeOffset.UtcNow;
                     await _inviteStorage.UpdateAsync(thisInvite);
                     return ResultCode.Success;
@@ -80,12 +83,26 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _inviteStorage.CreateAsync(thisInvite);
             return ResultCode.Success;
         }
+
+        public async Task<Result<List<UserModel>>> FindByQuery(string query)
+        {
+            //todo:
+            var userList = await _userStorage.FindByQuery(query);
+
+            return new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(userList));
+
+        }
         
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
             if (thisInvite == null || await _userStorage.GetByIdAsync(userId) == null)
                 return ResultCode.NotFound;
+
+            if (statusCode == InviteStatus.Accepted)
+            {
+                await _boardStorage.AddAsMemberAsync(thisInvite.InvitedId, thisInvite.BoardId);
+            }
            
             thisInvite.Status = statusCode;
             

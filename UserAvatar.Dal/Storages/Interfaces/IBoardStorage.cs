@@ -21,6 +21,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<bool> IsUserBoardAsync(int userId, int boardId);
 
         Task<bool> IsBoardExistAsync(int boardId);
+        Task AddAsMemberAsync(int userId, int boardId);
         Task<bool> IsBoardColumn(int boardId, int columnId);
         
         Task<bool> IsBoardCard(int boardId, int cardId);

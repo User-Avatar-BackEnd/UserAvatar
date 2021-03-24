@@ -67,8 +67,7 @@ namespace UserAvatar.Api.Extentions
                    y=> y.MapFrom(z => z.Invited.Id));
 
            CreateMap<InviteModel, InviteVm>();
-
-
+           
         }
     }
 }

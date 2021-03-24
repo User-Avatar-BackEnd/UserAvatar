@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
@@ -10,6 +11,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task CreateAsync(User user);
 
         Task<bool> IsLoginExistAsync(string login);
+        Task<List<User>> FindByQuery(string query);
 
         Task<bool> IsUserExistAsync(string email);
 
