@@ -30,7 +30,7 @@ namespace UserAvatar.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .Configure<LimitationOptions>(Configuration.GetSection("Limitation"));
+                .Configure<LimitationOptions>(Configuration.GetSection("Limitations"));
             
             services.AddHealthChecks();
             services.AddServices();
