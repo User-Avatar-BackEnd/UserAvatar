@@ -14,7 +14,5 @@ namespace UserAvatar.Dal.Entities
 
         [Required]
         public int Score { get; set; }
-
-        public virtual ICollection<History> Histories { get; set; }
     }
 }

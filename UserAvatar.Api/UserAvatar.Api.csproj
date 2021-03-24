@@ -28,6 +28,9 @@
     <ProjectReference Include="..\UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
