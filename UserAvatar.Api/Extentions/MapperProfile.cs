@@ -3,6 +3,7 @@ using System.Linq;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Bll.Gamification.Models;
 
 namespace UserAvatar.Api.Extentions
 {
@@ -66,9 +67,9 @@ namespace UserAvatar.Api.Extentions
                .ForMember(x=> x.InvitedId,
                    y=> y.MapFrom(z => z.Invited.Id));
 
-           CreateMap<InviteModel, InviteVm>();
+            CreateMap<InviteModel, InviteVm>();
 
-
+            CreateMap<User, RateModel>();
         }
     }
 }
