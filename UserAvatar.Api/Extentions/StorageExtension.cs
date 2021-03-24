@@ -20,9 +20,11 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<IUserStorage, UserStorage>()
                 .AddTransient<IBoardStorage, BoardStorage>()
                 .AddTransient<IColumnStorage, ColumnStorage>()
-                .AddTransient<IInviteStorage,InviteStorage>()
+                .AddTransient<IInviteStorage, InviteStorage>()
                 .AddTransient<ICommentStorage, CommentStorage>()
-                .AddTransient<ICardStorage, CardStorage>();
+                .AddTransient<ICardStorage, CardStorage>()
+                .AddTransient<IEventStorage, EventStorage>();
+            
         }
     }
 }

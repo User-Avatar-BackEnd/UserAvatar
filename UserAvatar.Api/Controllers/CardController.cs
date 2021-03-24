@@ -48,7 +48,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/v1/boards/{boardI:int}/columns/{columnId:int}/cards")]
+        [Route("~/api/v1/boards/{boardId:int}/columns/{columnId:int}/cards")]
         [ProducesResponseType(typeof(CardShortVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
