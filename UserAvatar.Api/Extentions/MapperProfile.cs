@@ -72,6 +72,8 @@ namespace UserAvatar.Api.Extentions
            CreateMap<EventModel, EventVm>();
 
             CreateMap<User, RateModel>();
+
+            CreateMap<UpdateCardDto, CardModel>();
         }
     }
 }

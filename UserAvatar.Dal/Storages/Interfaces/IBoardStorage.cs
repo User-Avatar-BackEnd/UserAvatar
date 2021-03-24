@@ -35,7 +35,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         /// <param name="member"></param>
         /// <returns></returns>
         Task AddAsMemberAsync(Member member);
-        Task<bool> IsBoardColumn(int boardId, int columnId);
+        Task<bool> IsBoardColumnAsync(int boardId, int columnId);
         Task<bool> IsBoardCard(int boardId, int cardId);
     }
 }

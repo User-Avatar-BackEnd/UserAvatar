@@ -39,10 +39,10 @@ namespace UserAvatar.Bll.TaskManager.Services
             var thisUser = await _userStorage.GetByEmailAsync(payload);
             return thisUser?.Id ?? ResultCode.UserNotFound;
         }
-        private async Task<Invite> GetInvite(int boardId, int userId)
-        {
-            return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
-        }
+        //private async Task<Invite> GetInvite(int boardId, int userId)
+        //{
+        //    return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
+        //}
         public async Task<int> CreateInviteAsync(
             int boardId, int userId, string payload)
         {
@@ -51,17 +51,16 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             if (await _boardStorage.GetBoardAsync(boardId) == null)
                 return ResultCode.NotFound;
-            
+
             var invitedId = await GetUserIdByPayload(payload);
             
             if (invitedId == ResultCode.UserNotFound)
                 return ResultCode.NotFound;
             
-            if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId))
+            if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId) || await _boardStorage.IsUserBoardAsync(invitedId, boardId))
                 return ResultCode.Forbidden;
 
-            
-            var thisInvite = await _inviteStorage.GetInviteByBoardAsync(invitedId, boardId);
+            var thisInvite = await _inviteStorage.GetInviteByBoardAsync(userId,invitedId, boardId);
             
             if(!await _boardStorage.IsUserBoardAsync(invitedId, boardId))
                 if (thisInvite == null)
@@ -105,7 +104,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             if (thisInvite == null 
                 || await _userStorage.GetByIdAsync(userId) == null
-                || thisInvite.Status == InviteStatus.Accepted)
+                || thisInvite.Status == InviteStatus.Accepted
+                || await _boardStorage.IsUserBoardAsync(inviteId, thisInvite.BoardId))
                 return ResultCode.NotFound;
 
             if (statusCode == InviteStatus.Accepted)

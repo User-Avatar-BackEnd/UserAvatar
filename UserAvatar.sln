@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Dal", "UserAvata
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Gamification", "UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj", "{7272725B-514C-4C3C-BB11-5CD70180C365}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.Infrastructure", "UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj", "{75E911F9-6119-48CC-B0A1-FE3611B18D5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Infrastructure", "UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj", "{75E911F9-6119-48CC-B0A1-FE3611B18D5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
