@@ -9,6 +9,7 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Infrastructure;
+using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
@@ -24,7 +25,10 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IApplicationUser _applicationUser;
         
-        public InviteController(IInviteService inviteService, IMapper mapper, IApplicationUser applicationUser)
+        public InviteController(
+            IInviteService inviteService, 
+            IMapper mapper, 
+            IApplicationUser applicationUser)
         {
             _inviteService = inviteService;
             _mapper = mapper;
@@ -45,10 +49,19 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("/findLogin")]
-        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(string query)
+        [HttpGet("/findByQuery")]
+        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery([FromQuery] int boardId, [FromQuery]string query)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(query))
+                return NotFound();
+            var result = await _inviteService.FindByQuery(boardId, UserId, query);
+            
+            return result.Code switch
+            {
+                ResultCode.Forbidden => Conflict(result),
+                ResultCode.NotFound => NotFound(),
+                _ => Ok(_mapper.Map<List<UserModel>, List<UserShortVm>>(result.Value))
+            };
         }
         
         [HttpPatch]

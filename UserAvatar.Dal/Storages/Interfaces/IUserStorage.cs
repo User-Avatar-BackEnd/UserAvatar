@@ -11,13 +11,14 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task CreateAsync(User user);
 
         Task<bool> IsLoginExistAsync(string login);
+        Task<List<User>> InviteByQuery(int boardId, string query);
 
         Task<bool> IsUserExistAsync(string email);
 
         Task<User> GetByIdAsync(int id);
 
         Task UpdateAsync(User user);
-
+        
         Task<List<User>> GetUsersRate();
     }
 }

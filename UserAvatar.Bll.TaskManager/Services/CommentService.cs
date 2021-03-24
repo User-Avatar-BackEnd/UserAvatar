@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
-using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Bll.TaskManager.Services
 {
