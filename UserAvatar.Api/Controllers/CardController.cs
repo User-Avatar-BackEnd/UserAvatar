@@ -29,7 +29,7 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpGet("{cardId:int}")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CardDetailedVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
@@ -70,7 +70,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPut("{cardId:int}")]
-        [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UpdateCardAsync(int boardId, int cardId, UpdateCardDto updateCardDto)
@@ -84,7 +84,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpDelete("{cardId:int}")]
-        [ProducesResponseType(typeof(CardShortVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCardAsync(int boardId, int cardId)
