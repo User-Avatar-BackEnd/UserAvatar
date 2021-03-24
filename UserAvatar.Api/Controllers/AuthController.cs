@@ -17,6 +17,7 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
+    [Route("api/v1/auth")]
     public class AuthController : ControllerBase
     {
         private readonly JwtOptions _jwt;

@@ -24,10 +24,10 @@ namespace UserAvatar.Dal.Entities
         public virtual Board Board { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         [Required]
-        public DateTime ModifiedAt { get; set; }
+        public DateTimeOffset ModifiedAt { get; set; }
 
         [Required]
         public int Index { get; set; }

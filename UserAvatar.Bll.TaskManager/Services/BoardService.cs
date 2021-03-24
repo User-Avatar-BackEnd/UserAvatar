@@ -16,7 +16,8 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IBoardStorage _boardStorage;
         private readonly IMapper _mapper;
 
-        public BoardService(IBoardStorage boardStorage, IMapper mapper)
+        public BoardService(IBoardStorage boardStorage, 
+            IMapper mapper)
         {
             _boardStorage = boardStorage;
             _mapper = mapper;
@@ -24,21 +25,24 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId)
         {
-            var boards = await _boardStorage.GetAllBoardsAsync(userId);
+            var boards = await _boardStorage
+                .GetAllBoardsAsync(userId);
 
-            var boardsModel = _mapper.Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
+            var boardsModel = _mapper
+                .Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
 
             return new Result<IEnumerable<BoardModel>>(boardsModel);
         }
 
         public async Task<int> CreateBoardAsync(int userId, string title)
         {
-            var board = new Board()
+            var board = new Board
             {
                 Title = title,
                 OwnerId = userId,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow
+                CreatedAt = DateTimeOffset.UtcNow,
+                ModifiedAt = DateTimeOffset.UtcNow,
+                ModifiedBy = 0
             };
 
             var boards = await GetAllBoardsAsync(userId);
@@ -61,12 +65,9 @@ namespace UserAvatar.Bll.TaskManager.Services
             }
 
             var permission = await _boardStorage.IsUserBoardAsync(userId, boardId);
-            if (!permission)
-            {
-                return new Result<BoardModel>(ResultCode.Forbidden);
-            }
-
-            return new Result<BoardModel>(_mapper.Map<Board, BoardModel>(board));
+            return !permission 
+                ? new Result<BoardModel>(ResultCode.Forbidden) 
+                : new Result<BoardModel>(_mapper.Map<Board, BoardModel>(board));
         }
 
         public async Task<int> RenameBoardAsync(int userId, int boardId, string title)

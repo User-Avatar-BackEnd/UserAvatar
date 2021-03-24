@@ -15,15 +15,9 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateAsync(Column column);
 
         Task ChangePositionAsync(int columnId, int positionIndex);
-
-        Task<Column> GetColumnByIdAsync(int id);
-
-        //Task RecurrentlyDeleteAsync(IEnumerable<Column> columns);
-
-        Task<List<int>> GetAllColumnsAsync(int boardId);
         
-        Task<int> GetColumnIdByBoardId(int boardId);
-
+        Task<Column> GetColumnByIdAsync(int id);
+        Task<List<int>> GetAllColumnsAsync(int boardId);
         bool IsUserInBoardByColumnId(int userId, int columnId);
     }
 }

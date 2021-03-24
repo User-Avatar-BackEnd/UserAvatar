@@ -4,10 +4,10 @@ namespace UserAvatar.Bll.TaskManager.Models
     public class CommentModel
     {
         public int Id { get; set; }
-        public CardModel Card { get; set; }
-        public UserModel User { get; set; }
+        public int CardId { get; set; }
+        public int UserId { get; set; }
         public string Text { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset ModifiedAt { get; set; }
     }
 }

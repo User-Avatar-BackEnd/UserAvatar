@@ -23,8 +23,7 @@ namespace UserAvatar.Api.Extentions
             
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
-           
-            //CreateMap<ColumnModel, Column>();
+            
             CreateMap<EventModel, Event>();
             CreateMap<HistoryModel, History>();
             CreateMap<InviteModel, Invite>();
@@ -36,46 +35,36 @@ namespace UserAvatar.Api.Extentions
             CreateMap<BoardModel, BoardShortVm>();
 
             CreateMap<Board, BoardModel>();
-            CreateMap<UserModel, UserShortVm>();
-            // .ForMember(x=> x.Rank, x=>x.MapFrom(x=>x.))
             
-            //CreateMap<ColumnModel, Column>()
-
+            CreateMap<UserModel, UserShortVm>();
 
             CreateMap<ColumnModel, ColumnVm>()
                 .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
-
-            //CreateMap<IEnumerable<ColumnModel>, IEnumerable<ColumnDto>>();
-
-
-            // CreateMap<IEnumerable<Member>>
 
             CreateMap<UserModel, UserShortVm>();
 
             CreateMap<BoardModel, BoardVm>()
                 .ForMember(x=> x.Members, opt=> opt.MapFrom(src=> src.Members.Select(x=>x.User)));
-
-
+            
             CreateMap<CardModel, CardDetailedVm>();
 
             CreateMap<CardModel, CardShortVm>()
                 .ForMember(x=> x.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count));
 
-            //CreateMap<IEnumerable<CardModel>, IEnumerable<CardShortDto>>();
-           
            CreateMap<CommentModel, CommentVm>()
-               .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.User.Id));
+               .ForMember(x=> x.UserId, opt => opt.MapFrom(src => src.UserId));
 
            CreateMap<CardModel, CardVm>()
                .ForMember(x => x.CommentsCount, y => y.MapFrom(x => x.Comments.Count));
-               
-
+           
            CreateMap<ColumnModel, FullColumnVm>()
                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
            CreateMap<Invite, InviteModel>()
                .ForMember(x => x.Inviter,
-                   y => y.MapFrom(z => z.Inviter));
+                   y => y.MapFrom(z => z.Inviter))
+               .ForMember(x=> x.InvitedId,
+                   y=> y.MapFrom(z => z.Invited.Id));
 
            CreateMap<InviteModel, InviteVm>();
 

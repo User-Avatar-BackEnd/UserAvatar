@@ -11,9 +11,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task DeleteApparentAsync(int commentId);
 
         Task UpdateCommentAsync(Comment comment);
-
-        Task RecursivelyDeleteAsync(IEnumerable<Comment> comments);
-
+        
         Task<Comment> GetCommentByCommentIdAsync(int commentId);
 
         Task<List<Comment>> GetAllAsync(int cardId);

@@ -39,11 +39,6 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<List<Comment>> GetAllAsync(int cardId)
         {
-            //async?
-            //return Task.FromResult(_userAvatarContext.Comments
-            //    .Where(x => x.CardId == cardId)
-            //    .OrderBy(x=> x.ModifiedAt)
-            //    .ToList());
             return await _userAvatarContext.Comments
                 .Where(x => x.CardId == cardId)
                 .OrderBy(x => x.ModifiedAt)
@@ -53,7 +48,7 @@ namespace UserAvatar.Dal.Storages
         public async Task UpdateCommentAsync(Comment comment)
         {
             var previousComment = await _userAvatarContext.Comments.FindAsync(comment.Id);
-            previousComment.ModifiedAt = DateTime.Now;
+            previousComment.ModifiedAt = DateTimeOffset.Now;
             previousComment.Text = comment.Text;
 
             await _userAvatarContext.SaveChangesAsync();

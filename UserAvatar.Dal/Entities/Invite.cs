@@ -11,18 +11,17 @@ namespace UserAvatar.Dal.Entities
         [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        
+        [ForeignKey("BoardId")]
+        public int BoardId { get; set; }
+        
+        public virtual Board Board { get; set; }
 
         [Required]
         public int InviterId { get; set; }
 
         [ForeignKey("InviterId")]
         public virtual User Inviter { get; set; }
-        
-        [Required]
-        public int BoardId { get; set; }
-        
-        [ForeignKey("BoardId")]
-        public virtual Board Board { get; set; }
 
         [Required]
         public int InvitedId { get; set; }
@@ -34,6 +33,6 @@ namespace UserAvatar.Dal.Entities
         public int Status { get; set; }
 
         [Required]
-        public DateTime Issued { get; set; }
+        public DateTimeOffset Issued { get; set; }
     }
 }

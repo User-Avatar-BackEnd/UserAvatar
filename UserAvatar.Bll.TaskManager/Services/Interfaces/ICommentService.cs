@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
@@ -7,12 +6,10 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface ICommentService
     {
-        Task<CommentModel> CreateNewCommentAsync(int userId, int cardId, string text);
+        Task<Result<CommentModel>> CreateNewCommentAsync(int userId, int boardId, int cardId, string text);
 
-        Task<CommentModel> UpdateCommentAsync(int userId, int commentId, string text);
+        Task<Result<CommentModel>> UpdateCommentAsync(int userId, int boardId, int cardId, int commentId, string text);
 
-        Task<Result<List<CommentModel>>> GetCommentsAsync(int userId, int cardId);
-
-        Task DeleteCommentAsync(int userId, int commentId);
+        Task<int> DeleteCommentAsync(int userId, int boardId, int cardId, int commentId);
     }
 }

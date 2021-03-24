@@ -16,7 +16,10 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IColumnStorage _columnStorage;
         private readonly IMapper _mapper;
 
-        public CardService(ICardStorage cardStorage, IMapper mapper, IBoardStorage boardStorage, IColumnStorage columnStorage)
+        public CardService(ICardStorage cardStorage, 
+            IMapper mapper, 
+            IBoardStorage boardStorage, 
+            IColumnStorage columnStorage)
         {
             _cardStorage = cardStorage;
             _boardStorage = boardStorage;
@@ -24,9 +27,11 @@ namespace UserAvatar.Bll.TaskManager.Services
             _columnStorage = columnStorage;
         }
 
-        public async Task<Result<CardModel>> CreateCardAsync(string title, int boardId, int columnId, int userId)
+        public async Task<Result<CardModel>> CreateCardAsync(string title, 
+            int boardId, int columnId, int userId)
         {
             var column = await _columnStorage.GetColumnByIdAsync(columnId);
+            
             if(column==null || column.BoardId != boardId)
             {
                 return new Result<CardModel>(ResultCode.NotFound);
@@ -47,10 +52,8 @@ namespace UserAvatar.Bll.TaskManager.Services
                 Title = title,
                 Description = "",
                 OwnerId = userId,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow,
-                IsDeleted = false,
-                IsHidden = false,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ModifiedAt = DateTimeOffset.UtcNow,
                 ColumnId = columnId,
                 ModifiedBy = userId
             };
@@ -61,9 +64,11 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<CardModel>(cardModel);
         }
 
-        public async Task<int> UpdateCardAsync(CardModel cardModel, int boardId, int columnId, int? responsibleId, int userId)
+        public async Task<int> UpdateCardAsync(CardModel cardModel, 
+            int boardId, int userId)
         {
             var card = await _cardStorage.GetByIdAsync(cardModel.Id);
+            
             if (card == null)
             {
                 return ResultCode.NotFound;
@@ -76,17 +81,18 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             card.Title = card.Title;
             card.Description = cardModel.Description;
-            card.ColumnId = columnId;
-            card.ResponsibleId = responsibleId;
+            card.ColumnId = cardModel.ColumnId;
+            card.ResponsibleId = cardModel.ResponsibleId;
             card.IsHidden = cardModel.IsHidden;
-            card.ModifiedAt = DateTime.UtcNow;
+            card.ModifiedAt = DateTimeOffset.UtcNow;
             card.Priority = cardModel.Priority;
 
             await _cardStorage.UpdateAsync(card);
             return ResultCode.Success;
         }
 
-        public async Task<Result<CardModel>> GetByIdAsync(int boardId, int cardId, int userId)
+        public async Task<Result<CardModel>> GetByIdAsync(
+            int boardId, int cardId, int userId)
         {
             var card = await _cardStorage.GetByIdAsync(cardId);
             if (card == null)
@@ -102,7 +108,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<CardModel>(_mapper.Map<Card, CardModel>(card));
         }
 
-        public async Task<int> DeleteCardAsync(int boardId, int cardId, int userId)
+        public async Task<int> DeleteCardAsync(
+            int boardId, int cardId, int userId)
         {
             var card = await _cardStorage.GetByIdAsync(cardId);
             if (card == null)

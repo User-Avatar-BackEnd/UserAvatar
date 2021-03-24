@@ -22,12 +22,14 @@ namespace UserAvatar.Api.Controllers
         private readonly IPersonalAccountService _personalAccountService;
 
         private readonly IInviteService _inviteService;
-        // unnesessary di
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
         
 
-        public PersonalAccountController(IPersonalAccountService personalAccountService,IMapper mapper, IInviteService inviteService, IApplicationUser applicationUser)
+        public PersonalAccountController(IPersonalAccountService personalAccountService,
+            IMapper mapper, 
+            IInviteService inviteService, 
+            IApplicationUser applicationUser)
         {
             _personalAccountService = personalAccountService;
             _mapper = mapper;
@@ -39,13 +41,13 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("change_login")]
-        public async Task<ActionResult> ChangeLoginAsync([FromBody] string login)
+        public async Task<ActionResult> ChangeLoginAsync([FromBody] ChangeLoginRequest login)
         {
-            login = login.Trim();
+            login.Login = login.Login.Trim();
 
-            if (login.Length < 5 || login.Length > 64) throw new SystemException("Login length should be between 5 and 64 characters");
+            if (login.Login.Length < 5 || login.Login.Length > 64) throw new SystemException("Login length should be between 5 and 64 characters");
 
-            await _personalAccountService.ChangeLoginAsync(UserId, login);
+            await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
 
             return Ok();
         }
@@ -67,13 +69,13 @@ namespace UserAvatar.Api.Controllers
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
             // ToDo: get the rest of the needed data from GamificationService
 
-            var userDataVm = new UserDataVm()
+            var userDataVm = new UserDataVm
             {
+                //check if works
                 Email = userData.Email,
                 Login = userData.Login,
                 InvitesAmount = userData.Invited
-                              .Where(invite => invite.Status == -1)
-                              .Count(),
+                    .Count(invite => invite.Status == -1),
                 
                 //Here needs to me
                 

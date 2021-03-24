@@ -8,8 +8,8 @@ namespace UserAvatar.Bll.TaskManager.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public int OwnerId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset ModifiedAt { get; set; }
         public List<ColumnModel> Columns { get; set; }
         public List<MemberModel> Members { get; set; }
                 

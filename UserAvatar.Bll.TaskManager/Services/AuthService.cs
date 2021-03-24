@@ -15,7 +15,8 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserStorage userStorage, IMapper mapper)
+        public AuthService(IUserStorage userStorage, 
+            IMapper mapper)
         {
             _userStorage = userStorage;
             _mapper = mapper;
@@ -67,19 +68,17 @@ namespace UserAvatar.Bll.TaskManager.Services
             }
 
             var passwordIsValid = PasswordHash.ValidatePassword(password, user.PasswordHash);
-            if (!passwordIsValid)
-            {
-                return new Result<UserModel>(ResultCode.InvalidPassword);
-            }
-
-            return new Result<UserModel>(_mapper.Map<User, UserModel>(user));
+            
+            return !passwordIsValid 
+                ? new Result<UserModel>(ResultCode.InvalidPassword) 
+                : new Result<UserModel>(_mapper.Map<User, UserModel>(user));
         }
 
         private async Task<string> GenerateLoginAsync()
         {
             while (true)
             {
-                string login = "user" + RandomDigits();
+                var login = "user" + RandomDigits();
 
                 if(! await _userStorage.IsLoginExistAsync(login)) return login;
             }
@@ -89,9 +88,9 @@ namespace UserAvatar.Bll.TaskManager.Services
         private static string RandomDigits()
         {
             var random = new Random();
-            string s = string.Empty;
-            for (int i = 0; i < 10; i++)
-                s = String.Concat(s, random.Next(10).ToString());
+            var s = string.Empty;
+            for (var i = 0; i < 10; i++)
+                s = string.Concat(s, random.Next(10).ToString());
             return s;
         }
     }

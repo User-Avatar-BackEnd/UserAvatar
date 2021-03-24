@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
-using Z.EntityFramework.Plus;
-using Task = System.Threading.Tasks.Task;
 
 namespace UserAvatar.Dal.Storages
 {
@@ -39,7 +37,8 @@ namespace UserAvatar.Dal.Storages
                 column.Board = thisBoard;
                 column.Index = columnCount;
 
-                // Please do not change or userAvatarContext would be disposed after first method call
+                // Please do not change or userAvatarContext would be
+                // disposed after first method call
                 await _userAvatarContext.Columns.AddAsync(column);
                 await  _userAvatarContext.SaveChangesAsync();
                 return column;  
@@ -58,28 +57,20 @@ namespace UserAvatar.Dal.Storages
 
         public bool IsUserInBoardByColumnId(int userId,int columnId)
         {
-            /*var zzz = _userAvatarContext.Columns.Where(x => x.Id == columnId)
-                .Include(x=> x.Board)
-                .ThenInclude(x=> x.Members.Count(x => x.UserId == userId));*/
-
-            // why don't you want to return in at once instead creating a variable and returning this variable?
-
-
             // Дима сказал: там инклуд не нужен вроде, если вы не вытягиваете данные наружу, а я не уверенна ибо не делала это :D
             // Поэтому осталю пока это тут)
-
-
+            
             return _userAvatarContext.Boards
                 .Include(x => x.Columns)
                 .Include(x => x.Members)
                 .Any(x=> x.Columns.Any(x=> x.Id == columnId) && x.Members
                     .Any(x=> x.UserId == userId));
-
             
         }
         
         public async Task DeleteApparentAsync(int columnId)
         {
+            //Todo: Add Recursive deletion
             var column = await GetColumnByIdAsync(columnId);
             if (column.IsDeleted)
                 throw new Exception($"Already Deleted!{columnId}");
@@ -90,28 +81,6 @@ namespace UserAvatar.Dal.Storages
             
             await _userAvatarContext.SaveChangesAsync();
         }
-
-        /*public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
-        {
-            foreach (var column in columns)
-            {
-                column.IsDeleted = true;
-            }
-            //todo: make recurrently 'isDeleted' tasks!
-            await _userAvatarContext.SaveChangesAsync();
-        }*/
-        
-        /*public async Task RecurrentlyDeleteAsync(IEnumerable<Column> columns)
-        {
-            _userAvatarContext.Users.Where(x=> )
-            /*foreach (var column in columns)
-            {
-                column.IsDeleted = true;
-            }
-            //todo: make recurrently 'isDeleted' tasks!
-            await _userAvatarContext.SaveChangesAsync();#1#
-        }*/
-
         public async Task<List<int>> GetAllColumnsAsync(int boardId)
         {
             return await Task.FromResult(_userAvatarContext.Columns

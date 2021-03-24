@@ -7,9 +7,9 @@ namespace UserAvatar.Bll.TaskManager.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public BoardModel Board { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public int BoardId { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset ModifiedAt { get; set; }
         public int Index { get; set; }
         public List<CardModel> Cards { get; set; }
                 

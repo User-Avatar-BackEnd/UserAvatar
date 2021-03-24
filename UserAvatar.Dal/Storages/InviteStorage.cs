@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -32,13 +31,14 @@ namespace UserAvatar.Dal.Storages
         {
             return await _userAvatarContext.Invites.FindAsync(inviteId);
         }
+
         public async Task<Invite> GetInviteByBoardAsync(int userId, int boardId)
-        { 
+        {
             //todo: implement!
             return await Task.FromResult(_userAvatarContext.Invites
                 .FirstOrDefault(x => x.InvitedId == userId && x.BoardId == boardId));
         }
-        
+
         public async Task<List<Invite>> GetInvitesAsync(int userId)
         {
             //???????????????????????????????????????????????????

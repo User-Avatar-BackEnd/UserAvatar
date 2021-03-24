@@ -19,7 +19,9 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public InviteService(
             IInviteStorage inviteStorage, 
-            IMapper mapper, IUserStorage userStorage, IBoardStorage boardStorage)
+            IMapper mapper, 
+            IUserStorage userStorage, 
+            IBoardStorage boardStorage)
         {
             _inviteStorage = inviteStorage;
             _mapper = mapper;
@@ -29,20 +31,19 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         private async Task<int> GetUserIdByPayload(string payload)
         {
-            if (int.TryParse(payload, out var invitedId) && await _userStorage.GetByIdAsync(invitedId) != null)
+            if (int.TryParse(payload, out var invitedId) 
+                && await _userStorage.GetByIdAsync(invitedId) != null)
                 return invitedId;
             
             var thisUser = await _userStorage.GetByEmailAsync(payload?.ToLower());
             return thisUser?.Id ?? -1;
-            
         }
-
         private async Task<Invite> GetInvite(int boardId, int userId)
         {
             return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
         }
-
-        public async Task<int> CreateInviteAsync(int boardId, int userId, string payload)
+        public async Task<int> CreateInviteAsync(
+            int boardId, int userId, string payload)
         {
             if (payload == null)
                 return ResultCode.NotFound;
@@ -64,14 +65,14 @@ namespace UserAvatar.Bll.TaskManager.Services
                         InviterId = userId,
                         BoardId = boardId,
                         InvitedId = invitedId,
-                        Issued = DateTime.UtcNow,
+                        Issued = DateTimeOffset.UtcNow,
                         Status = 0
                     };
                 }
                 else
                 {
                     thisInvite.Status = 0;
-                    thisInvite.Issued = DateTime.UtcNow;
+                    thisInvite.Issued = DateTimeOffset.UtcNow;
                     await _inviteStorage.UpdateAsync(thisInvite);
                     return ResultCode.Success;
                 }
