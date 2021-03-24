@@ -5,11 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Services\" />
+      <Folder Include="Services\Interfaces\" />
+      <Folder Include="Models\" />
+    </ItemGroup>
+    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="10.1.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
     </ItemGroup>
-
 </Project>
