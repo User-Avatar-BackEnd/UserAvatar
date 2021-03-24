@@ -4,6 +4,7 @@ using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
+using UserAvatar.Api.Contracts.Dtos;
 
 namespace UserAvatar.Api.Extentions
 {
@@ -30,7 +31,9 @@ namespace UserAvatar.Api.Extentions
             CreateMap<RankModel, Rank>();
             CreateMap<CardModel, Card>();
             CreateMap<CommentModel, Comment>();
+            CreateMap<EventModel, Event>();
 
+            CreateMap<EventDto, EventModel>();
 
             CreateMap<BoardModel, BoardShortVm>();
 

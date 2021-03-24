@@ -8,6 +8,6 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
     {
         Task<List<EventModel>> GetEventListAsync();
 
-        Task<int> ChangeEventsCostAsync();
+        Task<int> ChangeEventsCostAsync(List<EventModel> newEvents);
     }
 }
