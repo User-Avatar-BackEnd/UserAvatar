@@ -22,9 +22,6 @@ namespace UserAvatar.Dal.Storages
         public async Task CreateBoardAsync(Board board)
         {
             await _dbContext.Boards.AddAsync(board);
-            //await _dbContext.SaveChangesAsync();
-
-            //await AddAsMemberAsync(member);
             await _dbContext.SaveChangesAsync();
         }
 
