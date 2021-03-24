@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
+using UserAvatar.Bll.Infrastructure.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;

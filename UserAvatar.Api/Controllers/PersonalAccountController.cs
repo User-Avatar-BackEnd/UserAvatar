@@ -100,5 +100,7 @@ namespace UserAvatar.Api.Controllers
                 return NotFound(result);
             return Ok(_mapper.Map<List<InviteModel>,List<InviteVm>>(result.Value));
         }
+
+        // получить рейтинг
     }
 }
