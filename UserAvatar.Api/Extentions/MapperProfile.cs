@@ -62,6 +62,8 @@ namespace UserAvatar.Api.Extentions
            CreateMap<ColumnModel, FullColumnVm>()
                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
+           CreateMap<UpdateCardDto, CardModel>();
+           
            CreateMap<Invite, InviteModel>()
                .ForMember(x => x.Inviter,
                    y => y.MapFrom(z => z.Inviter))
@@ -70,8 +72,10 @@ namespace UserAvatar.Api.Extentions
 
            CreateMap<InviteModel, InviteVm>();
            CreateMap<EventModel, EventVm>();
+           
+           CreateMap<User, RateModel>();
 
-            CreateMap<User, RateModel>();
+            CreateMap<UpdateCardDto, CardModel>();
         }
     }
 }

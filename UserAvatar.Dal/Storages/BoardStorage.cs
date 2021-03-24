@@ -134,7 +134,7 @@ namespace UserAvatar.Dal.Storages
                 .AnyAsync(board => board.Id == boardId);
         }
 
-        public async Task<bool> IsBoardColumn(int boardId, int columnId)
+        public async Task<bool> IsBoardColumnAsync(int boardId, int columnId)
         {
             return await _dbContext.Columns
                 .AnyAsync(x => x.BoardId == boardId && x.Id == columnId);

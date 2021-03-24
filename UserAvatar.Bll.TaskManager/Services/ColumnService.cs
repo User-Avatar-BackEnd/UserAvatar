@@ -133,7 +133,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<ColumnModel>(ResultCode.Forbidden);
             }
 
-            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            if (!await _boardStorage.IsBoardColumnAsync(boardId, columnId))
             {
                 return new Result<ColumnModel>(ResultCode.NotFound);
             }
@@ -157,7 +157,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
             
-            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            if (!await _boardStorage.IsBoardColumnAsync(boardId, columnId))
             {
                 return ResultCode.NotFound;
             }
