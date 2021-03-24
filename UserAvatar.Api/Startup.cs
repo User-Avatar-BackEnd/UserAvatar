@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +10,8 @@ using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
-
+using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 
 namespace UserAvatar.Api
 {
@@ -31,7 +32,7 @@ namespace UserAvatar.Api
         {
             services
                 .Configure<LimitationOptions>(Configuration.GetSection("Limitations"));
-            
+
             services.AddHealthChecks();
             services.AddServices();
             services.AddStorages();
