@@ -9,7 +9,7 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Api.Controllers

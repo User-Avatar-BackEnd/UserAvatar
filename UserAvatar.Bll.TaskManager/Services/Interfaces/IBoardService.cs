@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces

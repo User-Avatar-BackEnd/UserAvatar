@@ -1,4 +1,4 @@
-namespace UserAvatar.Bll.Infrastructure.Options
+namespace UserAvatar.Bll.TaskManager.Options
 {
     public class LimitationOptions
     {
