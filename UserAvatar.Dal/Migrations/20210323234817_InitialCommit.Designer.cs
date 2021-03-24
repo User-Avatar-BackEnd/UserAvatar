@@ -10,7 +10,7 @@ using UserAvatar.Dal.Context;
 namespace UserAvatar.Dal.Migrations
 {
     [DbContext(typeof(UserAvatarContext))]
-    [Migration("20210323150959_InitialCommit")]
+    [Migration("20210323234817_InitialCommit")]
     partial class InitialCommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,14 +28,14 @@ namespace UserAvatar.Dal.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
@@ -65,8 +65,8 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<int>("ColumnId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(2048)
@@ -78,8 +78,8 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<bool>("IsHidden")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
@@ -119,8 +119,8 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<int>("BoardId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Index")
                         .HasColumnType("integer");
@@ -128,8 +128,8 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
@@ -156,14 +156,14 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<int>("CardId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -205,12 +205,15 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<bool>("Calculated")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("DateTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EventName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -240,8 +243,8 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<int>("InviterId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Issued")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateTimeOffset>("Issued")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -395,7 +398,7 @@ namespace UserAvatar.Dal.Migrations
 
             modelBuilder.Entity("UserAvatar.Dal.Entities.History", b =>
                 {
-                    b.HasOne("UserAvatar.Dal.Entities.Event", "Event")
+                    b.HasOne("UserAvatar.Dal.Entities.Event", null)
                         .WithMany("Histories")
                         .HasForeignKey("EventName")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -406,8 +409,6 @@ namespace UserAvatar.Dal.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Event");
 
                     b.Navigation("User");
                 });

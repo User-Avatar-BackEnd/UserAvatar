@@ -1,6 +1,6 @@
 ﻿namespace UserAvatar.Bll.TaskManager.Infrastructure
 {
-    readonly public struct Result<T>
+    public readonly struct Result<T>
     {
         public T Value { get; }
 

@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace UserAvatar.Bll.TaskManager.Infrastructure
 {
     public class LimitationOptions

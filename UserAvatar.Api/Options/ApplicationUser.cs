@@ -21,5 +21,6 @@ namespace UserAvatar.Api.Options
 
             return int.TryParse(request?.Value, out var id) ? id : 0;
         }
+        //GetRole
     }
 }

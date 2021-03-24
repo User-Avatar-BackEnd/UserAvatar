@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
@@ -16,22 +15,21 @@ namespace UserAvatar.Dal.Storages
         {
             _dbContext = dbContext;
         }
-
         public async Task<Card> GetByIdAsync(int id)
         {
             return await _dbContext.Cards
                 .Include(x=>x.Column)
                 .Include(x=>x.Responsible)
                 .Include(x=>x.Comments)
-                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+                .FirstOrDefaultAsync(x => x.Id == id );
+            
+            // Removed && !x.IsDeleted. I think this does not have meaning
         }
-
         public async Task<Card> CreateAsync(Card card)
         {
             await _dbContext.Cards.AddAsync(card);
             await _dbContext.SaveChangesAsync();
-            //*************************
-            //Todo: FIX LINE 34. COLUMN C0.ISDELETED DOES NOT EXISTS;
+            
             return await _dbContext.Cards
                 .Include(x => x.Column)
                 .Include(x => x.Responsible)
@@ -41,25 +39,31 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<int> GetCardsCountInColumnAsync(int columnId)
         {
+            // Here was refactored to make it async
             var column = await _dbContext.Columns
                 .Include(x => x.Cards)
-                .FirstOrDefaultAsync(x => x.Id == columnId &&!x.IsDeleted);
+                .CountAsync(x => x.Id == columnId);
 
-            return column.Cards.Where(x => !x.IsDeleted).Count();
+            // Removed && !x.IsDeleted. I think this does not have meaning
+            if (column == 0) throw new Exception(); //column doesn't exist
+
+            return column;
         }
 
         public async Task<int> GetBoardIdAsync(int cardId)
         {
-           var card = await _dbContext.Cards
+            var card = await _dbContext.Cards
                 .Include(x => x.Column)
                 .FirstOrDefaultAsync(x => x.Id == cardId);
 
-           return card?.Column.BoardId ?? 0;
+            return card?.Column.BoardId ?? 0;
         }
 
         public async Task DeleteAsync(int cardId)
         {
-            var card = await _dbContext.Cards.FirstOrDefaultAsync(x => x.Id == cardId);
+            //Todo: Add recursive deletion
+            var card = await _dbContext.Cards
+                .FirstOrDefaultAsync(x => x.Id == cardId);
 
             if (card == null) throw new Exception();
 
@@ -73,6 +77,16 @@ namespace UserAvatar.Dal.Storages
             _dbContext.Entry(card).State = EntityState.Modified;
 
             await _dbContext.SaveChangesAsync();
+        }
+        public async Task<int> GetCardIdByColumnId(int columnId)
+        {
+            return await Task.FromResult(_dbContext.Cards.FirstOrDefaultAsync(x => x.ColumnId == columnId).Id);
+        }
+
+        public async Task<bool> IsCardComment(int cardId, int commentId)
+        {
+            return await _dbContext.Comments
+                .AnyAsync(x => x.Id == commentId && x.CardId == cardId);
         }
     }
 }

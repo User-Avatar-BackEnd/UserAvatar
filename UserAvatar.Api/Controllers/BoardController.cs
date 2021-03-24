@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Dtos;
@@ -23,7 +21,10 @@ namespace UserAvatar.Api.Controllers
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-        public BoardController(IBoardService boardService, IMapper mapper, IApplicationUser applicationUser)
+        public BoardController(
+            IBoardService boardService, 
+            IMapper mapper, 
+            IApplicationUser applicationUser)
         {
             _boardService = boardService;
             _mapper = mapper;
@@ -39,7 +40,9 @@ namespace UserAvatar.Api.Controllers
         {
             var result = await _boardService.GetAllBoardsAsync(UserId);
 
-            var list = _mapper.Map<IEnumerable<BoardModel>, IEnumerable<BoardShortVm>>(result.Value);
+            var list = 
+                _mapper.Map<IEnumerable<BoardModel>, 
+                    IEnumerable<BoardShortVm>>(result.Value);
 
             return Ok(list);
         }
@@ -53,7 +56,8 @@ namespace UserAvatar.Api.Controllers
         {
             titleDto.Title = titleDto.Title.Trim();
 
-            int code = await _boardService.CreateBoardAsync(UserId, titleDto.Title);
+            var code = 
+                await _boardService.CreateBoardAsync(UserId, titleDto.Title);
 
             if (code != ResultCode.Success)
             {
@@ -72,6 +76,7 @@ namespace UserAvatar.Api.Controllers
         {
             var result = await _boardService.GetBoardAsync(UserId, boardId);
 
+            //Here can be switch Case statement. Please remind to change
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
@@ -92,7 +97,9 @@ namespace UserAvatar.Api.Controllers
         {
             titleDto.Title = titleDto.Title.Trim();
 
-            int result = await _boardService.RenameBoardAsync(UserId, boardId, titleDto.Title);
+            var result = 
+                await _boardService
+                    .RenameBoardAsync(UserId, boardId, titleDto.Title);
 
             return StatusCode(result);
         }
@@ -103,7 +110,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
-            int result = await _boardService.DeleteBoardAsync(UserId, boardId);
+            var result = await _boardService.DeleteBoardAsync(UserId, boardId);
 
             return StatusCode(result);
         }

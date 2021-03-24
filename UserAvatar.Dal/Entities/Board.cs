@@ -24,10 +24,10 @@ namespace UserAvatar.Dal.Entities
         public virtual User User { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         [Required]
-        public DateTime ModifiedAt { get; set; }
+        public DateTimeOffset ModifiedAt { get; set; }
         public virtual ICollection<Column> Columns { get; set; }
         public virtual ICollection<Member> Members { get; set; }
         

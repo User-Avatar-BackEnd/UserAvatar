@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +18,7 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IMapper _mapper;
         private readonly IBoardStorage _boardStorage;
         private readonly LimitationOptions _limitations;
+       
         public ColumnService(
             IColumnStorage columnStorage,
             IMapper mapper,
@@ -32,7 +33,8 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         //todo: add userId
 
-        public async Task<Result<ColumnModel>> CreateAsync(int userId, int boardId, string title)
+        public async Task<Result<ColumnModel>> CreateAsync(
+            int userId, int boardId, string title)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -48,8 +50,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             {
                 Title = title,
                 BoardId = boardId,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now
+                CreatedAt = DateTimeOffset.UtcNow,
+                ModifiedAt = DateTimeOffset.UtcNow
             };
 
             var column = await _columnStorage.CreateAsync(newColumn);
@@ -57,7 +59,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(column));
         }
 
-        public async Task<int> ChangePositionAsync(int userId, int boardId, int columnId, int positionIndex)
+        public async Task<int> ChangePositionAsync(
+            int userId, int boardId, int columnId, int positionIndex)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -69,13 +72,11 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // что у этой борды есть такая колонка
-
-            // todo: new method !
-            // NotFound
-
-            // IsUserInBoardByColumnId maybe may be async
-
+            /*if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
+            {
+                return ResultCode.Forbidden;
+            }*/
+            
             if (await _columnStorage.GetColumnsCountInBoardAsync(columnId) > _limitations.MaxColumnCount)
             {
                 return ResultCode.MaxColumnCount;
@@ -86,7 +87,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<int> DeleteAsync(int userId, int boardId, int columnId)
+        public async Task<int> DeleteAsync(
+            int userId, int boardId, int columnId)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -98,9 +100,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // check: что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
 
             // IsUserInBoardByColumnId maybe may be async
 
@@ -108,13 +111,16 @@ namespace UserAvatar.Bll.TaskManager.Services
             {
                 return ResultCode.Forbidden;
             }
+            
+            //todo: implement in storage recursive deletion
 
             await _columnStorage.DeleteApparentAsync(columnId);
 
             return ResultCode.Success;
         }
 
-        public async Task<int> UpdateAsync(int userId, int boardId, int columnId, string title)
+        public async Task<int> UpdateAsync(
+            int userId, int boardId, int columnId, string title)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -126,9 +132,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            // что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
 
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
@@ -143,7 +150,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId)
+        public async Task<Result<ColumnModel>> GetColumnByIdAsync(
+            int userId, int boardId, int columnId)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -155,42 +163,16 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<ColumnModel>(ResultCode.Forbidden);
             }
 
-            // что у этой борды есть такая колонка
-            // что у этой борды есть такая колонка
-            // todo: new method !
-            // NotFound
-
-
-            var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
-
-            if (foundColumn is null)
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
             {
                 return new Result<ColumnModel>(ResultCode.NotFound);
             }
 
-            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
-        }
+            var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
-        public async Task<Result<List<ColumnModel>>> GetAllColumnsAsync(int userId, int boardId)
-        {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
-            {
-                return new Result<List<ColumnModel>>(ResultCode.NotFound);
-            }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<List<ColumnModel>>(ResultCode.Forbidden);
-            }
-
-            var allColumns = await _columnStorage.GetAllColumnsAsync(boardId);
-
-            if (allColumns.Count() < 0)
-            {
-                return new Result<List<ColumnModel>>(ResultCode.NotFound);
-            }
-
-            return new Result<List<ColumnModel>>(_mapper.Map<List<Column>, List<ColumnModel>>(allColumns));
+            return foundColumn is null 
+                ? new Result<ColumnModel>(ResultCode.NotFound) 
+                : new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
         }
     }
 }

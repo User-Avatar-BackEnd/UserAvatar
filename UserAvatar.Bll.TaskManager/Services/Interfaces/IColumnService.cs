@@ -16,7 +16,6 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
         Task<int> UpdateAsync(int userId, int boardId, int columnId, string title);
 
         Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId);
-
-        Task<Result<List<ColumnModel>>> GetAllColumnsAsync(int userId, int boardId);
+        
     }
 }

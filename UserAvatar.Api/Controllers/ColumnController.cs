@@ -57,6 +57,7 @@ namespace UserAvatar.Api.Controllers
 
             var thisColumn = await _columnService.CreateAsync(UserId, boardId, titleDto.Title);
 
+            //Switch case 
             if (thisColumn.Code == ResultCode.NotFound) return NotFound();
             if (thisColumn.Code == ResultCode.Forbidden) return Forbid();
 
@@ -74,6 +75,7 @@ namespace UserAvatar.Api.Controllers
 
             var result = await _columnService.UpdateAsync(UserId, boardId, columnId, titleDto.Title);
 
+            //Switch case 
             if (result == ResultCode.NotFound) return NotFound();
             if (result == ResultCode.Forbidden) return Forbid();
 
@@ -89,6 +91,7 @@ namespace UserAvatar.Api.Controllers
         {
             var result = await _columnService.DeleteAsync(UserId, boardId, columnId);
 
+            //Switch case 
             if (result == ResultCode.NotFound) return NotFound();
             if (result == ResultCode.Forbidden) return Forbid();
 
@@ -104,6 +107,7 @@ namespace UserAvatar.Api.Controllers
         {
             var result = await _columnService.ChangePositionAsync(UserId, boardId, columnId, to);
 
+            //Switch case 
             if (result == ResultCode.NotFound) return NotFound();
             if (result == ResultCode.Forbidden) return Forbid();
 

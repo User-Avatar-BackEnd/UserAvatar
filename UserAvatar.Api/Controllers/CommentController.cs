@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
+using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -16,7 +15,7 @@ namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/boards/{boardId:int}/columns/{columnId:int}/cards/{cardId:int}/comments")]
+    [Route("api/v1/boards/{boardId:int}/cards/{cardId:int}/comments")]
     [Consumes(MediaTypeNames.Application.Json)]
     [Produces(MediaTypeNames.Application.Json)]
     public class CommentController:ControllerBase
@@ -54,26 +53,48 @@ namespace UserAvatar.Api.Controllers
         */
 
         [HttpPost]
-        public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int columnId, int cardId, CommentDto commentDto)
+        [ProducesResponseType(typeof(CommentVm), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<ActionResult<CommentDto>> CreateCommentAsync(int boardId, int cardId, CommentDto commentDto)
         {
-            var comment = await _commentService.CreateNewCommentAsync(UserId, cardId, commentDto.Text);
+            var result = await _commentService.CreateNewCommentAsync(UserId, boardId, cardId, commentDto.Text);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+            if (result.Code == ResultCode.Forbidden) return Forbid();
             
-            return Ok(_mapper.Map<CommentModel,CommentDto>(comment));
+            return Ok(_mapper.Map<CommentModel,CommentVm>(result.Value));
         }
         
         [HttpPatch("{commentId:int}")]
-        public async Task<IActionResult> UpdateCommentAsync(int boardId, int columnId, int cardId, int commentId, CommentDto commentDto)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<ActionResult> UpdateCommentAsync(int boardId, int cardId, int commentId, CommentDto commentDto)
         {
-            await _commentService.UpdateCommentAsync(UserId, commentId, commentDto.Text);
+            var result = await _commentService.UpdateCommentAsync(UserId, boardId, cardId, commentId, commentDto.Text);
 
-            return Ok();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+
+            return Ok(_mapper.Map<CommentModel, CommentVm>(result.Value));
         }
         
         [HttpDelete("{commentId:int}")]
-        public async Task<IActionResult> DeleteCommentAsync(int boardId, int columnId, int cardId, int commentId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        public async Task<ActionResult> DeleteCommentAsync(int boardId, int cardId, int commentId)
         {
-            await _commentService.DeleteCommentAsync(UserId,commentId);
-            return Ok();
+            var result = await _commentService.DeleteCommentAsync(UserId, boardId, cardId, commentId);
+
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
     }
 }

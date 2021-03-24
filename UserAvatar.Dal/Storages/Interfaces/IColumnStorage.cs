@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Dal.Entities;
@@ -15,15 +15,11 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateAsync(Column column);
 
         Task ChangePositionAsync(int columnId, int positionIndex);
-
+        
         Task<Column> GetColumnByIdAsync(int id);
-
-        Task RecurrentlyDeleteAsync(IEnumerable<Column> columns);
-
-        Task<List<Column>> GetAllColumnsAsync(int boardId);
-
+        Task<List<int>> GetAllColumnsAsync(int boardId);
         bool IsUserInBoardByColumnId(int userId, int columnId);
-
+        
         Task<int> GetColumnsCountInBoardAsync(int boardId);
     }
 }

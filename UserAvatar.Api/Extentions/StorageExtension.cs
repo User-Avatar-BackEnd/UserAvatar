@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using UserAvatar.Api.Options;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
@@ -16,9 +15,6 @@ namespace UserAvatar.Api.Extentions
         public static IServiceCollection AddStorages(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
-            
-            services.AddScoped<IApplicationUser, ApplicationUser>();
-            services.AddHttpContextAccessor();
 
             return services
                 .AddTransient<IUserStorage, UserStorage>()

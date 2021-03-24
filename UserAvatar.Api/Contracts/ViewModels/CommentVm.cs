@@ -7,6 +7,6 @@ namespace UserAvatar.Api.Contracts.ViewModels
         public int UserId { get; set; }
         public string Text { get; set; }
         public bool Editable { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

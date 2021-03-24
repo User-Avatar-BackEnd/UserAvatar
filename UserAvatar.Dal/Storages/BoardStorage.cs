@@ -6,18 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
+using Z.EntityFramework.Plus;
 
 namespace UserAvatar.Dal.Storages
 {
     public class BoardStorage : IBoardStorage
     {
         private readonly UserAvatarContext _dbContext;
-        private readonly IColumnStorage _columnStorage;
 
-        public BoardStorage(UserAvatarContext dbContext, IColumnStorage columnStorage)
+        public BoardStorage(UserAvatarContext dbContext)
         {
             _dbContext = dbContext;
-            _columnStorage = columnStorage;
         }
 
         public async Task CreateBoardAsync(Board board)
@@ -53,45 +52,51 @@ namespace UserAvatar.Dal.Storages
             _dbContext.Entry(board).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
-
+        
         public async Task DeleteBoardAsync(int userId, int boardId)
         {
-            var board = await _dbContext.Boards
-                .Include(x=>x.Columns)
-                .FirstAsync(board => board.OwnerId == userId && board.Id == boardId);
+            var thisBoard = await _dbContext.Boards.FindAsync(boardId);
 
-            board.IsDeleted = true;
-
-            await _columnStorage.RecurrentlyDeleteAsync(board.Columns);
+            await _dbContext.Columns.Where(x => x.BoardId == boardId)
+                .Include(x => x.Cards)
+                .ThenInclude(x => x.Comments).SelectMany(x => x.Cards.SelectMany(card => card.Comments))
+                .UpdateAsync(x => new Comment {IsDeleted = true});
+            
+            await _dbContext.Columns
+                .Include(x=> x.Cards)
+                .SelectMany(x=> x.Cards)
+                .UpdateAsync(x => new Card {IsDeleted = true});
+            
+            await _dbContext.Columns.Where(x => x.BoardId == boardId)
+                .UpdateAsync(x => new Column {IsDeleted = true});
+            
+            await _dbContext.Members.Where(x=> x.BoardId == boardId)
+                .UpdateAsync(x => new Member {IsDeleted = true});
+            
+            thisBoard.IsDeleted = true;
 
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> IsOwnerBoardAsync(int userId, int boardId)
         {
-            var count = await _dbContext.Boards
-                .Where(board => board.OwnerId == userId && board.Id == boardId)
-                .CountAsync();
-               
-            if (count == 0) return false;
-
-            return true;
+            return await _dbContext.Boards
+                .AnyAsync(board => board.OwnerId == userId && board.Id == boardId);
+            
         }
 
         public async Task<bool> IsUserBoardAsync(int userId, int boardId)
         {
-            var count =  await _dbContext.Members.CountAsync(x => x.BoardId == boardId && x.UserId == userId);
-
-            if (count == 0) return false;
-
-            return true;
+            return await _dbContext.Members
+                .AnyAsync(x => x.BoardId == boardId && x.UserId == userId);
+            
         }
 
-        public async Task AddAsMemberAsync(int userId, int boardId)
+        private async Task AddAsMemberAsync(int userId, int boardId)
         {
             if (await IsMemberExistAsync(userId, boardId)) throw new SystemException();
 
-            var member = new Member()
+            var member = new Member
             {
                 UserId = userId,
                 BoardId = boardId
@@ -102,14 +107,34 @@ namespace UserAvatar.Dal.Storages
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> IsMemberExistAsync(int userId, int boardId)
+        private async Task<bool> IsMemberExistAsync(int userId, int boardId)
         {
-            return await _dbContext.Members.AnyAsync(member => member.UserId == userId && member.BoardId == boardId);
+            return await _dbContext.Members
+                .AnyAsync(member => member.UserId == userId && member.BoardId == boardId);
         }
 
         public async Task<bool> IsBoardExistAsync(int boardId)
         {
-            return await _dbContext.Boards.AnyAsync(board => board.Id == boardId);
+            return await _dbContext.Boards
+                .AnyAsync(board => board.Id == boardId);
+        }
+
+        public async Task<bool> IsBoardColumn(int boardId, int columnId)
+        {
+            return await _dbContext.Columns
+                .AnyAsync(x => x.BoardId == boardId && x.Id == columnId);
+        }
+
+        //todo: think about this
+        public async Task<bool> IsBoardCard(int boardId, int cardId)
+        {
+            return await _dbContext.Boards
+                .Where(x=>x.Id == boardId)
+                .Include(x=>x.Columns)
+                .ThenInclude(x=> x.Cards)
+                .AnyAsync(x => x.Columns
+                    .Any(x=> x.Cards.
+                        Any(x=>x.Id == cardId)));
         }
     }
 }

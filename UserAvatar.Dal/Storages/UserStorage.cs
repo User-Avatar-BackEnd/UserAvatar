@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,11 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
+            //return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
+            
+            return await _dbContext.Users
+                .Where(user => user.Email.ToLower() == email.ToLower())
+                .FirstOrDefaultAsync();
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -36,7 +41,8 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<bool> IsLoginExistAsync(string login)
         {
-            return await _dbContext.Users.AnyAsync(user => user.Login == login);
+            return await _dbContext.Users
+                .AnyAsync(user => user.Login == login);
         }
 
         public async Task UpdateAsync(User user)
@@ -47,7 +53,8 @@ namespace UserAvatar.Dal.Storages
         
         public async Task<bool> IsUserExistAsync(string email)
         {
-            return await _dbContext.Users.AnyAsync(user => user.Email == email);
+            //return await _dbContext.Users.AnyAsync(user => user.Email == email);
+            return await _dbContext.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower());
         }
     }
 }
