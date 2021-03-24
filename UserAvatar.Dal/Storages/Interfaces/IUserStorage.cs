@@ -11,7 +11,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task CreateAsync(User user);
 
         Task<bool> IsLoginExistAsync(string login);
-        Task<List<User>> FindByQuery(string query);
+        Task<List<User>> InviteByQuery(int boardId, string query);
 
         Task<bool> IsUserExistAsync(string email);
 

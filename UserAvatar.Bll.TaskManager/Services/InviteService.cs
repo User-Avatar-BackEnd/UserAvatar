@@ -88,13 +88,16 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<Result<List<UserModel>>> FindByQuery(string query)
+        public async Task<Result<List<UserModel>>> FindByQuery(int boardId, int userId, string query)
         {
-            //todo:
-            var userList = await _userStorage.FindByQuery(query);
-
-            return new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(userList));
-
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+                return new Result<List<UserModel>>(ResultCode.Forbidden);
+            
+            var userList = await _userStorage.InviteByQuery(boardId, query);
+            
+            return userList.Count == 0 
+                ? new Result<List<UserModel>>(ResultCode.NotFound) 
+                : new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(userList));
         }
         
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
@@ -120,7 +123,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _inviteStorage.UpdateAsync(thisInvite);
             return ResultCode.Success;
         }
-
+        
         public async Task<Result<List<InviteModel>>> GetAllInvitesAsync(int userId)
         {
             if(await _userStorage.GetByIdAsync(userId) == null)

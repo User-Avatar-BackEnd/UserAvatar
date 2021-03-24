@@ -19,16 +19,21 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            //return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
-            
+
             return await _dbContext.Users
                 .Where(user => user.Email.ToLower() == email.ToLower())
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<User>> FindByQuery(string query)
+        public async Task<List<User>> InviteByQuery(int boardId, string query)
         {
-            return await _dbContext.Users.Where(x => x.Login.Contains(query)).Take(10).ToListAsync();
+            var boardMembers = await  _dbContext.Members
+                .Where(x => x.BoardId == boardId).Select(x=> x.User.Id).ToListAsync();
+
+            var filtered = await _dbContext.Users
+                .Where(x => !boardMembers.Contains(x.Id) 
+                            && x.Login.Contains(query)).ToListAsync();
+            return filtered;
         }
 
         public async Task<User> GetByIdAsync(int id)

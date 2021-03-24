@@ -12,7 +12,9 @@ namespace UserAvatar.Dal.Storages
     public class CardStorage : ICardStorage
     {
         private readonly UserAvatarContext _dbContext;
+/*
         private readonly ICommentStorage _commentStorage;
+*/
 
         public CardStorage(UserAvatarContext dbContext)
         {

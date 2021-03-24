@@ -100,9 +100,8 @@ namespace UserAvatar.Dal.Storages
         
         public async Task<int> GetColumnsCountInBoardAsync(int boardId)
         {
-            return (await _userAvatarContext.Boards
-                .Include(x => x.Columns)
-                .FirstAsync(x => x.Id == boardId)).Columns.Count;
+            return await _userAvatarContext.Columns
+                .CountAsync(x => x.BoardId == boardId);
         }
 
         public async Task UpdateAsync(Column column)
@@ -122,7 +121,7 @@ namespace UserAvatar.Dal.Storages
             var thisColumn = await GetColumnByIdAsync(columnId);
             
             var columnList = _userAvatarContext.Columns
-                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id && !x.IsDeleted);
+                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id);
 
             
             var previousIndex = thisColumn.Index;

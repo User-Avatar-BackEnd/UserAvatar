@@ -9,7 +9,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
     {
         Task<int> CreateInviteAsync(int boardId, int userId, string payload);
         Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode);
-        Task<Result<List<UserModel>>> FindByQuery(string query);
+        Task<Result<List<UserModel>>> FindByQuery(int boardId, int userId, string query);
         Task<Result<List<InviteModel>>> GetAllInvitesAsync(int userId);
     }
 }

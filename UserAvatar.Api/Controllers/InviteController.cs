@@ -50,10 +50,18 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("/findByQuery")]
-        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery([FromQuery]string query)
+        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery([FromQuery] int boardId, [FromQuery]string query)
         {
-            var result = await _inviteService.FindByQuery(query);
-            return Ok(_mapper.Map<List<UserModel>, List<UserShortVm>>(result.Value));
+            if (string.IsNullOrEmpty(query))
+                return NotFound();
+            var result = await _inviteService.FindByQuery(boardId, UserId, query);
+            
+            return result.Code switch
+            {
+                ResultCode.Forbidden => Conflict(result),
+                ResultCode.NotFound => NotFound(),
+                _ => Ok(_mapper.Map<List<UserModel>, List<UserShortVm>>(result.Value))
+            };
         }
         
         [HttpPatch]

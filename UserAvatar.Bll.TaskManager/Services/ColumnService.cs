@@ -45,6 +45,11 @@ namespace UserAvatar.Bll.TaskManager.Services
             {
                 return new Result<ColumnModel>(ResultCode.Forbidden);
             }
+            
+            if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) > _limitations.MaxColumnCount)
+            {
+                return new Result<ColumnModel>(ResultCode.MaxColumnCount);
+            }
 
             var newColumn = new Column
             {
@@ -71,17 +76,12 @@ namespace UserAvatar.Bll.TaskManager.Services
             {
                 return ResultCode.Forbidden;
             }
-
-            /*if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
+            
+            if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) - 1 < positionIndex)
             {
                 return ResultCode.Forbidden;
-            }*/
-            
-            if (await _columnStorage.GetColumnsCountInBoardAsync(columnId) > _limitations.MaxColumnCount)
-            {
-                return ResultCode.MaxColumnCount;
             }
-
+            
             await _columnStorage.ChangePositionAsync(columnId, positionIndex);
 
             return ResultCode.Success;
@@ -90,30 +90,11 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> DeleteAsync(
             int userId, int boardId, int columnId)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
-            {
-                return ResultCode.NotFound;
-            }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return ResultCode.Forbidden;
-            }
-
-            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
-            {
-                return ResultCode.NotFound;
-            }
-
-            // IsUserInBoardByColumnId maybe may be async
-
-            if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
-            {
-                return ResultCode.Forbidden;
-            }
             
-            //todo: implement in storage recursive deletion
-
+            var validation = await ValidateUserColumn(userId, boardId, columnId);
+            if (validation != ResultCode.Success)
+                return validation;
+            
             await _columnStorage.DeleteApparentAsync(columnId);
 
             return ResultCode.Success;
@@ -122,20 +103,10 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> UpdateAsync(
             int userId, int boardId, int columnId, string title)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
-            {
-                return ResultCode.NotFound;
-            }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return ResultCode.Forbidden;
-            }
-
-            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
-            {
-                return ResultCode.NotFound;
-            }
+            
+            var validation = await ValidateUserColumn(userId, boardId, columnId);
+            if (validation != ResultCode.Success)
+                return validation;
 
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
@@ -173,6 +144,26 @@ namespace UserAvatar.Bll.TaskManager.Services
             return foundColumn is null 
                 ? new Result<ColumnModel>(ResultCode.NotFound) 
                 : new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
+        }
+
+        private async Task<int> ValidateUserColumn(int userId, int boardId, int columnId)
+        {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return ResultCode.NotFound;
+            }
+            
+            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                return ResultCode.Forbidden;
+            }
+            
+            if (!await _boardStorage.IsBoardColumn(boardId, columnId))
+            {
+                return ResultCode.NotFound;
+            }
+
+            return ResultCode.Success;
         }
     }
 }

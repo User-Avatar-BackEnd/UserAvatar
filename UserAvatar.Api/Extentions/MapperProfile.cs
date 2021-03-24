@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Linq;
+using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
@@ -59,6 +60,8 @@ namespace UserAvatar.Api.Extentions
            
            CreateMap<ColumnModel, FullColumnVm>()
                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
+
+           CreateMap<UpdateCardDto, CardModel>();
 
            CreateMap<Invite, InviteModel>()
                .ForMember(x => x.Inviter,
