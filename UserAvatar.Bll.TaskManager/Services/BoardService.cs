@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -15,12 +16,15 @@ namespace UserAvatar.Bll.TaskManager.Services
     {
         private readonly IBoardStorage _boardStorage;
         private readonly IMapper _mapper;
+        private readonly LimitationOptions _limitations;
 
         public BoardService(IBoardStorage boardStorage, 
-            IMapper mapper)
+            IMapper mapper, 
+            IOptions<LimitationOptions> limitations)
         {
             _boardStorage = boardStorage;
             _mapper = mapper;
+            _limitations = limitations.Value;
         }
 
         public async Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId)
@@ -47,7 +51,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             var boards = await GetAllBoardsAsync(userId);
 
-            if (boards.Value.Count() >= 10)
+            if (boards.Value.Count() >= _limitations.MaxBoardCount)
             {
                 return ResultCode.MaxBoardCount;
             }

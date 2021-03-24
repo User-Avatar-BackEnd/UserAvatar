@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Options;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -16,13 +17,18 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IColumnStorage _columnStorage;
         private readonly IMapper _mapper;
         private readonly IBoardStorage _boardStorage;
-        public ColumnService(IColumnStorage columnStorage, 
-            IMapper mapper, 
-            IBoardStorage boardStorage)
+        private readonly LimitationOptions _limitations;
+       
+        public ColumnService(
+            IColumnStorage columnStorage,
+            IMapper mapper,
+            IBoardStorage boardStorage,
+            IOptions<LimitationOptions> limitations)
         {
             _columnStorage = columnStorage;
             _mapper = mapper;
             _boardStorage = boardStorage;
+            _limitations = limitations.Value;
         }
 
         //todo: add userId
@@ -66,9 +72,14 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
+            /*if (!_columnStorage.IsUserInBoardByColumnId(userId, columnId))
             {
                 return ResultCode.Forbidden;
+            }*/
+            
+            if (await _columnStorage.GetColumnsCountInBoardAsync(columnId) > _limitations.MaxColumnCount)
+            {
+                return ResultCode.MaxColumnCount;
             }
 
             await _columnStorage.ChangePositionAsync(columnId, positionIndex);

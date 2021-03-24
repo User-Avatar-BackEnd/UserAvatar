@@ -87,6 +87,13 @@ namespace UserAvatar.Dal.Storages
                 .Where(x => x.BoardId == boardId)
                 .Select(x => x.Id).ToList());
         }
+        
+        public async Task<int> GetColumnsCountInBoardAsync(int boardId)
+        {
+            return (await _userAvatarContext.Boards
+                .Include(x => x.Columns)
+                .FirstAsync(x => x.Id == boardId)).Columns.Count;
+        }
 
         public async Task UpdateAsync(Column column)
         {
