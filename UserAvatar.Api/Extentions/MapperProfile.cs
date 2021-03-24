@@ -5,7 +5,6 @@ using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Api.Contracts.Dtos;
-
 namespace UserAvatar.Api.Extentions
 {
     public class MappingProfile : Profile
@@ -70,8 +69,9 @@ namespace UserAvatar.Api.Extentions
                    y=> y.MapFrom(z => z.Invited.Id));
 
            CreateMap<InviteModel, InviteVm>();
-            CreateMap<EventModel, EventVm>();
+           CreateMap<EventModel, EventVm>();
 
+            CreateMap<User, RateModel>();
         }
     }
 }
