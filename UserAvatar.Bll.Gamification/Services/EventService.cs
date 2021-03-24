@@ -29,5 +29,10 @@ namespace UserAvatar.Bll.Gamification.Services
 
             return eventModels.Where(x => x.Score != -1).ToList();
         }
+
+        public async Task<int> ChangeEventsCostAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -6,6 +6,8 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
 {
     public interface IEventService
     {
-        public Task<List<EventModel>> GetEventListAsync();
+        Task<List<EventModel>> GetEventListAsync();
+
+        Task<int> ChangeEventsCostAsync();
     }
 }

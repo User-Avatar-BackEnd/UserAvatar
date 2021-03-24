@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -14,7 +15,8 @@ namespace UserAvatar.Api.Controllers
     [ApiController]
     [Route("api/v1/admin")]
     [Authorize(Roles = Roles.Admin)]
-    [ProducesResponseType((int)HttpStatusCode.EarlyHints)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public class AdminController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -28,8 +30,7 @@ namespace UserAvatar.Api.Controllers
 
         [HttpGet("events")]
         [ProducesResponseType(typeof(List<EventVm>),(int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<ActionResult<List<EventVm>>> GetEvents()
+        public async Task<ActionResult<List<EventVm>>> GetEventsAsync()
         {
             var events = await _eventService.GetEventListAsync();
             return Ok(_mapper.Map<List<EventModel>, List<EventVm>>(events));
@@ -38,11 +39,9 @@ namespace UserAvatar.Api.Controllers
         [HttpPut("events")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<ActionResult<List<EventVm>>> ChangeEventsCost(List<EventVm> events)
+        public async Task<ActionResult<List<EventVm>>> ChangeEventsCostAsync(List<EventDto> oldEvents)
         {
-            var elvents = await _eventService.GetEventListAsync();
-            return Ok(_mapper.Map<List<EventModel>, List<EventVm>>(elvents));
+            throw new NotImplementedException();
         }
     }
 }
