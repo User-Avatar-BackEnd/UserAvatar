@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using System.Net;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {

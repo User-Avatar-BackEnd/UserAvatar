@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Api.Extentions;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
-using UserAvatar.Bll.Infrastructure.Options;
+using UserAvatar.Bll.TaskManager.Options;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 

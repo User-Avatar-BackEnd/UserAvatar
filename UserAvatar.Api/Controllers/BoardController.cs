@@ -8,8 +8,9 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {
