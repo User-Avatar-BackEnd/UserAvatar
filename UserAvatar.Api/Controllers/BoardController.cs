@@ -34,7 +34,7 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<BoardShortVm>),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
         {
