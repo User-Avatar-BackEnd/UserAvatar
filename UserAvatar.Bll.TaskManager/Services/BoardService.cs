@@ -38,7 +38,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<IEnumerable<BoardModel>>(boardsModel);
         }
 
-        public async Task<int> CreateBoardAsync(int userId, string title)
+        public async Task<Result<BoardModel>> CreateBoardAsync(int userId, string title)
         {
             var board = new Board
             {
@@ -52,7 +52,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (boards >= _limitations.MaxBoardCount)
             {
-                return ResultCode.MaxBoardCount;
+                return new Result<BoardModel>(ResultCode.MaxBoardCount);
             }
             
             await _boardStorage.CreateBoardAsync(board);
@@ -61,7 +61,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 UserId = userId,
                 BoardId = board.Id,
             });
-            return ResultCode.Success;
+            return new Result<BoardModel>(_mapper.Map<Board,BoardModel>(board));
         }
 
         public async Task<Result<BoardModel>> GetBoardAsync(int userId, int boardId)

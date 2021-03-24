@@ -9,11 +9,14 @@ using UserAvatar.Api.Options;
 using System.Net;
 using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.Infrastructure;
+using System.Net.Mime;
 
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     public class CardController : ControllerBase
     {
         private readonly ICardService _cardService;

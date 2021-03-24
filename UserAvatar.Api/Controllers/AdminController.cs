@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +19,8 @@ namespace UserAvatar.Api.Controllers
     [Authorize(Roles = Roles.Admin)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     public class AdminController : ControllerBase
     {
         private readonly IEventService _eventService;

@@ -9,7 +9,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
     {
         Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId);
 
-        Task<int> CreateBoardAsync(int userId, string title);
+        Task<Result<BoardModel>> CreateBoardAsync(int userId, string title);
 
         Task<Result<BoardModel>> GetBoardAsync(int userId, int boardId);
 

@@ -39,10 +39,12 @@ namespace UserAvatar.Bll.TaskManager.Services
             var thisUser = await _userStorage.GetByEmailAsync(payload);
             return thisUser?.Id ?? ResultCode.UserNotFound;
         }
+
         private async Task<Invite> GetInvite(int boardId, int userId)
         {
             return await _inviteStorage.GetInviteByBoardAsync(userId, boardId);
         }
+
         public async Task<int> CreateInviteAsync(
             int boardId, int userId, string payload)
         {

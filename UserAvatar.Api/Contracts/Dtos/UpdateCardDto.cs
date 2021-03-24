@@ -1,6 +1,7 @@
 ﻿using System;
 namespace UserAvatar.Api.Contracts.Dtos
 {
+    //todo: validations
     public class UpdateCardDto
     {
         public int ColumnId { get; set; }
