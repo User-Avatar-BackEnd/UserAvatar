@@ -70,7 +70,8 @@ namespace UserAvatar.Api.Extentions
                .ForMember(x=> x.InvitedId,
                    y=> y.MapFrom(z => z.Invited.Id));
 
-           CreateMap<InviteModel, InviteVm>();
+           CreateMap<InviteModel, InviteVm>()
+               .ForMember(x=> x.Board, y=> y.MapFrom(z=> z.Board));
            CreateMap<EventModel, EventVm>();
            
            CreateMap<User, RateModel>();
