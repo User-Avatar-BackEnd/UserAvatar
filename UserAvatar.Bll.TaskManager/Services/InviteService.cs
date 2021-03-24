@@ -57,33 +57,33 @@ namespace UserAvatar.Bll.TaskManager.Services
             if (invitedId == ResultCode.UserNotFound)
                 return ResultCode.NotFound;
             
-            if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId) || await _boardStorage.IsUserBoardAsync(invitedId, boardId))
+            if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId))
                 return ResultCode.Forbidden;
 
+            if (await _boardStorage.IsUserBoardAsync(invitedId, boardId)) return ResultCode.LoginAlreadyExist;
             var thisInvite = await _inviteStorage.GetInviteByBoardAsync(userId,invitedId, boardId);
-            
-            if(!await _boardStorage.IsUserBoardAsync(invitedId, boardId))
-                if (thisInvite == null)
+                
+            if (thisInvite == null)
+            {
+                thisInvite = new Invite
                 {
-                    thisInvite = new Invite
-                    {
-                        InviterId = userId,
-                        BoardId = boardId,
-                        InvitedId = invitedId,
-                        Issued = DateTimeOffset.UtcNow,
-                        Status = InviteStatus.Pending
-                    };
-                }
-                else
-                {
-                    thisInvite.Status = InviteStatus.Pending;
-                    thisInvite.Issued = DateTimeOffset.UtcNow;
-                    await _inviteStorage.UpdateAsync(thisInvite);
-                    return ResultCode.Success;
-                }
-
+                    InviterId = userId,
+                    BoardId = boardId,
+                    InvitedId = invitedId,
+                    Issued = DateTimeOffset.UtcNow,
+                    Status = InviteStatus.Pending
+                };
+            }
+            else
+            {
+                thisInvite.Status = InviteStatus.Pending;
+                thisInvite.Issued = DateTimeOffset.UtcNow;
+                await _inviteStorage.UpdateAsync(thisInvite);
+                return ResultCode.Success;
+            }
             await _inviteStorage.CreateAsync(thisInvite);
             return ResultCode.Success;
+
         }
 
         public async Task<Result<List<UserModel>>> FindByQuery(int boardId, int userId, string query)
@@ -101,12 +101,16 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
+
             
-            if (thisInvite == null 
-                || await _userStorage.GetByIdAsync(userId) == null
-                || thisInvite.Status == InviteStatus.Accepted
-                || await _boardStorage.IsUserBoardAsync(inviteId, thisInvite.BoardId))
+                if (thisInvite == null 
+                    || await _userStorage.GetByIdAsync(userId) == null
+                    || thisInvite.Status == InviteStatus.Accepted
+                    || await _boardStorage.IsUserBoardAsync(thisInvite.InvitedId, thisInvite.BoardId))
                 return ResultCode.NotFound;
+                
+                if (thisInvite.InvitedId != userId)
+                    return ResultCode.Forbidden;
 
             if (statusCode == InviteStatus.Accepted)
             {
