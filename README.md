@@ -1,2 +1,0 @@
-# UserAvatar
-User avatar project
