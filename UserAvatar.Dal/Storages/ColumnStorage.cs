@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
+using Z.EntityFramework.Plus;
 
 namespace UserAvatar.Dal.Storages
 {
@@ -70,14 +71,23 @@ namespace UserAvatar.Dal.Storages
         
         public async Task DeleteApparentAsync(int columnId)
         {
-            //Todo: Add Recursive deletion
             var column = await GetColumnByIdAsync(columnId);
             if (column.IsDeleted)
                 throw new Exception($"Already Deleted!{columnId}");
             
-            column.IsDeleted = true;
             var columnList = InternalGetAllColumns(column);
             await RecheckPositionAsync(columnList.ToList(),column.Index);
+            
+            await _userAvatarContext.Columns.Where(x => x.Id == columnId)
+                .Include(x => x.Cards)
+                .ThenInclude(x => x.Comments).SelectMany(x => x.Cards.SelectMany(card => card.Comments))
+                .UpdateAsync(x => new Comment {IsDeleted = true});
+            
+            await _userAvatarContext.Cards.Where(x=> x.ColumnId == columnId)
+                .UpdateAsync(x => new Card {IsDeleted = true});
+            
+            
+            column.IsDeleted = true;
             
             await _userAvatarContext.SaveChangesAsync();
         }

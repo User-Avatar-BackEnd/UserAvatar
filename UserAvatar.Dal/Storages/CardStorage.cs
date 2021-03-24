@@ -1,15 +1,18 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
+using Z.EntityFramework.Plus;
 
 namespace UserAvatar.Dal.Storages
 {
     public class CardStorage : ICardStorage
     {
         private readonly UserAvatarContext _dbContext;
+        private readonly ICommentStorage _commentStorage;
 
         public CardStorage(UserAvatarContext dbContext)
         {
@@ -61,15 +64,18 @@ namespace UserAvatar.Dal.Storages
 
         public async Task DeleteAsync(int cardId)
         {
-            //Todo: Add recursive deletion
             var card = await _dbContext.Cards
                 .FirstOrDefaultAsync(x => x.Id == cardId);
 
             if (card == null) throw new Exception();
 
+            //deleting all comments
+            await _dbContext.Comments.Where(x => x.CardId == cardId)
+                .UpdateAsync(x => new Comment {IsDeleted = true});
+            
+
             card.IsDeleted = true;
-            //todo: comments soft delete
-           await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Card card)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
@@ -48,16 +49,19 @@ namespace UserAvatar.Bll.TaskManager.Services
         {
             if (payload == null)
                 return ResultCode.NotFound;
+            
+            if (await _boardStorage.GetBoardAsync(boardId) == null)
+                return ResultCode.NotFound;
+            
             var invitedId = await GetUserIdByPayload(payload);
             
             if (invitedId == ResultCode.UserNotFound)
                 return ResultCode.NotFound;
             
-            if (userId == invitedId)
+            if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId))
                 return ResultCode.Forbidden;
-            if (await _boardStorage.GetBoardAsync(boardId) == null)
-                return ResultCode.NotFound;
 
+            
             var thisInvite = await _inviteStorage.GetInviteByBoardAsync(invitedId, boardId);
             
             if(!await _boardStorage.IsUserBoardAsync(invitedId, boardId))
@@ -96,12 +100,19 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
-            if (thisInvite == null || await _userStorage.GetByIdAsync(userId) == null)
+            
+            if (thisInvite == null 
+                || await _userStorage.GetByIdAsync(userId) == null
+                || thisInvite.Status == InviteStatus.Accepted)
                 return ResultCode.NotFound;
 
             if (statusCode == InviteStatus.Accepted)
             {
-                await _boardStorage.AddAsMemberAsync(thisInvite.InvitedId, thisInvite.BoardId);
+                await _boardStorage.AddAsMemberAsync(new Member
+                {
+                    UserId = thisInvite.InvitedId,
+                    BoardId = thisInvite.BoardId,
+                });
             }
            
             thisInvite.Status = statusCode;
