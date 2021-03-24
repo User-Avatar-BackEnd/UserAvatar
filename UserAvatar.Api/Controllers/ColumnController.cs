@@ -47,7 +47,7 @@ namespace UserAvatar.Api.Controllers
         */
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(FullColumnVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]

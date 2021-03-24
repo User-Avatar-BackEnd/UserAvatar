@@ -11,7 +11,6 @@ using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 
-
 namespace UserAvatar.Api
 {
     public class Startup
@@ -31,7 +30,7 @@ namespace UserAvatar.Api
         {
             services
                 .Configure<LimitationOptions>(Configuration.GetSection("Limitations"));
-            
+
             services.AddHealthChecks();
             services.AddServices();
             services.AddStorages();

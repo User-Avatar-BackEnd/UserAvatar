@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.TaskManager"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Dal", "UserAvatar.Dal\UserAvatar.Dal.csproj", "{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.Gamification", "UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj", "{7272725B-514C-4C3C-BB11-5CD70180C365}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7272725B-514C-4C3C-BB11-5CD70180C365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7272725B-514C-4C3C-BB11-5CD70180C365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7272725B-514C-4C3C-BB11-5CD70180C365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7272725B-514C-4C3C-BB11-5CD70180C365}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
