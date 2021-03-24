@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
+using System.Collections.Generic;
 
 namespace UserAvatar.Dal.Storages
 {
@@ -55,6 +56,13 @@ namespace UserAvatar.Dal.Storages
         {
             //return await _dbContext.Users.AnyAsync(user => user.Email == email);
             return await _dbContext.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower());
+        }
+
+        public async Task<List<User>> GetUsersRate()
+        {
+            return await _dbContext.Users
+                .OrderByDescending(x => x.Score)
+                .ToListAsync();
         }
     }
 }

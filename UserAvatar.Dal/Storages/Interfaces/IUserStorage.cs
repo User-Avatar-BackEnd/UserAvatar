@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Dal.Storages.Interfaces
@@ -16,5 +17,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<User> GetByIdAsync(int id);
 
         Task UpdateAsync(User user);
+
+        Task<List<User>> GetUsersRate();
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using UserAvatar.Api.Extentions;
 using UserAvatar.Bll.TaskManager.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
+using UserAvatar.Bll.Infrastructure.Options;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 
