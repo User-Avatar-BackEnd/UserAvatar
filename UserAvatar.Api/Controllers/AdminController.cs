@@ -9,6 +9,7 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -39,9 +40,15 @@ namespace UserAvatar.Api.Controllers
         [HttpPut("events")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<List<EventVm>>> ChangeEventsCostAsync(List<EventDto> oldEvents)
+        public async Task<IActionResult> ChangeEventsCostAsync(List<EventDto> newEvents)
         {
-            throw new NotImplementedException();
+            var eventModels = _mapper.Map<List<EventDto>, List<EventModel>>(newEvents);
+
+            int result = await _eventService.ChangeEventsCostAsync(eventModels);
+
+            if (result == ResultCode.BadRequest) return BadRequest();
+
+            return Ok();
         }
     }
 }

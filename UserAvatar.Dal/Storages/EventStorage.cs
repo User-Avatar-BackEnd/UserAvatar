@@ -22,5 +22,14 @@ namespace UserAvatar.Dal.Storages
         {
             return await _dbContext.Events.ToListAsync();
         }
+
+        public async Task UpdateEventsAsync(List<Event> events)
+        {
+            foreach(var ev in events)
+            {
+                _dbContext.Entry(ev).State = EntityState.Modified;
+            }
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

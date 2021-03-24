@@ -8,5 +8,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
     public interface IEventStorage
     {
         Task<List<Event>> GetEventListAsync();
+
+        Task UpdateEventsAsync(List<Event> events);
     }
 }
