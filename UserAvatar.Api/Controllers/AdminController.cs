@@ -53,5 +53,18 @@ namespace UserAvatar.Api.Controllers
 
             return Ok();
         }
+
+        [HttpGet("history/{login:string}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<HistoryVm>> GetHistory(string login)
+        {
+            var result = await _eventService.GetHistoryAsync(login);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            return Ok(_mapper.Map<List<HistoryModel>, List<HistoryVm>>(result.Value));
+        }
+
     }
 }

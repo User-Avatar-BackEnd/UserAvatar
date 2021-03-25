@@ -16,13 +16,19 @@ namespace UserAvatar.Bll.Gamification.Services
     {
         private readonly IEventStorage _eventStorage;
         private readonly IHistoryStorage _historyStorage;
+        private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
 
-        public EventService(IEventStorage eventStorage, IHistoryStorage historyStorage, IMapper mapper)
+        public EventService(
+            IEventStorage eventStorage,
+            IHistoryStorage historyStorage,
+            IMapper mapper,
+            IUserStorage userStorage)
         {
             _eventStorage = eventStorage;
             _mapper = mapper;
             _historyStorage = historyStorage;
+            _userStorage = userStorage;
         }
 
         public async Task<List<EventModel>> GetEventListAsync()
@@ -52,13 +58,13 @@ namespace UserAvatar.Bll.Gamification.Services
             return ResultCode.Success;
         }
 
-        public async Task AddEventToHistory(int userId, string eventType)
+        public async Task AddEventToHistoryAsync(int userId, string eventType)
         {
             if (eventType == null) return;
 
             try
             {
-                int score = await _eventStorage.GetScoreByName(eventType);
+                int score = await _eventStorage.GetScoreByNameAsync(eventType);
 
                 var history = new History
                 {
@@ -69,10 +75,25 @@ namespace UserAvatar.Bll.Gamification.Services
                     Score = score
                 };
 
-                await _historyStorage.AddHstory(history);
+                await _historyStorage.AddHstoryAsync(history);
             }
             catch (Exception) { }
 
+        }
+
+        public async Task<Result<List<HistoryModel>>> GetHistoryAsync(string login)
+        {
+            var user = _userStorage.GetByLoginAsync(login);
+            if (user == null)
+            {
+                return new Result<List<HistoryModel>>(ResultCode.NotFound);
+            }
+
+            var history = await _historyStorage.GetHistoryByUserAsync(user.Id);
+
+            var historyModels = _mapper.Map<List<History>, List<HistoryModel>>(history);
+
+            return new Result<List<HistoryModel>>(historyModels);
         }
     }
 }

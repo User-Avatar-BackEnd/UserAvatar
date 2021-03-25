@@ -64,10 +64,10 @@ namespace UserAvatar.Api.Extentions
             {
                 {"Hetman", 1000},
                 {"Ataman", 900},
-                {"Esau", 700},
+                {"Esaul", 700},
                 {"Centurion", 900},
                 {"Cossack", 300},
-                {"Private", 100},
+                {"Crewman", 100},
                 {"NPC", 0}
             };
         }

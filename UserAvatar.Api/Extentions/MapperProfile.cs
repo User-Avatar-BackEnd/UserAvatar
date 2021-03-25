@@ -18,16 +18,15 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();
             CreateMap<Invite, InviteModel>();
-            CreateMap<Rank, RankModel>();
             CreateMap<Card, CardModel>();
             CreateMap<Comment, CommentModel>();
+            CreateMap<History, HistoryModel>();
             
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
             
-            CreateMap<HistoryModel, History>();
+            CreateMap<HistoryModel, HistoryVm>();
             CreateMap<InviteModel, Invite>();
-            CreateMap<RankModel, Rank>();
             CreateMap<CardModel, Card>();
             CreateMap<CommentModel, Comment>();
             CreateMap<EventModel, Event>();
