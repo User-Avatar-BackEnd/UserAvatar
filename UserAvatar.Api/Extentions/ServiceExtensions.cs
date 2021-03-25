@@ -38,6 +38,7 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<IHistoryService, HistoryService>()
                 .AddTransient<IRankService, RankService>()
                 .AddTransient<IRateService, RateService>()
+                .AddSingleton<IBoardChangesService, BoardChangesService>();
                 .AddTransient<ISearchService, SearchService>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();

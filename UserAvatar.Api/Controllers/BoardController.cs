@@ -15,6 +15,7 @@ using UserAvatar.Bll.TaskManager.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
+using System;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -31,19 +32,22 @@ namespace UserAvatar.Api.Controllers
         private readonly IApplicationUser _applicationUser;
         private readonly IInviteService _inviteService;
         private readonly IHistoryService _historyService;
+        private readonly IBoardChangesService _boardChangesService;
 
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
             IMapper mapper,
             IApplicationUser applicationUser,
-            IHistoryService historyService)
+            IHistoryService historyService,
+            IBoardChangesService boardChangesService)
         {
             _boardService = boardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
             _inviteService = inviteService;
             _historyService = historyService;
+            _boardChangesService = boardChangesService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -181,6 +185,33 @@ namespace UserAvatar.Api.Controllers
                 ResultCode.NotFound => NotFound(),
                 _ => Ok(_mapper.Map<List<UserModel>, List<UserShortVm>>(result.Value))
             };
+        }
+
+        [HttpGet("{boardId:int}/changes")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> CheckChanges(int boardId, [FromQuery] long? ticks)
+        {
+            if (!await _boardService.IsUserBoard(UserId, boardId))
+            {
+                return Forbid();
+            }
+
+            if (ticks == null)
+            {
+                return Ok(new
+                {
+                    Ticks = DateTimeOffset.UtcNow.Ticks,
+                    Changed = false
+                });
+            }
+
+            var hasChanges = _boardChangesService.HasChanges(boardId, UserId, (long)ticks);
+            return Ok(new
+            {
+                Ticks = DateTimeOffset.UtcNow.Ticks,
+                Changed = hasChanges
+            });
         }
     }
 }

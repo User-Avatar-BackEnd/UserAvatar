@@ -18,19 +18,22 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IColumnStorage _columnStorage;
         private readonly LimitationOptions _limitations;
         private readonly IMapper _mapper;
+        private readonly IBoardChangesService _boardChangesService;
 
         public CardService(
             ICardStorage cardStorage,
             IMapper mapper,
             IBoardStorage boardStorage,
             IColumnStorage columnStorage,
-            IOptions<LimitationOptions> limitations)
+            IOptions<LimitationOptions> limitations,
+            IBoardChangesService boardChangesService)
         {
             _cardStorage = cardStorage;
             _boardStorage = boardStorage;
             _mapper = mapper;
             _columnStorage = columnStorage;
             _limitations = limitations.Value;
+            _boardChangesService = boardChangesService;
         }
 
         public async Task<Result<CardModel>> CreateCardAsync(string title, 
@@ -72,6 +75,8 @@ namespace UserAvatar.Bll.TaskManager.Services
                 EventType.CreateCardOnOwnBoard :
                 EventType.CreateCardOnAlienBoard;
 
+            _boardChangesService.DoChange(boardId, userId);
+
             return new Result<CardModel>(cardModel, eventType);
         }
 
@@ -111,6 +116,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             card.Priority = cardModel.Priority;
 
             await _cardStorage.UpdateAsync(card);
+
+            _boardChangesService.DoChange(boardId, userId);
 
             if (!statusChanged) return new Result<bool>(true);
 
@@ -154,6 +161,9 @@ namespace UserAvatar.Bll.TaskManager.Services
             }
 
             await _cardStorage.DeleteAsync(cardId);
+
+            _boardChangesService.DoChange(boardId, userId);
+
             return ResultCode.Success;
         }
     }
