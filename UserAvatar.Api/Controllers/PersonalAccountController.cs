@@ -16,7 +16,6 @@ using System.Net.Mime;
 using System.Net;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Gamification.Models;
-
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
@@ -33,19 +32,21 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        private readonly IHistoryService _historyService;
         
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,
             IRateService rateService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser)
+            IApplicationUser applicationUser, IHistoryService historyService)
         {
             _personalAccountService = personalAccountService;
             _rateService = rateService;
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
+            _historyService = historyService;
         }
         
         private int UserId => _applicationUser.Id;

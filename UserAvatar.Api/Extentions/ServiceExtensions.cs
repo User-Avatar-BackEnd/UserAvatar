@@ -35,10 +35,13 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<ICommentService, CommentService>()
                 .AddTransient<IPersonalAccountService, PersonalAccountService>()
                 .AddTransient<IEventService, EventService>()
+                .AddTransient<IHistoryService,HistoryService>();
                 .AddTransient<IRankService, RankService>()
                 .AddTransient<IRateService, RateService>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();
+
+            services.AddMemoryCache();
             services.AddHttpContextAccessor();
 
             return services;

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Api.Extentions;
+using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Options;
@@ -31,13 +32,13 @@ namespace UserAvatar.Api
         {
             services
                 .Configure<LimitationOptions>(Configuration.GetSection("Limitations"));
-
+            
             services.AddHealthChecks();
             services.AddServices();
             services.AddStorages();
-
+            
             services.AddAuthentications();
-
+            
             services.AddDbContexts(Configuration);
 
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
@@ -45,6 +46,8 @@ namespace UserAvatar.Api
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
+            
+            services.AddHostedService<ScoreTransactionBus>();
 
             services.AddSwagger();
             
