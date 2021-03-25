@@ -54,7 +54,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
-        [HttpGet("history/{login:string}")]
+        [HttpGet("history/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<HistoryVm>> GetHistory(string login)
