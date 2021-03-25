@@ -49,6 +49,12 @@ namespace UserAvatar.Dal.Storages
            await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateStatus(User user)
+        {
+            _dbContext.Entry(user).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<bool> IsLoginExistAsync(string login)
         {
             return await _dbContext.Users
@@ -72,6 +78,13 @@ namespace UserAvatar.Dal.Storages
         {
             //return await _dbContext.Users.AnyAsync(user => user.Email == email);
             return await _dbContext.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower());
+        }
+
+        public async Task AddScoreToUser(int userId, int score)
+        {
+            var thisUser = await GetByIdAsync(userId);
+            thisUser.Score += score;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

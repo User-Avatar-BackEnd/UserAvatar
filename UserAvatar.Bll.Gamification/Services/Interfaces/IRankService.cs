@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using UserAvatar.Bll.Gamification.Models;
 
 namespace UserAvatar.Bll.Gamification.Services.Interfaces
 {
     public interface IRankService
     {
+        Task<RankDataModel> GetRank(int score);
     }
 }

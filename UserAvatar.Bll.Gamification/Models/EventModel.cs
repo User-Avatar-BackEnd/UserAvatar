@@ -1,5 +1,4 @@
-﻿using System;
-namespace UserAvatar.Bll.Gamification.Models
+﻿namespace UserAvatar.Bll.Gamification.Models
 {
     public class EventModel
     {

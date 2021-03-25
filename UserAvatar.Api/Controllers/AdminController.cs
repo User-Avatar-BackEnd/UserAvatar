@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
+using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -50,6 +51,16 @@ namespace UserAvatar.Api.Controllers
             int result = await _eventService.ChangeEventsCostAsync(eventModels);
 
             if (result == ResultCode.BadRequest) return BadRequest();
+
+            return Ok();
+        }
+
+        [HttpPut("change_role")]
+        public async Task<IActionResult> ChangeRole(ChangeRoleRequest changeRoleRequest)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            // call the method to change the role
 
             return Ok();
         }

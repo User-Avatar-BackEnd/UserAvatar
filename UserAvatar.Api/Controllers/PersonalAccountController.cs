@@ -11,10 +11,10 @@ using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
-using UserAvatar.Api.Contracts.Dtos;
 using System.Net.Mime;
 using System.Net;
-
+using UserAvatar.Bll.Gamification.Services.Interfaces;
+using UserAvatar.Bll.Gamification.Models;
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
@@ -26,21 +26,29 @@ namespace UserAvatar.Api.Controllers
     public class PersonalAccountController : ControllerBase
     {
         private readonly IPersonalAccountService _personalAccountService;
+        private readonly IRateService _rateService;
+        private readonly IRankService _rankService;
 
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        private readonly IHistoryService _historyService;
         
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,
+            IRateService rateService,
+            IRankService rankService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser)
+            IApplicationUser applicationUser, IHistoryService historyService)
         {
             _personalAccountService = personalAccountService;
+            _rateService = rateService;
+            _rankService = rankService;
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
+            _historyService = historyService;
         }
         
         private int UserId => _applicationUser.Id;
@@ -78,26 +86,19 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-            // ToDo: get the rest of the needed data from GamificationService
+            var rankData = await _rankService.GetRank(userData.Score);
 
             var userDataVm = new UserDataVm
             {
-                //check if works
                 Email = userData.Email,
                 Login = userData.Login,
+                Role = userData.Role,
                 InvitesAmount = userData.Invited
                     .Count(invite => invite.Status == -1),
-                
-                //Here needs to me
-                
-                /*InvitesAmount = userData.Invited
-                    .Count(invite => invite.Status == -1),*/
-
-                // ToDo: set the rest of the properties =>
                 Rank = "Cossack",
-                PreviousLevelScore = 100,
-                CurrentScoreAmount = 175,
-                NextLevelScore = 300
+                PreviousLevelScore = rankData.Score,
+                CurrentScoreAmount = userData.Score,
+                NextLevelScore = userData.Score >= 1000 ? userData.Score : rankData.MaxScores
             };
 
             return Ok(userDataVm);
@@ -129,6 +130,15 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
-        // ???????? ???????
+        [HttpGet("rate")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<FullRateVm>> GetRate()
+        {
+           var rate = await _rateService.GetTopRate(UserId);
+
+            return Ok(_mapper.Map<FullRateModel, FullRateVm>(rate.Value));
+        }
     }
 }
