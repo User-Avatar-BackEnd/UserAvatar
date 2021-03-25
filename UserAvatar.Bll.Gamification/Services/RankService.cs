@@ -26,23 +26,17 @@ namespace UserAvatar.Bll.Gamification.Services
         {
             // вынести в конструктор? вызывется каждый раз
             var ranks = await _rankStorage.GetAllRankAsync();
-
-            var fullRanks = _mapper.Map<List<Rank>,List<RankDataModel>>(ranks);
-
-            fullRanks = SetMaxScore(fullRanks);
-
-            var smt = fullRanks.First(x => score < x.MaxScores && score >= x.Score);
-
-            return smt;
+            
+            var fullRanks = SetMaxScore(_mapper.Map<List<Rank>,List<RankDataModel>>(ranks));
+            
+            return fullRanks.First(x => score < x.MaxScores && score >= x.Score);
         }
 
         public async Task<List<string>> GetRanks(List<int> scores)
         {
             var ranks = await _rankStorage.GetAllRankAsync();
-
-            var fullRanks = _mapper.Map<List<Rank>, List<RankDataModel>>(ranks);
-
-            fullRanks = SetMaxScore(fullRanks);
+            
+            var fullRanks = SetMaxScore(_mapper.Map<List<Rank>, List<RankDataModel>>(ranks));
 
             return  scores.Select(score => fullRanks
             .First(x => score < x.MaxScores && score >= x.Score).Name)
