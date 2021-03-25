@@ -16,5 +16,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
         Task<int> RenameBoardAsync(int userId, int boardId, string title);
 
         Task<int> DeleteBoardAsync(int userId, int boardId);
+
+        Task<int> DeleteMemberFromBoardAsync(int userId, int toDeleteUserId, int boardId);
     }
 }

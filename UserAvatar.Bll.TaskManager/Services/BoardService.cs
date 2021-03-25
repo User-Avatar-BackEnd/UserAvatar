@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -120,6 +121,22 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
             
+            return ResultCode.Success;
+        }
+
+        public async Task<int> DeleteMemberFromBoardAsync(int userId, int toDeleteUserId, int boardId)
+        {
+            var currentBoard = await _boardStorage.GetBoardAsync(boardId);
+
+            if (currentBoard == null
+                || currentBoard.OwnerId != userId
+                || currentBoard.Members.All(x => x.UserId != toDeleteUserId))
+                return ResultCode.BadRequest;
+
+            var thisMember = await _boardStorage.GetMemberByIdAsync(toDeleteUserId, boardId);
+            thisMember.IsDeleted = true;
+            
+            await _boardStorage.UpdateMemberAsync(thisMember);
             return ResultCode.Success;
         }
     }
