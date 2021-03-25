@@ -51,15 +51,18 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _userStorage.UpdateAsync(user);
         }
 
-        public async Task<int> ChangeRole(int editingUserId, string role)
+        public async Task<int> ChangeRole(int userId,string login, string role)
         {
-            //VALIDATIONC _> THAT HE IS ADMIN AMD USERID != EDITING
-       
-            var userToChange = await _userStorage.GetByIdAsync(editingUserId);
+            var userToChange = await _userStorage.GetByLoginAsync(login);
 
             if (userToChange == null)
             {
                 return ResultCode.NotFound;
+            }
+
+            if (userToChange.Id == userId)
+            {
+                return ResultCode.Forbidden;
             }
 
             userToChange.Role = role;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -41,6 +42,7 @@ namespace UserAvatar.Api.Controllers
         {
             _eventService = eventService;
             _applicationUser = applicationUser;
+            _personalAccountService = personalAccountService;
             _mapper = mapper;
             _historyService = historyService;
         }
@@ -71,19 +73,19 @@ namespace UserAvatar.Api.Controllers
 
 
         [HttpPut("change_role")]
-        public async Task<IActionResult> ChangeRole(ChangeRoleRequest changeRoleRequest)
+        public async Task<IActionResult> ChangeRole([Required] string role, [Required] string login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (changeRoleRequest.Role != Roles.Admin && changeRoleRequest.Role != Roles.User)
+            if (role.ToLower() != Roles.Admin && role.ToLower() != Roles.User)
             {
                 return BadRequest();
             }
 
-            var result = await _personalAccountService.ChangeRole(changeRoleRequest.Id, changeRoleRequest.Role);
+            var result = await _personalAccountService.ChangeRole(UserId, login, role);
 
-            if(result == ResultCode.NotFound) return NotFound();
-            if(result == ResultCode.Forbidden) return Forbid();
+            if (result == ResultCode.NotFound) return NotFound();
+            if (result == ResultCode.Forbidden) return Forbid();
 
             return StatusCode(result);
         }
@@ -109,6 +111,5 @@ namespace UserAvatar.Api.Controllers
             if (resultCode == ResultCode.NotFound) return NotFound();
             return Ok();
         }
-
     }
 }
