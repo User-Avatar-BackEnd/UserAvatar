@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace UserAvatar.Api.Contracts.ViewModels
 {
@@ -11,7 +8,6 @@ namespace UserAvatar.Api.Contracts.ViewModels
         public bool IsOwner { get; set; }
 
         public string Title { get; set; }
-
         public List<UserShortVm> Members { get; set; }
 
         public List<FullColumnVm> Columns { get; set; }
