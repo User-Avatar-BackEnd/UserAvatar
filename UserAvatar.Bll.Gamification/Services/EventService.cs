@@ -69,7 +69,7 @@ namespace UserAvatar.Bll.Gamification.Services
                     Score = score
                 };
 
-                await _historyStorage.AddHstory(history);
+                await _historyStorage.AddHistory(history);
             }
             catch (Exception) { }
 
