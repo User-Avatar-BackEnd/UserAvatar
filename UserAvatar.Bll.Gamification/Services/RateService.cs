@@ -87,7 +87,7 @@ namespace UserAvatar.Bll.Gamification.Services
                 #region property Rank
                 foreach (var user in underTopUsers)
                 {
-                    var rank = await _rankService.GetRank(user.Score);
+                    var rank = await _rankService.GetAllRanksData(user.Score);
                     user.Rank = rank.Name;
                 }
 
@@ -123,7 +123,7 @@ namespace UserAvatar.Bll.Gamification.Services
             #region property Rank
             foreach (var user in topUsers)
             {
-                var rank = await _rankService.GetRank(user.Score);
+                var rank = await _rankService.GetAllRanksData(user.Score);
                 user.Rank = rank.Name;
             }
             #endregion

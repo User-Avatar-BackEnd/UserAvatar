@@ -134,6 +134,21 @@ namespace UserAvatar.Api.Controllers
 
             return StatusCode(result);
         }
+        
+        [HttpDelete("{boardId:int}/user/")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> DeleteMemberFromBoardAsync(int boardId, [FromQuery] int toDeleteUserId)
+        {
+            var result = await _boardService.DeleteMemberFromBoardAsync(UserId,toDeleteUserId, boardId);
+
+            if (result != ResultCode.Success)
+                return BadRequest(result);
+            
+            return StatusCode(result);
+        }
 
         [HttpPost("{boardId:int}/invites")]
         [ProducesResponseType((int)HttpStatusCode.OK)]

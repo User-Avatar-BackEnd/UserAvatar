@@ -9,6 +9,12 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task CreateBoardAsync(Board board);
         Task<IEnumerable<Board>> GetAllBoardsAsync(int userId);
         Task<int> CountAllBoardsAsync(int userId);
+        /// <summary>
+        /// Gets current board from Database
+        /// Returns Board or Null if does not exist
+        /// </summary>
+        /// <param name="boardId"></param>
+        /// <returns></returns>
         Task<Board> GetBoardAsync(int boardId);
         Task UpdateAsync(int userId, Board board);
         Task UpdateMemberAsync(Member member);

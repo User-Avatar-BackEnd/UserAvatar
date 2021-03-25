@@ -39,7 +39,7 @@ namespace UserAvatar.Bll.Gamification.Services
             //var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<UserAvatarContext>();
             var period = TimeSpan.FromSeconds(10);
             // reset cache every midnight (UTC)
-            _timer = new Timer(MakeTransactions, _scopeFactory, TimeSpan.Zero, period);
+            _timer = new Timer(MakeTransactions, _scopeFactory, TimeSpan.FromSeconds(10), period);
             
             return Task.CompletedTask;
         }

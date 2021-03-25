@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -30,18 +31,24 @@ namespace UserAvatar.Api.Controllers
         private readonly IEventService _eventService;
         private readonly IHistoryService _historyService;
         private readonly IPersonalAccountService _personalAccountService;
+        private readonly IRankService _rankService;
+        private readonly ISearchService _searchService;
         private readonly IApplicationUser _applicationUser;
         private readonly IMapper _mapper;
 
         public AdminController(
             IEventService eventService,
             IHistoryService historyService,
+            ISearchService searchService,
+            IRankService rankService,
             IPersonalAccountService personalAccountService,
             IApplicationUser applicationUser,
             IMapper mapper)
         {
             _eventService = eventService;
             _applicationUser = applicationUser;
+            _searchService = searchService;
+            _rankService = rankService;
             _personalAccountService = personalAccountService;
             _mapper = mapper;
             _historyService = historyService;
@@ -70,7 +77,6 @@ namespace UserAvatar.Api.Controllers
 
             return Ok();
         }
-
 
         [HttpPut("role/{login}")]
         public async Task<IActionResult> ChangeRole([Required] string role, string login)
@@ -110,6 +116,30 @@ namespace UserAvatar.Api.Controllers
             var resultCode = await _eventService.ChangeBalanceAsync(login, change);
             if (resultCode == ResultCode.NotFound) return NotFound();
             return Ok();
+        }
+
+        [HttpGet("users")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<HistoryVm>> GetPagedUsers([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            pageNumber = pageNumber < 1 ? 1 : pageNumber;
+            pageSize = pageSize < 10 ? 10 : pageSize;
+
+            var pagedModel = await _searchService.GetAllUsers(pageNumber, pageSize);
+
+            var scores = pagedModel.Users
+                .Select(x=> x.Score)
+                .ToList();
+
+            var ranks = await _rankService.GetRanks(scores);
+
+            for (int i = 0; i < ranks.Count; i++)
+            {
+                pagedModel.Users[i].Rank = ranks[i];
+            }
+
+            return Ok(_mapper.Map<PagedUsersModel, PagedUserVm>(pagedModel));
         }
     }
 }

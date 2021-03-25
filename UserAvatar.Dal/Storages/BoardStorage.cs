@@ -33,6 +33,7 @@ namespace UserAvatar.Dal.Storages
                 .ToListAsync();
         }
 
+        /// <inheritdoc />
         public async Task<Board> GetBoardAsync(int boardId)
         {
             return await _dbContext.Boards
