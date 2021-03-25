@@ -30,20 +30,20 @@ namespace UserAvatar.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
         private readonly IInviteService _inviteService;
-        private readonly IEventService _eventService;
+        private readonly IHistoryService _historyService;
 
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
             IMapper mapper, 
             IApplicationUser applicationUser,
-            IEventService eventService)
+            IHistoryService historyService)
         {
             _boardService = boardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
             _inviteService = inviteService;
-            _eventService = eventService;
+            _historyService = historyService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -77,7 +77,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _historyService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
         }
@@ -144,7 +144,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _historyService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok();
         }
