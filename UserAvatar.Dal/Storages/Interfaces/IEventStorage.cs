@@ -10,5 +10,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<List<Event>> GetEventListAsync();
 
         Task UpdateEventsAsync(List<Event> events);
+
+        Task<int> GetScoreByName(string name);
     }
 }

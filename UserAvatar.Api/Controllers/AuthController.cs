@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
+using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.TaskManager.Models;
@@ -27,11 +28,19 @@ namespace UserAvatar.Api.Controllers
     {
         private readonly JwtOptions _jwt;
         private readonly IAuthService _authService;
+        private readonly IEventService _eventService;
+        private readonly IApplicationUser _applicationUser;
 
-        public AuthController(IAuthService authService, IOptions<JwtOptions> jwt)
+        public AuthController(
+            IAuthService authService,
+            IOptions<JwtOptions> jwt,
+            IEventService eventService,
+            IApplicationUser applicationUser)
         {
             _authService = authService;
             _jwt = jwt.Value;
+            _eventService = eventService;
+            _applicationUser = applicationUser;
         }
 
         #region Actionspi
@@ -57,6 +66,8 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
+            await _eventService.AddEventToHistory(result.Value.Id, result.EventType);
+
             return BuildToken(result.Value);
         }
 
@@ -75,16 +86,21 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
+            await _eventService.AddEventToHistory(result.Value.Id, result.EventType);
+
             return BuildToken(result.Value);
         }
         
         [HttpGet("logout")]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public Task<HttpStatusCode> LogoutAsync()
+        public async Task<IActionResult> LogoutAsync()
         {
-            // todo: call gamification service to add scores for the logout
-            return Task.FromResult(HttpStatusCode.OK);
+            var userId = _applicationUser.Id;
+
+            await _eventService.AddEventToHistory(userId, _authService.Logout());
+
+            return Ok();
         }
         #endregion
 
@@ -109,7 +125,6 @@ namespace UserAvatar.Api.Controllers
                 access_token = encodedJwt,
                 role = user.Role
             };
-
             return Ok(response);
         }
 

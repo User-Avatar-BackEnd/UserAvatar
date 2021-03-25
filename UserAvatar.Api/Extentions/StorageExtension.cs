@@ -25,7 +25,7 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<ICardStorage, CardStorage>()
                 .AddTransient<IEventStorage, EventStorage>()
                 .AddTransient<IRankStorage, RankStorage>();
-            
+                .AddTransient<IHistoryStorage, HistoryStorage>();
         }
     }
 }

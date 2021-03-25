@@ -31,5 +31,10 @@ namespace UserAvatar.Dal.Storages
             }
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<int> GetScoreByName(string name)
+        {
+            return (await _dbContext.Events.FirstAsync(x => x.Name == name)).Score;
+        }
     }
 }
