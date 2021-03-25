@@ -76,16 +76,16 @@ namespace UserAvatar.Api.Extentions
         {
             return new()
             {
-                {"Registration", 20},
-                {"Login", 15},
-                {"Logout", 13},
-                {"CreateBoard", 10},
-                {"SendInvite", 5},
-                {"CreateCardOnOwnBoard", 3},
-                {"CreateCardOnAlienBoard", 4},
-                {"ChangeCardStatusOnOwnBoard", 1},
-                {"ChangeCardStatusOnAlienBoard", 2},
-                {"ChangeUserBalansByAdmin", -1}
+                { EventType.Registration, 20 },
+                { EventType.Login, 15 },
+                { EventType.Logout, 13 },
+                { EventType.CreateBoard, 10 },
+                { EventType.SendInvite, 5 },
+                { EventType.CreateCardOnOwnBoard, 3 },
+                { EventType.CreateCardOnAlienBoard, 4 },
+                { EventType.ChangeCardStatusOnOwnBoard, 1 },
+                { EventType.ChangeCardStatusOnAlienBoard, 2 },
+                { EventType.ChangeUserBalansByAdmin, -1 }
             };
             
         }

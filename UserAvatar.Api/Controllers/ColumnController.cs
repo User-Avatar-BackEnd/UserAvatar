@@ -99,7 +99,7 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
 
-        [HttpPost("{columnId:int}/position")]
+        [HttpPatch("{columnId:int}/position")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
