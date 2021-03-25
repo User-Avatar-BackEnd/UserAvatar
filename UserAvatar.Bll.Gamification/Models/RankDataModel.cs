@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace UserAvatar.Bll.Gamification.Models
 {
-    class FullRankModel
+    public class RankDataModel
     {
-        //public List
+        public string Name { get; set; }
+
+        public int Score { get; set; }
+
+        public int MaxScores { get; set; }
     }
 }

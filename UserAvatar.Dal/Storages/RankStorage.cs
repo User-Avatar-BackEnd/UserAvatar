@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UserAvatar.Dal.Context;
+using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Dal.Storages
 {
-    class RankStorage
+    public class RankStorage : IRankStorage
     {
         private readonly UserAvatarContext _dbContext;
 
@@ -16,10 +17,10 @@ namespace UserAvatar.Dal.Storages
             _dbContext = dbContext;
         }
 
-        public async Task<string> GetAllRank(int scores)
+        public async Task<List<Rank>> GetAllRankAsync()
         {
-            //return await _dbContext.Ranks.OrderBy()
-            throw new NotImplementedException();
+            return await _dbContext.Ranks.OrderBy(x=> x.Score)
+                .ToListAsync();
         }
     }
 }

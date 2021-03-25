@@ -1,6 +1,6 @@
-﻿namespace UserAvatar.Bll.Gamification.Models
+﻿namespace UserAvatar.Api.Contracts.ViewModels
 {
-    public class RateModel
+    public class RateDataVm
     {
         public int Id { get; set; }
 
