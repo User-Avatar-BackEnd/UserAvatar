@@ -1,6 +1,11 @@
-﻿namespace UserAvatar.Bll.Gamification.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace UserAvatar.Api.Contracts.ViewModels
 {
-    public class UserDataModel
+    public class UserPageDataVm
     {
         public int Position { get; set; }
 

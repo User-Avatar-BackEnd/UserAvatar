@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAvatar.Bll.Gamification.Models;
@@ -24,40 +23,31 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
-        /*
-          public int Position { get; set; }+
-
-        public string Rank { get; set; } -
-
-        public string Login { get; set; } +
-
-        public int Score { get; set; } +
-
-        public string Role { get; set; } +
-        
-         */
-
-        public async Task GetAllUsers(int pageNumber, int pageSize)
+        public async Task<PagedUsersModel> GetAllUsers(int pageNumber, int pageSize)
         {
             var users = await _userStorage.GetPagedUsersAsync(pageNumber, pageSize);
 
+            var totalUserAmount = await _userStorage.GetUsersAmount();
+
+            var totalPages = totalUserAmount % pageSize == 0 ?
+                totalUserAmount / pageSize :
+                +totalUserAmount / pageSize + 1;
+
             var usersData =  _mapper.Map<List<User>, List<UserDataModel>>(users);
 
-            // todo : call the method and give it the list
+            int startedPosition = pageNumber == 1 ? 1 : ((pageNumber - 1) * pageSize) + 1;
 
-           // usersData.ForEach(async x => x.Rank = await _rankService.GetRank(x.Score).);
-
-
-
-                var pagedUserModel = new PagedUsersModel()
+            usersData.ForEach(x => x.Position = startedPosition++);
+            
+            return new PagedUsersModel()
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-             // TotalPages = 
-             // TotalElements = 
+                TotalPages = totalPages,
+                TotalElements = totalUserAmount,
                 IsFirstPage = pageNumber == 1,
-             // IsLastPage = 
-             // List<UserDataModel> Users = userData;
+                IsLastPage = pageNumber == totalPages ? true:false,
+                Users = usersData
             };
         }
     }

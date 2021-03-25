@@ -21,6 +21,7 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
+        // todo : change
         public async Task<RankDataModel> GetAllRanksData(int score)
         {
             // вынести в конструктор? вызывется каждый раз

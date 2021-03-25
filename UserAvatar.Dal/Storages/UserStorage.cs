@@ -96,6 +96,7 @@ namespace UserAvatar.Dal.Storages
         public async Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize)
         {
             return await _dbContext.Users
+                .OrderBy(x => x.Login)
                    .Skip((pageNumber - 1) * pageSize)
                    .Take(pageSize)
                    .ToListAsync();
