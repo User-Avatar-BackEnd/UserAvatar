@@ -11,6 +11,6 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateAsync(Invite invite);
         Task<Invite> GetByIdAsync(int inviteId);
         Task<List<Invite>> GetInvitesAsync(int userId);
-        Task<Invite> GetInviteByBoardAsync(int userId, int boardId);
+        Task<Invite> GetInviteByBoardAsync(int userId, int invatedId, int boardId);
     }
 }

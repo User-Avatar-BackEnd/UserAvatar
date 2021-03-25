@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
+using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
@@ -18,6 +20,9 @@ namespace UserAvatar.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/auth")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public class AuthController : ControllerBase
     {
         private readonly JwtOptions _jwt;

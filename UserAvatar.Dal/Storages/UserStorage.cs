@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,11 +19,21 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            //return await _dbContext.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
-            
+
             return await _dbContext.Users
                 .Where(user => user.Email.ToLower() == email.ToLower())
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<User>> InviteByQuery(int boardId, string query)
+        {
+            var boardMembers = await  _dbContext.Members
+                .Where(x => x.BoardId == boardId).Select(x=> x.User.Id).ToListAsync();
+
+            var filtered = await _dbContext.Users
+                .Where(x => !boardMembers.Contains(x.Id) 
+                            && x.Login.Contains(query)).ToListAsync();
+            return filtered;
         }
 
         public async Task<User> GetByIdAsync(int id)
@@ -50,7 +60,14 @@ namespace UserAvatar.Dal.Storages
             _dbContext.Entry(user).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
-        
+
+        public async Task<List<User>> GetUsersRate()
+        {
+            return await _dbContext.Users
+                .OrderByDescending(x => x.Score)
+                .ToListAsync();
+        }
+
         public async Task<bool> IsUserExistAsync(string email)
         {
             //return await _dbContext.Users.AnyAsync(user => user.Email == email);

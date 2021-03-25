@@ -1,9 +1,10 @@
-﻿namespace UserAvatar.Bll.TaskManager.Infrastructure
+﻿namespace UserAvatar.Bll.Infrastructure
 {
     public static class ResultCode
     {
         public const int Success = 200;
         public const int Forbidden = 403;
+        public const int BadRequest = 400;
         public const int NotFound = 404;
 
         //Authorization
@@ -16,5 +17,8 @@
         public const int MaxBoardCount = 21;
         public const int MaxColumnCount = 22;
         public const int MaxTaskCount = 23;
+        
+        //Internal
+        public const int UserNotFound = -1;
     }
 }

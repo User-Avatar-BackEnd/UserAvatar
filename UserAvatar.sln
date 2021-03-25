@@ -2,13 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Api", "UserAvatar.Api\UserAvatar.Api.csproj", "{6E9E0D9C-1967-4F2C-ABA9-8D7E39B22966}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Api", "UserAvatar.Api\UserAvatar.Api.csproj", "{6E9E0D9C-1967-4F2C-ABA9-8D7E39B22966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.TaskManager", "UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj", "{070F591C-4B2C-4D40-A102-54B37BD96F7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.TaskManager", "UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj", "{070F591C-4B2C-4D40-A102-54B37BD96F7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Dal", "UserAvatar.Dal\UserAvatar.Dal.csproj", "{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Dal", "UserAvatar.Dal\UserAvatar.Dal.csproj", "{9038F3CB-AFB3-41EA-ACB2-804FF610A31B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.Gamification", "UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj", "{7272725B-514C-4C3C-BB11-5CD70180C365}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Gamification", "UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj", "{7272725B-514C-4C3C-BB11-5CD70180C365}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Infrastructure", "UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj", "{75E911F9-6119-48CC-B0A1-FE3611B18D5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{7272725B-514C-4C3C-BB11-5CD70180C365}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7272725B-514C-4C3C-BB11-5CD70180C365}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7272725B-514C-4C3C-BB11-5CD70180C365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

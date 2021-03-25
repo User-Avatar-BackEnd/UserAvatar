@@ -32,11 +32,11 @@ namespace UserAvatar.Dal.Storages
             return await _userAvatarContext.Invites.FindAsync(inviteId);
         }
 
-        public async Task<Invite> GetInviteByBoardAsync(int userId, int boardId)
+        public async Task<Invite> GetInviteByBoardAsync(int userId, int invatedId, int boardId)
         {
             //todo: implement!
             return await Task.FromResult(_userAvatarContext.Invites
-                .FirstOrDefault(x => x.InvitedId == userId && x.BoardId == boardId));
+                .FirstOrDefault(x => x.InvitedId == invatedId && x.BoardId == boardId && x.InviterId==userId));
         }
 
         public async Task<List<Invite>> GetInvitesAsync(int userId)

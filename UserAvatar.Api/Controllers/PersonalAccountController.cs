@@ -9,14 +9,20 @@ using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Api.Contracts.Dtos;
+using System.Net.Mime;
+using System.Net;
 
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/account")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public class PersonalAccountController : ControllerBase
     {
         private readonly IPersonalAccountService _personalAccountService;
@@ -40,12 +46,14 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpPatch]
-        [Route("change_login")]
-        public async Task<ActionResult> ChangeLoginAsync([FromBody] ChangeLoginRequest login)
+        [Route("login")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<ActionResult> ChangeLoginAsync(ChangeLoginRequest login)
         {
-            login.Login = login.Login.Trim();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (login.Login.Length < 5 || login.Login.Length > 64) throw new SystemException("Login length should be between 5 and 64 characters");
+            login.Login = login.Login.Trim();
 
             await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
 
@@ -53,7 +61,9 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPatch]
-        [Route("change_password")]
+        [Route("password")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -64,6 +74,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
@@ -92,13 +103,32 @@ namespace UserAvatar.Api.Controllers
             return Ok(userDataVm);
         }
 
-        [HttpGet("/invites")]
+        [HttpGet("invites")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<List<InviteVm>>> GetAllInvitesAsync()
         {
             var result = await _inviteService.GetAllInvitesAsync(UserId);
-            if (result.Code != ResultCode.Success)
-                return NotFound(result);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
             return Ok(_mapper.Map<List<InviteModel>,List<InviteVm>>(result.Value));
         }
+
+        [HttpPatch("invites/{inviteId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> UpdateInvitationAsync([FromQuery]int status, int inviteId)
+        {
+            if (Math.Abs(status) > 1) return BadRequest("Status may be only -1 0 1");
+            var resultCode = await _inviteService.UpdateInviteAsync(inviteId, UserId, status);
+
+            if (resultCode == ResultCode.NotFound) return NotFound();
+
+            return Ok();
+        }
+
+        // ???????? ???????
     }
 }

@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
 using System.Net;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager;
+using UserAvatar.Bll.Infrastructure;
+using System.Net.Mime;
 
 namespace UserAvatar.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     public class CardController : ControllerBase
     {
         private readonly ICardService _cardService;
@@ -48,7 +52,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/v1/boards/{boardI:int}/columns/{columnId:int}/cards")]
+        [Route("~/api/v1/boards/{boardId:int}/columns/{columnId:int}/cards")]
         [ProducesResponseType(typeof(CardShortVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

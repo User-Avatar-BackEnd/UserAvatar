@@ -2,8 +2,9 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Bll.TaskManager.Options;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -72,6 +73,16 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> UpdateCardAsync(CardModel cardModel, 
             int boardId, int userId)
         {
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
+                return ResultCode.NotFound;
+            }
+
+            if (!await _boardStorage.IsBoardColumnAsync(boardId, cardModel.ColumnId))
+            {
+                return ResultCode.Forbidden;
+            }
+
             var card = await _cardStorage.GetByIdAsync(cardModel.Id);
             
             if (card == null)

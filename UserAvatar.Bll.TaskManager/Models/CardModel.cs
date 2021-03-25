@@ -10,7 +10,7 @@ namespace UserAvatar.Bll.TaskManager.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int OwnerId { get; set; }
-        public int ResponsibleId { get; set; }
+        public int? ResponsibleId { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset ModifiedAt { get; set; }
         public int? Priority { get; set; }

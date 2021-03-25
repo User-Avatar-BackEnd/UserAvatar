@@ -8,34 +8,44 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.TaskManager;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Bll.Infrastructure;
+using UserAvatar.Bll.TaskManager.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("api/v1/boards")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public class BoardController : ControllerBase
     {
         private readonly IBoardService _boardService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        private readonly IInviteService _inviteService;
+
         public BoardController(
-            IBoardService boardService, 
+            IBoardService boardService,
+            IInviteService inviteService,
             IMapper mapper, 
             IApplicationUser applicationUser)
         {
             _boardService = boardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
+            _inviteService = inviteService;
         }
 
         private int UserId => _applicationUser.Id;
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<BoardShortVm>),(int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
         {
             var result = await _boardService.GetAllBoardsAsync(UserId);
@@ -48,30 +58,28 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BoardShortVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public async Task<IActionResult> CreateBoardAsync(TitleDto titleDto)
+        public async Task<ActionResult<BoardShortVm>> CreateBoardAsync(TitleDto titleDto)
         {
             titleDto.Title = titleDto.Title.Trim();
 
-            var code = 
+            var result = 
                 await _boardService.CreateBoardAsync(UserId, titleDto.Title);
 
-            if (code != ResultCode.Success)
+            if (result.Code != ResultCode.Success)
             {
-                return Conflict(code);
+                return Conflict(result.Code);
             }
 
-            return Ok();
+            return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
         }
 
         [HttpGet("{boardId:int}")]
         [ProducesResponseType(typeof(BoardVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<BoardVm>> GetBoardAsync(int boardId)
         {
             var result = await _boardService.GetBoardAsync(UserId, boardId);
@@ -92,7 +100,6 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> RenameBoardAsync(int boardId, TitleDto titleDto)
         {
             titleDto.Title = titleDto.Title.Trim();
@@ -107,12 +114,43 @@ namespace UserAvatar.Api.Controllers
         [HttpDelete("{boardId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
             var result = await _boardService.DeleteBoardAsync(UserId, boardId);
 
             return StatusCode(result);
+        }
+
+        [HttpPost("{boardId:int}/invites")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<IActionResult> CreateInvitationAsync(
+            int  boardId,
+            [Required(AllowEmptyStrings = false)] string payload)
+        {
+            var resultCode = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
+            if (resultCode == ResultCode.Forbidden) return Forbid();
+            if (resultCode == ResultCode.NotFound) return NotFound();
+            return Ok();
+        }
+
+        [HttpGet("{boardId:int}/invites/find_person")]
+        [ProducesResponseType(typeof(List<UserShortVm>),(int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(int boardId, [FromQuery] string query)
+        {
+            if (string.IsNullOrEmpty(query))
+                return NotFound();
+            var result = await _inviteService.FindByQuery(boardId, UserId, query);
+
+            return result.Code switch
+            {
+                ResultCode.Forbidden => Forbid(),
+                ResultCode.NotFound => NotFound(),
+                _ => Ok(_mapper.Map<List<UserModel>, List<UserShortVm>>(result.Value))
+            };
         }
     }
 }

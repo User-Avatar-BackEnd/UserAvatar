@@ -3,7 +3,8 @@ using System.Linq;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
-
+using UserAvatar.Bll.Gamification.Models;
+using UserAvatar.Api.Contracts.Dtos;
 namespace UserAvatar.Api.Extentions
 {
     public class MappingProfile : Profile
@@ -24,13 +25,14 @@ namespace UserAvatar.Api.Extentions
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
             
-            CreateMap<EventModel, Event>();
             CreateMap<HistoryModel, History>();
             CreateMap<InviteModel, Invite>();
             CreateMap<RankModel, Rank>();
             CreateMap<CardModel, Card>();
             CreateMap<CommentModel, Comment>();
+            CreateMap<EventModel, Event>();
 
+            CreateMap<EventDto, EventModel>();
 
             CreateMap<BoardModel, BoardShortVm>();
 
@@ -60,15 +62,21 @@ namespace UserAvatar.Api.Extentions
            CreateMap<ColumnModel, FullColumnVm>()
                .ForMember(x => x.Order, y => y.MapFrom(z => z.Index));
 
+           CreateMap<UpdateCardDto, CardModel>();
+           
            CreateMap<Invite, InviteModel>()
                .ForMember(x => x.Inviter,
                    y => y.MapFrom(z => z.Inviter))
                .ForMember(x=> x.InvitedId,
                    y=> y.MapFrom(z => z.Invited.Id));
 
-           CreateMap<InviteModel, InviteVm>();
+           CreateMap<InviteModel, InviteVm>()
+               .ForMember(x=> x.Board, y=> y.MapFrom(z=> z.Board));
+           CreateMap<EventModel, EventVm>();
+           
+           CreateMap<User, RateModel>();
 
-
+            CreateMap<UpdateCardDto, CardModel>();
         }
     }
 }

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
-using UserAvatar.Bll.TaskManager.Infrastructure;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
+using UserAvatar.Bll.TaskManager.Options;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
@@ -38,7 +38,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<IEnumerable<BoardModel>>(boardsModel);
         }
 
-        public async Task<int> CreateBoardAsync(int userId, string title)
+        public async Task<Result<BoardModel>> CreateBoardAsync(int userId, string title)
         {
             var board = new Board
             {
@@ -48,21 +48,26 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ModifiedAt = DateTimeOffset.UtcNow,
                 ModifiedBy = 0
             };
+            var boards = await _boardStorage.CountAllBoardsAsync(userId);
 
-            var boards = await GetAllBoardsAsync(userId);
-
-            if (boards.Value.Count() >= _limitations.MaxBoardCount)
+            if (boards >= _limitations.MaxBoardCount)
             {
-                return ResultCode.MaxBoardCount;
+                return new Result<BoardModel>(ResultCode.MaxBoardCount);
             }
-
+            
             await _boardStorage.CreateBoardAsync(board);
-            return ResultCode.Success;
+            await _boardStorage.AddAsMemberAsync(new Member
+            {
+                UserId = userId,
+                BoardId = board.Id,
+            });
+            return new Result<BoardModel>(_mapper.Map<Board,BoardModel>(board));
         }
 
         public async Task<Result<BoardModel>> GetBoardAsync(int userId, int boardId)
         {
             var board = await _boardStorage.GetBoardAsync(boardId);
+            
             if (board == null)
             {
                 return new Result<BoardModel>(ResultCode.NotFound);
@@ -77,12 +82,13 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> RenameBoardAsync(int userId, int boardId, string title)
         {
             var board = await _boardStorage.GetBoardAsync(boardId);
+            
             if (board == null)
             {
                 return ResultCode.NotFound;
             }
 
-            var permission = await _boardStorage.IsUserBoardAsync(userId, boardId);
+            var permission = await _boardStorage.IsOwnerBoardAsync(userId, boardId);
             if (!permission)
             {
                 return ResultCode.Forbidden;
@@ -96,11 +102,24 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<int> DeleteBoardAsync(int userId, int boardId)
         {
-            if (!await _boardStorage.IsOwnerBoardAsync(userId, boardId))
+            if (!await _boardStorage.IsBoardExistAsync(boardId))
+                return ResultCode.NotFound;
+
+            if (await _boardStorage.IsOwnerBoardAsync(userId,boardId))
+            {
+                await _boardStorage.DeleteRecurrentlyBoardAsync(boardId);
+            } 
+            else if (await _boardStorage.IsUserBoardAsync(userId, boardId))
+            {
+                var thisMember = await _boardStorage.GetMemberByIdAsync(userId, boardId);
+                thisMember.IsDeleted = true;
+                await _boardStorage.UpdateMemberAsync(thisMember);
+            }
+            else
             {
                 return ResultCode.Forbidden;
             }
-            await _boardStorage.DeleteBoardAsync(userId, boardId);
+            
             return ResultCode.Success;
         }
     }
