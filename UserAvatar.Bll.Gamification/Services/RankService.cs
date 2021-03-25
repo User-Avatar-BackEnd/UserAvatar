@@ -21,7 +21,8 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
-        public async Task<RankDataModel> GetRank(int score)
+        // todo : change
+        public async Task<RankDataModel> GetAllRanksData(int score)
         {
             // вынести в конструктор? вызывется каждый раз
             var ranks = await _rankStorage.GetAllRankAsync();
@@ -33,6 +34,19 @@ namespace UserAvatar.Bll.Gamification.Services
             var smt = fullRanks.First(x => score < x.MaxScores && score >= x.Score);
 
             return smt;
+        }
+
+        public async Task<List<string>> GetRanks(List<int> scores)
+        {
+            var ranks = await _rankStorage.GetAllRankAsync();
+
+            var fullRanks = _mapper.Map<List<Rank>, List<RankDataModel>>(ranks);
+
+            fullRanks = SetMaxScore(fullRanks);
+
+            return  scores.Select(score => fullRanks
+            .First(x => score < x.MaxScores && score >= x.Score).Name)
+                .ToList();
         }
 
         private List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)

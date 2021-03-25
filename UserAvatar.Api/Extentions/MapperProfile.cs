@@ -87,6 +87,12 @@ namespace UserAvatar.Api.Extentions
             CreateMap<RateModel, RateDataVm>();
 
             CreateMap<FullRateModel, FullRateVm>();
+
+            CreateMap<User, UserDataModel>();
+
+            CreateMap<UserDataModel, UserPageDataVm>();
+
+            CreateMap<PagedUsersModel, PagedUserVm>();
         }
     }
 }
