@@ -15,17 +15,20 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IBoardStorage _boardStorage;
         private readonly ICardStorage _cardStorage;
         private readonly IMapper _mapper;
+        private readonly IBoardChangesService _boardChangesService;
 
         public CommentService(
             ICommentStorage commentStorage,
             IBoardStorage boardStorage,
             ICardStorage cardStorage,
-            IMapper mapper)
+            IMapper mapper,
+            IBoardChangesService boardChangesService)
         {
             _commentStorage = commentStorage;
             _boardStorage = boardStorage;
             _cardStorage = cardStorage;
             _mapper = mapper;
+            _boardChangesService = boardChangesService;
         }
 
         public async Task<Result<CommentModel>> CreateNewCommentAsync(
@@ -57,6 +60,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             };
             // TODO: It returns the comment, but shouldn't , let's return nothing
             var comment = await _commentStorage.CreateAsync(newComment);
+
+            _boardChangesService.DoChange(boardId, userId);
 
             return new Result<CommentModel>(_mapper.Map<Comment, CommentModel>(comment));
         }
@@ -128,6 +133,9 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             //await ValidateUserByCommentAsync(userId, commentId);
             await _commentStorage.DeleteApparentAsync(commentId);
+
+            _boardChangesService.DoChange(boardId, userId);
+
             return ResultCode.Success;
         }
 

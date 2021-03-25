@@ -35,9 +35,11 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<ICommentService, CommentService>()
                 .AddTransient<IPersonalAccountService, PersonalAccountService>()
                 .AddTransient<IEventService, EventService>()
-                .AddTransient<IHistoryService,HistoryService>()
+                .AddTransient<IHistoryService, HistoryService>()
                 .AddTransient<IRankService, RankService>()
-                .AddTransient<IRateService, RateService>();
+                .AddTransient<IRateService, RateService>()
+                .AddSingleton<IBoardChangesService, BoardChangesService>()
+                .AddTransient<ISearchService, SearchService>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();
 

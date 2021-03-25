@@ -14,6 +14,9 @@ namespace UserAvatar.Api.Extentions
             CreateMap<User, UserModel>();
             CreateMap<Member, MemberModel>();
 
+            CreateMap<MemberModel, UserShortVm>()
+                .ForMember(x => x.Login, y => y.MapFrom(z => z.User.Login));
+
             CreateMap<Column, ColumnModel>();
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();
@@ -84,6 +87,12 @@ namespace UserAvatar.Api.Extentions
             CreateMap<RateModel, RateDataVm>();
 
             CreateMap<FullRateModel, FullRateVm>();
+
+            CreateMap<User, UserDataModel>();
+
+            CreateMap<UserDataModel, UserPageDataVm>();
+
+            CreateMap<PagedUsersModel, PagedUserVm>();
         }
     }
 }

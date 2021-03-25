@@ -39,6 +39,8 @@ namespace UserAvatar.Bll.Gamification.Services
                 {
                     var thisUser = await _userStorage.GetByIdAsync(history.UserId);
                     thisUser.Score += history.Score;
+                    if (thisUser.Score < 0)
+                        thisUser.Score = 0;
                 }
                 await  _historyStorage.SaveChanges();
             }

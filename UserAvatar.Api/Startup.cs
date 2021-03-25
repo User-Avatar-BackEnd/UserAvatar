@@ -58,6 +58,7 @@ namespace UserAvatar.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
         {
             userAvatarContext?.Database.Migrate();
+            
             SeedingExtension.EnsureAdminCreated(userAvatarContext);
             SeedingExtension.EnsureEventsCreated(userAvatarContext);
             SeedingExtension.EnsureRanksCreated(userAvatarContext);

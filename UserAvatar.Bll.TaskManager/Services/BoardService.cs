@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -17,14 +18,18 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IBoardStorage _boardStorage;
         private readonly IMapper _mapper;
         private readonly LimitationOptions _limitations;
+        private readonly IBoardChangesService _boardChangesService;
 
-        public BoardService(IBoardStorage boardStorage, 
+        public BoardService(
+            IBoardStorage boardStorage, 
             IMapper mapper, 
-            IOptions<LimitationOptions> limitations)
+            IOptions<LimitationOptions> limitations,
+            IBoardChangesService boardChangesService)
         {
             _boardStorage = boardStorage;
             _mapper = mapper;
             _limitations = limitations.Value;
+            _boardChangesService = boardChangesService;
         }
 
         public async Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId)
@@ -97,6 +102,9 @@ namespace UserAvatar.Bll.TaskManager.Services
             board.Title = title;
 
             await _boardStorage.UpdateAsync(userId, board);
+
+            _boardChangesService.DoChange(boardId, userId);
+
             return ResultCode.Success;
         }
 
@@ -120,6 +128,28 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
             
+            return ResultCode.Success;
+        }
+
+
+        public async Task<bool> IsUserBoard(int userId, int boardId)
+        {
+            return await _boardStorage.IsUserBoardAsync(userId, boardId);
+        }
+        
+        public async Task<int> DeleteMemberFromBoardAsync(int userId, int toDeleteUserId, int boardId)
+        {
+            var currentBoard = await _boardStorage.GetBoardAsync(boardId);
+
+            if (currentBoard == null
+                || currentBoard.OwnerId != userId
+                || currentBoard.Members.All(x => x.UserId != toDeleteUserId))
+                return ResultCode.BadRequest;
+
+            var thisMember = await _boardStorage.GetMemberByIdAsync(toDeleteUserId, boardId);
+            thisMember.IsDeleted = true;
+            
+            await _boardStorage.UpdateMemberAsync(thisMember);
             return ResultCode.Success;
         }
     }
