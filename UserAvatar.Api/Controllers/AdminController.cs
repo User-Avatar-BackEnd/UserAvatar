@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Contracts.ViewModels;
+using UserAvatar.Api.Options;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Infrastructure;
+using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -25,13 +27,21 @@ namespace UserAvatar.Api.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IEventService _eventService;
+        private readonly IPersonalAccountService _personalAccountService;
+        private readonly IApplicationUser _applicationUser;
         private readonly IMapper _mapper;
 
-        public AdminController(IEventService eventService, IMapper mapper)
+        public AdminController(IEventService eventService,
+            IPersonalAccountService _personalAccountService,
+            IApplicationUser applicationUser,
+            IMapper mapper)
         {
             _eventService = eventService;
+            _applicationUser = applicationUser;
             _mapper = mapper;
         }
+
+        private int UserId => _applicationUser.Id;
 
         [HttpGet("events")]
         [ProducesResponseType(typeof(List<EventVm>),(int)HttpStatusCode.OK)]
@@ -55,14 +65,37 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+
         [HttpPut("change_role")]
         public async Task<IActionResult> ChangeRole(ChangeRoleRequest changeRoleRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // call the method to change the role
+            if (changeRoleRequest.Role != Roles.Admin && changeRoleRequest.Role != Roles.User)
+            {
+                return BadRequest();
+            }
 
-            return Ok();
+            var result = await _personalAccountService.ChangeRole(changeRoleRequest.Id, changeRoleRequest.Role);
+
+            if(result == ResultCode.NotFound) return NotFound();
+            if(result == ResultCode.Forbidden) return Forbid();
+
+            return StatusCode(result);
         }
+
+        [HttpGet("history/{login}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<HistoryVm>> GetHistory(string login)
+        {
+            var result = await _eventService.GetHistoryAsync(login);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            return Ok(_mapper.Map<List<HistoryModel>, List<HistoryVm>>(result.Value));
+        }
+
+
     }
 }

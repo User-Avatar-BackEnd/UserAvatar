@@ -23,6 +23,8 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateAsync(User user);
         
         Task<List<User>> GetUsersRate();
+      
+        Task<User> GetByLoginAsync(string login);
 
         Task AddScoreToUser(int userId, int score);
     }

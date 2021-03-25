@@ -77,7 +77,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistory(UserId, result.EventType);
+            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
         }
@@ -97,7 +97,6 @@ namespace UserAvatar.Api.Controllers
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
             boardVm.IsOwner = result.Value.OwnerId == UserId;
-
 
             return Ok(boardVm);
         }
@@ -120,9 +119,14 @@ namespace UserAvatar.Api.Controllers
         [HttpDelete("{boardId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
             var result = await _boardService.DeleteBoardAsync(UserId, boardId);
+
+            if (result == ResultCode.Forbidden) return Forbid();
+            if (result == ResultCode.NotFound) return NotFound();
 
             return StatusCode(result);
         }
@@ -140,7 +144,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            await _eventService.AddEventToHistory(UserId, result.EventType);
+            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok();
         }

@@ -117,3 +117,4 @@ namespace UserAvatar.Api.Controllers
         }
     }
 }
+

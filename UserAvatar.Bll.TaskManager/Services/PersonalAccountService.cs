@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Threading.Tasks;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Entities;
@@ -50,18 +51,22 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _userStorage.UpdateAsync(user);
         }
 
-        public async Task ChangeRole(int userId, int editingUserId, string role)
+        public async Task<int> ChangeRole(int editingUserId, string role)
         {
             //VALIDATIONC _> THAT HE IS ADMIN AMD USERID != EDITING
+       
+            var userToChange = await _userStorage.GetByIdAsync(editingUserId);
 
-            var user = await _userStorage.GetByIdAsync(editingUserId);
+            if (userToChange == null)
+            {
+                return ResultCode.NotFound;
+            }
 
-            user.Role = role;
+            userToChange.Role = role;
 
-            // validations and calling the storage
-            await _userStorage.UpdateAsync(user);
+            await _userStorage.UpdateAsync(userToChange);
 
-            throw new NotImplementedException();
+            return ResultCode.Success;
         }
 
         public async Task<UserModel> GetUsersDataAsync(int userId)
