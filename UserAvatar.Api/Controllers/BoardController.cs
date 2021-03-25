@@ -77,7 +77,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistory(UserId, result.EventType);
+            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
         }
@@ -144,7 +144,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            await _eventService.AddEventToHistory(UserId, result.EventType);
+            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok();
         }

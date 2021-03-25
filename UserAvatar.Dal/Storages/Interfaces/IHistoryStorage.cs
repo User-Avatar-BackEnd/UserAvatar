@@ -7,9 +7,12 @@ namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface IHistoryStorage
     {
-        Task AddHistory(History history);
+        Task AddHstoryAsync(History history);
+
+        Task<List<History>> GetHistoryByUserAsync(int userId);
 
         Task<bool> GetNotCalculatedHistory();
+
         Task SaveChanges();
 
         Task<List<History>> GetUserScoresList();

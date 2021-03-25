@@ -65,6 +65,7 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+
         [HttpPut("change_role")]
         public async Task<IActionResult> ChangeRole(ChangeRoleRequest changeRoleRequest)
         {
@@ -82,5 +83,19 @@ namespace UserAvatar.Api.Controllers
 
             return StatusCode(result);
         }
+
+        [HttpGet("history/{login}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<HistoryVm>> GetHistory(string login)
+        {
+            var result = await _eventService.GetHistoryAsync(login);
+
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            return Ok(_mapper.Map<List<HistoryModel>, List<HistoryVm>>(result.Value));
+        }
+
+
     }
 }

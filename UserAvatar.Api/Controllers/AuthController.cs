@@ -66,7 +66,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistory(result.Value.Id, result.EventType);
+            await _eventService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
 
             return BuildToken(result.Value);
         }
@@ -86,7 +86,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistory(result.Value.Id, result.EventType);
+            await _eventService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
 
             return BuildToken(result.Value);
         }
@@ -98,7 +98,7 @@ namespace UserAvatar.Api.Controllers
         {
             var userId = _applicationUser.Id;
 
-            await _eventService.AddEventToHistory(userId, _authService.Logout());
+            await _eventService.AddEventToHistoryAsync(userId, _authService.Logout());
 
             return Ok();
         }

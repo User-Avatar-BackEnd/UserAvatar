@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserAvatar.Bll.Gamification.Models;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Bll.Gamification.Services.Interfaces
 {
@@ -10,6 +11,8 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
 
         Task<int> ChangeEventsCostAsync(List<EventModel> newEvents);
 
-        Task AddEventToHistory(int userId, string eventType);
+        Task AddEventToHistoryAsync(int userId, string eventType);
+
+        Task<Result<List<HistoryModel>>> GetHistoryAsync(string login);
     }
 }
