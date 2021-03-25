@@ -35,7 +35,7 @@ namespace UserAvatar.Api.Controllers
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
-            IMapper mapper, 
+            IMapper mapper,
             IApplicationUser applicationUser,
             IEventService eventService)
         {
@@ -49,27 +49,27 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BoardShortVm>),(int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<BoardShortVm>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
         {
             var result = await _boardService.GetAllBoardsAsync(UserId);
 
-            var list = 
-                _mapper.Map<IEnumerable<BoardModel>, 
+            var list =
+                _mapper.Map<IEnumerable<BoardModel>,
                     IEnumerable<BoardShortVm>>(result.Value);
 
             return Ok(list);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(BoardShortVm),(int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BoardShortVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult<BoardShortVm>> CreateBoardAsync(TitleDto titleDto)
         {
             titleDto.Title = titleDto.Title.Trim();
 
-            var result = 
+            var result =
                 await _boardService.CreateBoardAsync(UserId, titleDto.Title);
 
             if (result.Code != ResultCode.Success)
@@ -83,7 +83,7 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{boardId:int}")]
-        [ProducesResponseType(typeof(BoardVm),(int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(BoardVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<ActionResult<BoardVm>> GetBoardAsync(int boardId)
@@ -109,7 +109,7 @@ namespace UserAvatar.Api.Controllers
         {
             titleDto.Title = titleDto.Title.Trim();
 
-            var result = 
+            var result =
                 await _boardService
                     .RenameBoardAsync(UserId, boardId, titleDto.Title);
 
@@ -136,7 +136,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> CreateInvitationAsync(
-            int  boardId,
+            int boardId,
             [Required(AllowEmptyStrings = false)] string payload)
         {
             var result = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
@@ -150,13 +150,14 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpGet("{boardId:int}/invites/find_person")]
-        [ProducesResponseType(typeof(List<UserShortVm>),(int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(List<UserShortVm>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(int boardId, [FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
                 return NotFound();
+
             var result = await _inviteService.FindByQuery(boardId, UserId, query);
 
             return result.Code switch

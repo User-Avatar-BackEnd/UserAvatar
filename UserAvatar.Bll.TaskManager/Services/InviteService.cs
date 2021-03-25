@@ -97,7 +97,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 ? new Result<List<UserModel>>(ResultCode.NotFound) 
                 : new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(userList));
         }
-        
+
         public async Task<int> UpdateInviteAsync(int inviteId, int userId, int statusCode)
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
