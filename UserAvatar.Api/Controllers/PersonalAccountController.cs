@@ -86,7 +86,7 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-            var rankData = await _rankService.GetRank(userData.Score);
+            var rankData = await _rankService.GetAllRanksData(userData.Score);
 
             var userDataVm = new UserDataVm
             {

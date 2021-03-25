@@ -92,5 +92,18 @@ namespace UserAvatar.Dal.Storages
             thisUser.Score += score;
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize)
+        {
+            return await _dbContext.Users
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToListAsync();
+        }
+
+        public async Task<int> GetUsersAmount()
+        {
+            return await _dbContext.Users.CountAsync();
+        }
     }
 }

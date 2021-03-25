@@ -27,5 +27,9 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<User> GetByLoginAsync(string login);
 
         Task AddScoreToUser(int userId, int score);
+
+        Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize);
+
+        Task<int> GetUsersAmount();
     }
 }
