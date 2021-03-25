@@ -55,7 +55,9 @@ namespace UserAvatar.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
         {
             userAvatarContext?.Database.Migrate();
-            EnsureAdminCreated(userAvatarContext);
+            SeedingExtension.EnsureAdminCreated(userAvatarContext);
+            SeedingExtension.EnsureEventsCreated(userAvatarContext);
+            SeedingExtension.EnsureRanksCreated(userAvatarContext);
             
             if (env.IsDevelopment()) 
             {
@@ -81,23 +83,6 @@ namespace UserAvatar.Api
                 endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
-        }
-
-        private static void EnsureAdminCreated(UserAvatarContext context)
-        {
-            var adminUser = context.Users.Any(x=> x.Email == "admin@admin.com" 
-                                                  && x.Login == "admin");
-            if (!adminUser)
-            {
-                context.Users.Add(new User
-                {
-                    Email = "admin@admin.com",
-                    Login = "admin",
-                    PasswordHash = PasswordHash.CreateHash("admin"),
-                    Role = "admin",
-                });
-            }
-            context.SaveChanges();
         }
     }
 }
