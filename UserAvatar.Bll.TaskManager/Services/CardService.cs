@@ -67,34 +67,41 @@ namespace UserAvatar.Bll.TaskManager.Services
             card = await _cardStorage.CreateAsync(card);
             var cardModel = _mapper.Map<Card, CardModel>(card);
 
-            return new Result<CardModel>(cardModel);
+            var board = await _boardStorage.GetBoardAsync(boardId);
+            var eventType = board.OwnerId == userId ?
+                EventType.CreateCardOnOwnBoard :
+                EventType.CreateCardOnAlienBoard;
+
+            return new Result<CardModel>(cardModel, eventType);
         }
 
-        public async Task<int> UpdateCardAsync(CardModel cardModel, 
+        public async Task<Result<bool>> UpdateCardAsync(CardModel cardModel, 
             int boardId, int userId)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
-                return ResultCode.NotFound;
+                return new Result<bool>(ResultCode.NotFound);
             }
 
             if (!await _boardStorage.IsBoardColumnAsync(boardId, cardModel.ColumnId))
             {
-                return ResultCode.Forbidden;
+                return new Result<bool>(ResultCode.Forbidden);
             }
 
             var card = await _cardStorage.GetByIdAsync(cardModel.Id);
             
             if (card == null)
             {
-                return ResultCode.NotFound;
+                return new Result<bool>(ResultCode.NotFound);
             }
 
             if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
             {
-                return ResultCode.Forbidden;
+                return new Result<bool>(ResultCode.Forbidden);
             }
 
+            bool statusChanged = card.ColumnId == cardModel.ColumnId;
+                
             card.Title = card.Title;
             card.Description = cardModel.Description;
             card.ColumnId = cardModel.ColumnId;
@@ -104,7 +111,15 @@ namespace UserAvatar.Bll.TaskManager.Services
             card.Priority = cardModel.Priority;
 
             await _cardStorage.UpdateAsync(card);
-            return ResultCode.Success;
+
+            if (!statusChanged) return new Result<bool>(true);
+
+            var board = await _boardStorage.GetBoardAsync(boardId);
+            var eventType = board.OwnerId == userId ?
+                EventType.ChangeCardStatusOnOwnBoard:
+                EventType.ChangeCardStatusOnAlienBoard;
+
+            return new Result<bool>(true,eventType);
         }
 
         public async Task<Result<CardModel>> GetByIdAsync(

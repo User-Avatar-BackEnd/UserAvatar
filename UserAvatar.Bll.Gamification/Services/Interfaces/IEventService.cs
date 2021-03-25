@@ -9,5 +9,7 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
         Task<List<EventModel>> GetEventListAsync();
 
         Task<int> ChangeEventsCostAsync(List<EventModel> newEvents);
+
+        Task AddEventToHistory(int userId, string eventType);
     }
 }

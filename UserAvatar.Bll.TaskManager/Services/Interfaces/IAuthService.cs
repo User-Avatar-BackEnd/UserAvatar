@@ -6,8 +6,10 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IAuthService
     {
-        public Task<Result<UserModel>> RegisterAsync(string email, string login, string password);
+        Task<Result<UserModel>> RegisterAsync(string email, string login, string password);
 
-        public Task<Result<UserModel>> LoginAsync(string email, string password);
+        Task<Result<UserModel>> LoginAsync(string email, string password);
+
+        string Logout();
     }
 }

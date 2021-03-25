@@ -56,7 +56,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             var userModel = _mapper.Map<User, UserModel>(user);
 
-            return new Result<UserModel>(userModel);
+            return new Result<UserModel>(userModel, EventType.Registration);
         }
 
         public async Task<Result<UserModel>> LoginAsync(string email, string password)
@@ -72,7 +72,12 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             return !passwordIsValid 
                 ? new Result<UserModel>(ResultCode.InvalidPassword) 
-                : new Result<UserModel>(_mapper.Map<User, UserModel>(user));
+                : new Result<UserModel>(_mapper.Map<User, UserModel>(user), EventType.Login);
+        }
+
+        public string Logout()
+        {
+            return EventType.Logout;
         }
 
         private async Task<string> GenerateLoginAsync()
