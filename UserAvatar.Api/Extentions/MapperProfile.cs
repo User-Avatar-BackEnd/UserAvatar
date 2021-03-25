@@ -79,8 +79,6 @@ namespace UserAvatar.Api.Extentions
 
             CreateMap<UpdateCardDto, CardModel>();
 
-            CreateMap<Rank, RankModel>();
-
             CreateMap<Rank, RankDataModel>();
 
             CreateMap<RateModel, RateDataVm>();

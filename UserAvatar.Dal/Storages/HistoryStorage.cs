@@ -20,7 +20,6 @@ namespace UserAvatar.Dal.Storages
         }
 
         public async Task AddHstoryAsync(History history)
-        public async Task AddHistory(History history)
         {
             await _userAvatarContext.AddAsync(history);
             await _userAvatarContext.SaveChangesAsync();
@@ -30,9 +29,10 @@ namespace UserAvatar.Dal.Storages
         {
             return await _userAvatarContext.Histories
                 .Where(x => x.UserId == userId)
-                .OrderByDescending(x=>x.DateTime)
+                .OrderByDescending(x => x.DateTime)
                 .Take(100)
                 .ToListAsync();
+        }
 
         public async Task SaveChanges()
         {
