@@ -36,7 +36,7 @@ namespace UserAvatar.Api.Controllers
         public AdminController(
             IEventService eventService,
             IHistoryService historyService,
-            IPersonalAccountService _personalAccountService,
+            IPersonalAccountService personalAccountService,
             IApplicationUser applicationUser,
             IMapper mapper)
         {
