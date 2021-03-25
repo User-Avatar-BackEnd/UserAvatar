@@ -26,18 +26,18 @@ namespace UserAvatar.Api.Controllers
         private readonly ICardService _cardService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-        private readonly IEventService _eventService;
+        private readonly IHistoryService _historyService;
 
         public CardController(
             ICardService cardService,
             IMapper mapper,
             IApplicationUser applicationUser,
-            IEventService eventService)
+            IHistoryService historyService)
         {
             _cardService = cardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
-            _eventService = eventService;
+            _historyService = historyService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -81,7 +81,7 @@ namespace UserAvatar.Api.Controllers
 
             var cardVm = _mapper.Map<CardModel, CardShortVm>(result.Value);
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _historyService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok(cardVm);
         }
@@ -100,7 +100,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _historyService.AddEventToHistoryAsync(UserId, result.EventType);
 
             return Ok();
         }
