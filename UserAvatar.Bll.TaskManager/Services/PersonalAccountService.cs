@@ -50,6 +50,20 @@ namespace UserAvatar.Bll.TaskManager.Services
             await _userStorage.UpdateAsync(user);
         }
 
+        public async Task ChangeRole(int userId, int editingUserId, string role)
+        {
+            //VALIDATIONC _> THAT HE IS ADMIN AMD USERID != EDITING
+
+            var user = await _userStorage.GetByIdAsync(editingUserId);
+
+            user.Role = role;
+
+            // validations and calling the storage
+            await _userStorage.UpdateAsync(user);
+
+            throw new NotImplementedException();
+        }
+
         public async Task<UserModel> GetUsersDataAsync(int userId)
         {
             var user = await _userStorage.GetByIdAsync(userId);

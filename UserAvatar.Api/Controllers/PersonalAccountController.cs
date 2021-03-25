@@ -92,6 +92,7 @@ namespace UserAvatar.Api.Controllers
             {
                 Email = userData.Email,
                 Login = userData.Login,
+                Role = userData.Role,
                 InvitesAmount = userData.Invited
                     .Count(invite => invite.Status == -1),
                 Rank = "Cossack",
