@@ -14,6 +14,7 @@ using UserAvatar.Bll.Gamification.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards")]
     [Consumes(MediaTypeNames.Application.Json)]
