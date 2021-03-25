@@ -17,17 +17,20 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IMapper _mapper;
         private readonly IBoardStorage _boardStorage;
         private readonly LimitationOptions _limitations;
-       
+        private readonly IBoardChangesService _boardChangesService;
+
         public ColumnService(
             IColumnStorage columnStorage,
             IMapper mapper,
             IBoardStorage boardStorage,
-            IOptions<LimitationOptions> limitations)
+            IOptions<LimitationOptions> limitations,
+            IBoardChangesService boardChangesService)
         {
             _columnStorage = columnStorage;
             _mapper = mapper;
             _boardStorage = boardStorage;
             _limitations = limitations.Value;
+            _boardChangesService = boardChangesService;
         }
 
         //todo: add userId
@@ -60,6 +63,8 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             var column = await _columnStorage.CreateAsync(newColumn);
 
+            _boardChangesService.DoChange(boardId, userId);
+
             return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(column));
         }
 
@@ -83,6 +88,8 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             await _columnStorage.ChangePositionAsync(columnId, positionIndex);
 
+            _boardChangesService.DoChange(boardId, userId);
+
             return ResultCode.Success;
         }
 
@@ -96,13 +103,14 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             await _columnStorage.DeleteApparentAsync(columnId);
 
+            _boardChangesService.DoChange(boardId, userId);
+
             return ResultCode.Success;
         }
 
         public async Task<int> UpdateAsync(
             int userId, int boardId, int columnId, string title)
-        {
-            
+        {   
             var validation = await ValidateUserColumn(userId, boardId, columnId);
             if (validation != ResultCode.Success)
                 return validation;
@@ -116,6 +124,8 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             thisColumn.Title = title;
             await _columnStorage.UpdateAsync(thisColumn);
+
+            _boardChangesService.DoChange(boardId, userId);
 
             return ResultCode.Success;
         }
