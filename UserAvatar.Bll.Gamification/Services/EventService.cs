@@ -58,13 +58,30 @@ namespace UserAvatar.Bll.Gamification.Services
             return ResultCode.Success;
         }
 
-        public async Task AddEventToHistoryAsync(int userId, string eventType)
+        public async Task<int> ChangeBalance(string login, int balance)
+        {
+            var user = await _userStorage.GetByLoginAsync(login);
+            if (user == null)
+            {
+                return ResultCode.NotFound;
+            }
+
+            await AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
+
+            return ResultCode.Success;
+        }
+
+        public async Task AddEventToHistoryAsync(int userId, string eventType, int? customScore=null)
         {
             if (eventType == null) return;
 
             try
             {
                 int score = await _eventStorage.GetScoreByNameAsync(eventType);
+                if (customScore != null)
+                {
+                    score = (int)customScore;
+                }
 
                 var history = new History
                 {
@@ -82,7 +99,7 @@ namespace UserAvatar.Bll.Gamification.Services
 
         public async Task<Result<List<HistoryModel>>> GetHistoryAsync(string login)
         {
-            var user = _userStorage.GetByLoginAsync(login);
+            var user = await _userStorage.GetByLoginAsync(login);
             if (user == null)
             {
                 return new Result<List<HistoryModel>>(ResultCode.NotFound);

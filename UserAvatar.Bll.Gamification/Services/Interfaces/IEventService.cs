@@ -11,8 +11,10 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
 
         Task<int> ChangeEventsCostAsync(List<EventModel> newEvents);
 
-        Task AddEventToHistoryAsync(int userId, string eventType);
+        Task AddEventToHistoryAsync(int userId, string eventType, int? customScore=null);
 
         Task<Result<List<HistoryModel>>> GetHistoryAsync(string login);
+
+        Task<int> ChangeBalance(string login, int balance);
     }
 }

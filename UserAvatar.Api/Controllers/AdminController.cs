@@ -96,6 +96,13 @@ namespace UserAvatar.Api.Controllers
             return Ok(_mapper.Map<List<HistoryModel>, List<HistoryVm>>(result.Value));
         }
 
+        [HttpPatch("balance/{login}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<HistoryVm>> Change(string login, int change)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }
