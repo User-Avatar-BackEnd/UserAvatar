@@ -95,7 +95,7 @@ namespace UserAvatar.Api.Controllers
                 Role = userData.Role,
                 InvitesAmount = userData.Invited
                     .Count(invite => invite.Status == -1),
-                Rank = "Cossack",
+                Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
                 CurrentScoreAmount = userData.Score,
                 NextLevelScore = userData.Score >= 1000 ? userData.Score : rankData.MaxScores

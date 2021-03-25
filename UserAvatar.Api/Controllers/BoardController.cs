@@ -98,7 +98,6 @@ namespace UserAvatar.Api.Controllers
 
             boardVm.IsOwner = result.Value.OwnerId == UserId;
 
-
             return Ok(boardVm);
         }
 
@@ -120,9 +119,14 @@ namespace UserAvatar.Api.Controllers
         [HttpDelete("{boardId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
             var result = await _boardService.DeleteBoardAsync(UserId, boardId);
+
+            if (result == ResultCode.Forbidden) return Forbid();
+            if (result == ResultCode.NotFound) return NotFound();
 
             return StatusCode(result);
         }

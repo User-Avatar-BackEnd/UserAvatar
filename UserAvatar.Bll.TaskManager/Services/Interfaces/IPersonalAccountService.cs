@@ -10,5 +10,7 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
         Task ChangeLoginAsync(int userId, string newLogin);
 
         Task<UserModel> GetUsersDataAsync(int userId);
+
+        Task<int> ChangeRole(int editingUserId, string role);
     }
 }
