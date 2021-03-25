@@ -14,6 +14,7 @@ using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using UserAvatar.Bll.Gamification.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -29,17 +30,20 @@ namespace UserAvatar.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
         private readonly IInviteService _inviteService;
+        private readonly IEventService _eventService;
 
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
             IMapper mapper, 
-            IApplicationUser applicationUser)
+            IApplicationUser applicationUser,
+            IEventService eventService)
         {
             _boardService = boardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
             _inviteService = inviteService;
+            _eventService = eventService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -72,6 +76,8 @@ namespace UserAvatar.Api.Controllers
             {
                 return Conflict(result.Code);
             }
+
+            await _eventService.AddEventToHistory(UserId, result.EventType);
 
             return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
         }
@@ -129,9 +135,13 @@ namespace UserAvatar.Api.Controllers
             int  boardId,
             [Required(AllowEmptyStrings = false)] string payload)
         {
-            var resultCode = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
-            if (resultCode == ResultCode.Forbidden) return Forbid();
-            if (resultCode == ResultCode.NotFound) return NotFound();
+            var result = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
+
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            await _eventService.AddEventToHistory(UserId, result.EventType);
+
             return Ok();
         }
 

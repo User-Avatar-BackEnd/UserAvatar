@@ -19,5 +19,7 @@
         public const string ChangeCardStatusOnOwnBoard = "Change card status on own board";
 
         public const string ChangeCardStatusOnAlienBoard = "Change card status on alien board";
+
+        public const string ChangeUserBalansByAdmin = "Change user balans by admin";
     }
 }

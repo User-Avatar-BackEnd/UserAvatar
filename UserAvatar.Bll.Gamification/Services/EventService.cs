@@ -7,6 +7,7 @@ using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Dal.Entities;
+using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Bll.Gamification.Services
@@ -14,12 +15,14 @@ namespace UserAvatar.Bll.Gamification.Services
     public class EventService : IEventService
     {
         private readonly IEventStorage _eventStorage;
+        private readonly IHistoryStorage _historyStorage;
         private readonly IMapper _mapper;
 
-        public EventService(IEventStorage eventStorage, IMapper mapper)
+        public EventService(IEventStorage eventStorage, IHistoryStorage historyStorage, IMapper mapper)
         {
             _eventStorage = eventStorage;
             _mapper = mapper;
+            _historyStorage = historyStorage;
         }
 
         public async Task<List<EventModel>> GetEventListAsync()
@@ -47,6 +50,29 @@ namespace UserAvatar.Bll.Gamification.Services
             await _eventStorage.UpdateEventsAsync(events);
 
             return ResultCode.Success;
+        }
+
+        public async Task AddEventToHistory(int userId, string eventType)
+        {
+            if (eventType == null) return;
+
+            try
+            {
+                int score = await _eventStorage.GetScoreByName(eventType);
+
+                var history = new History
+                {
+                    DateTime = DateTimeOffset.UtcNow,
+                    Calculated = false,
+                    UserId = userId,
+                    EventName = eventType,
+                    Score = score
+                };
+
+                await _historyStorage.AddHstory(history);
+            }
+            catch (Exception) { }
+
         }
     }
 }
