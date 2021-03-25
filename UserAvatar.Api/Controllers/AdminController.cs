@@ -72,8 +72,8 @@ namespace UserAvatar.Api.Controllers
         }
 
 
-        [HttpPut("change_role")]
-        public async Task<IActionResult> ChangeRole([Required] string role, [Required] string login)
+        [HttpPut("role/{login}")]
+        public async Task<IActionResult> ChangeRole([Required] string role, string login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
