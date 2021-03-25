@@ -12,6 +12,7 @@ using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.Infrastructure;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UserAvatar.Api.Controllers
 {
