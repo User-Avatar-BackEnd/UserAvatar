@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Infrastructure;
+using UserAvatar.Dal.Entities;
 using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Bll.Gamification.Services
@@ -14,19 +13,18 @@ namespace UserAvatar.Bll.Gamification.Services
     public class RateService : IRateService
     {
         private readonly IUserStorage _userStorage;
+        private readonly IRankService _rankService;
         private readonly IMapper _mapper;
 
-        public RateService(IUserStorage userStorage, IMapper mapper)
+        public RateService(IUserStorage userStorage, IRankService rankService, IMapper mapper)
         {
             _userStorage = userStorage;
+            _rankService = rankService;
             _mapper = mapper;
         }
 
-        public async Task<Result<List<RateModel>>> GetTopRate(int userId)
+        public async Task<Result<FullRateModel>> GetTopRate(int userId)
         {
-            // todo: try to make 1 query in dal that will ret <- теперь это не нужно потому что у нас есть разбивка и логика этой разбивки?
-
-            // Getting all existing rate sorted by descending
             var users = await _userStorage.GetUsersRate();
 
             var firstTen = users.Take(10).ToList();
@@ -34,24 +32,31 @@ namespace UserAvatar.Bll.Gamification.Services
 
             #region filling the collections
 
-            if (!firstTen.Any(x => x.Id == userId) && firstTen.Count > 10)
+            if (!firstTen.Any(x => x.Id == userId))
             {
                 var currentUser = users.First(x => x.Id == userId);
                 var currentUserIndex = users.IndexOf(currentUser);
 
                 if (currentUserIndex == 11)
                 {
-                    underTopUsers.Add(_mapper.Map<RateModel>(currentUser));
-                    underTopUsers.Add(_mapper.Map<RateModel>(users[currentUserIndex + 1]));
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(currentUser));
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(users[currentUserIndex + 1]));
+                }
+                else
+                if(currentUserIndex==(users.Count()-1))
+                {
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(users[currentUserIndex - 1]));
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(currentUser));
                 }
                 else
                 {
-                    underTopUsers.Add(_mapper.Map<RateModel>(users[currentUserIndex - 1]));
-                    underTopUsers.Add(_mapper.Map<RateModel>(currentUser));
-                    underTopUsers.Add(_mapper.Map<RateModel>(users[currentUserIndex + 1]));
+                    underTopUsers.Add(_mapper.Map<User,RateModel>(users[currentUserIndex - 1]));
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(currentUser));
+                    underTopUsers.Add(_mapper.Map<User, RateModel>(users[currentUserIndex + 1]));
                 }
             }
 
+            // mapper.Map<List<?>,List<RateModel>>(first ten)
             var topUsers = _mapper.Map<List<RateModel>>(firstTen);
 
             #endregion
@@ -65,17 +70,28 @@ namespace UserAvatar.Bll.Gamification.Services
                 #region property isCurrentPlayer
 
                 if (underTopUsers.Count == 2)
-                    underTopUsers[0].IsCurrentPlayer = true;
+                {
+                    var currentUser0 = underTopUsers.First(x => x.Id == userId);
+                    var currentUserIndex0 = underTopUsers.IndexOf(currentUser0);
+
+                    currentUser0.IsCurrentPlayer = true;
+
+                    underTopUsers[currentUserIndex0] = currentUser0;
+                    // зависит от ситуции: может быть первый, а может второй
+                    //underTopUsers[0].IsCurrentPlayer = true;
+                }
                 else
                     underTopUsers[1].IsCurrentPlayer = true;
                 #endregion
 
                 #region property Rank
-                foreach (var user in topUsers)
+                foreach (var user in underTopUsers)
                 {
-                    // для каждого вызвать метод сервиса RankService Get rank(int scores)
-                    user.Rank = "";
+                    var rank = await _rankService.GetRank(user.Score);
+                    user.Rank = rank.Name;
                 }
+
+                //topUsers.ForEach(async x=> x.Rank = await _rankService.GetRank(x.Scores).R)
                 #endregion
 
                 #region property RatePosition
@@ -86,7 +102,6 @@ namespace UserAvatar.Bll.Gamification.Services
                             .First(x => x.Id == user.Id));
                 }
                 #endregion
-
             }
 
             #endregion
@@ -94,19 +109,22 @@ namespace UserAvatar.Bll.Gamification.Services
             #region FOR MAIN COLLECTION
 
             #region property isCurrentPlayer
-            var currentUser1 = topUsers.First(x => x.Id == userId);
-            var currentUserIndex1 = topUsers.IndexOf(currentUser1);
+            if (topUsers.Any(x => x.Id == userId))
+            {
+                var currentUser1 = topUsers.First(x => x.Id == userId);
+                var currentUserIndex1 = topUsers.IndexOf(currentUser1);
 
-            currentUser1.IsCurrentPlayer = true;
+                currentUser1.IsCurrentPlayer = true;
 
-            topUsers[currentUserIndex1] = currentUser1;
+                topUsers[currentUserIndex1] = currentUser1;
+            }
             #endregion
 
             #region property Rank
             foreach (var user in topUsers)
             {
-                // для каждого вызвать метод сервиса RankService Get rank(int scores)
-                user.Rank = "";
+                var rank = await _rankService.GetRank(user.Score);
+                user.Rank = rank.Name;
             }
             #endregion
 
@@ -121,9 +139,13 @@ namespace UserAvatar.Bll.Gamification.Services
 
             #endregion
 
+            var rate = new FullRateModel()
+            {
+                TopUsers = topUsers,
+                UnderTopUsers = underTopUsers
+            };
 
-            // вернуть Result<>
-            return new Result<List<RateModel>>(topUsers);
+            return new Result<FullRateModel>(rate);
         }
     }
 }
