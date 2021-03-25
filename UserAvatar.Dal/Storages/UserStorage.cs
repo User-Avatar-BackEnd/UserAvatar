@@ -55,9 +55,10 @@ namespace UserAvatar.Dal.Storages
            await _dbContext.SaveChangesAsync();
         }
 
-        public void UpdateStatus(User user)
+        public async Task UpdateStatus(User user)
         {
             _dbContext.Entry(user).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> IsLoginExistAsync(string login)

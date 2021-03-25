@@ -120,12 +120,7 @@ namespace UserAvatar.Api.Controllers
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
-            var response = new
-            {
-                access_token = encodedJwt,
-                role = user.Role
-            };
-            return Ok(response);
+            return Ok(encodedJwt);
         }
 
         // TODO: Change Claim: add another claim identites
