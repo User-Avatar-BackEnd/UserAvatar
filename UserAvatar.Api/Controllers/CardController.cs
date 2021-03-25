@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
@@ -11,9 +12,11 @@ using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.Infrastructure;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UserAvatar.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -78,7 +81,7 @@ namespace UserAvatar.Api.Controllers
 
             var cardVm = _mapper.Map<CardModel, CardShortVm>(result.Value);
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _eventService.AddEventToHistory(UserId, result.EventType);
 
             return Ok(cardVm);
         }
@@ -97,7 +100,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
-            await _eventService.AddEventToHistoryAsync(UserId, result.EventType);
+            await _eventService.AddEventToHistory(UserId, result.EventType);
 
             return Ok();
         }
@@ -114,3 +117,4 @@ namespace UserAvatar.Api.Controllers
         }
     }
 }
+
