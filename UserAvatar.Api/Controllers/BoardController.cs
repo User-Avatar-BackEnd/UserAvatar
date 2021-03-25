@@ -177,7 +177,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> CheckChanges(int boardId, [FromQuery] long? ticks)
         {
-            if (await _boardService.IsUserBoard(UserId, boardId))
+            if (!await _boardService.IsUserBoard(UserId, boardId))
             {
                 return Forbid();
             }
