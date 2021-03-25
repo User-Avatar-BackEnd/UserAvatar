@@ -12,6 +12,6 @@ namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 
         Task<int> DeleteCardAsync(int boardId, int cardId, int userId);
 
-        Task<int> UpdateCardAsync(CardModel cardModel, int boardId, int userId);
+        Task<Result<bool>> UpdateCardAsync(CardModel cardModel, int boardId, int userId);
     }
 }

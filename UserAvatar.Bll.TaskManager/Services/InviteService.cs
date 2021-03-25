@@ -40,24 +40,27 @@ namespace UserAvatar.Bll.TaskManager.Services
             return thisUser?.Id ?? ResultCode.UserNotFound;
         }
         
-        public async Task<int> CreateInviteAsync(
+        public async Task<Result<bool>> CreateInviteAsync(
             int boardId, int userId, string payload)
         {
             if (payload == null)
-                return ResultCode.NotFound;
+                return new Result<bool>(ResultCode.NotFound);
             
             if (await _boardStorage.GetBoardAsync(boardId) == null)
-                return ResultCode.NotFound;
+                return new Result<bool>(ResultCode.NotFound);
 
             var invitedId = await GetUserIdByPayload(payload);
             
             if (invitedId == ResultCode.UserNotFound)
-                return ResultCode.NotFound;
+                return new Result<bool>(ResultCode.NotFound);
             
             if (userId == invitedId || !await _boardStorage.IsUserBoardAsync(userId,boardId))
-                return ResultCode.Forbidden;
+                return new Result<bool>(ResultCode.Forbidden);
 
-            if (await _boardStorage.IsUserBoardAsync(invitedId, boardId)) return ResultCode.LoginAlreadyExist;
+            if (await _boardStorage.IsUserBoardAsync(invitedId, boardId))
+            {
+                return new Result<bool>(ResultCode.LoginAlreadyExist);
+            }
             var thisInvite = await _inviteStorage.GetInviteByBoardAsync(userId,invitedId, boardId);
                 
             if (thisInvite == null)
@@ -76,10 +79,10 @@ namespace UserAvatar.Bll.TaskManager.Services
                 thisInvite.Status = InviteStatus.Pending;
                 thisInvite.Issued = DateTimeOffset.UtcNow;
                 await _inviteStorage.UpdateAsync(thisInvite);
-                return ResultCode.Success;
+                return new Result<bool>(true,EventType.SendInvite);
             }
             await _inviteStorage.CreateAsync(thisInvite);
-            return ResultCode.Success;
+            return new Result<bool>(true, EventType.SendInvite);
 
         }
 

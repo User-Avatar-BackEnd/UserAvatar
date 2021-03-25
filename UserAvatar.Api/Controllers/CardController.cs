@@ -10,6 +10,7 @@ using System.Net;
 using UserAvatar.Bll.TaskManager;
 using UserAvatar.Bll.Infrastructure;
 using System.Net.Mime;
+using UserAvatar.Bll.Gamification.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -22,12 +23,18 @@ namespace UserAvatar.Api.Controllers
         private readonly ICardService _cardService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        private readonly IEventService _eventService;
 
-        public CardController(ICardService cardService, IMapper mapper, IApplicationUser applicationUser)
+        public CardController(
+            ICardService cardService,
+            IMapper mapper,
+            IApplicationUser applicationUser,
+            IEventService eventService)
         {
             _cardService = cardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
+            _eventService = eventService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -70,6 +77,9 @@ namespace UserAvatar.Api.Controllers
             }
 
             var cardVm = _mapper.Map<CardModel, CardShortVm>(result.Value);
+
+            await _eventService.AddEventToHistory(UserId, result.EventType);
+
             return Ok(cardVm);
         }
 
@@ -84,7 +94,12 @@ namespace UserAvatar.Api.Controllers
 
             var result = await _cardService.UpdateCardAsync(cardModel, boardId, UserId);
 
-            return StatusCode(result);
+            if (result.Code == ResultCode.Forbidden) return Forbid();
+            if (result.Code == ResultCode.NotFound) return NotFound();
+
+            await _eventService.AddEventToHistory(UserId, result.EventType);
+
+            return Ok();
         }
 
         [HttpDelete("{cardId:int}")]
