@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Api.Options;
