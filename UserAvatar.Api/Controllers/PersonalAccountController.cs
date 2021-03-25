@@ -14,6 +14,8 @@ using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Api.Contracts.Dtos;
 using System.Net.Mime;
 using System.Net;
+using UserAvatar.Bll.Gamification.Services.Interfaces;
+using UserAvatar.Bll.Gamification.Models;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -26,6 +28,7 @@ namespace UserAvatar.Api.Controllers
     public class PersonalAccountController : ControllerBase
     {
         private readonly IPersonalAccountService _personalAccountService;
+        private readonly IRateService _rateService;
 
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
@@ -33,11 +36,13 @@ namespace UserAvatar.Api.Controllers
         
 
         public PersonalAccountController(IPersonalAccountService personalAccountService,
+            IRateService rateService,
             IMapper mapper, 
             IInviteService inviteService, 
             IApplicationUser applicationUser)
         {
             _personalAccountService = personalAccountService;
+            _rateService = rateService;
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
@@ -130,5 +135,16 @@ namespace UserAvatar.Api.Controllers
         }
 
         // ???????? ???????
+
+        [HttpGet("rate")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult<FullRateVm>> GetRate()
+        {
+           var rate = await _rateService.GetTopRate(UserId);
+
+            return Ok(_mapper.Map<FullRateModel, FullRateVm>(rate.Value));
+        }
     }
 }
