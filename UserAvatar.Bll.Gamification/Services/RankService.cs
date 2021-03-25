@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -34,17 +35,27 @@ namespace UserAvatar.Bll.Gamification.Services
 
             return smt;
         }
-
-        private List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)
+        
+        private static List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)
         {
             for (int i = 0, j = 1; i < ranks.Count - 1; i++, j++)
             {
                 ranks[i].MaxScores = ranks[j].Score;
             }
 
-            ranks[ranks.Count - 1].MaxScores = int.MaxValue;
+            ranks[^1].MaxScores = int.MaxValue;
 
             return ranks;
+        }
+
+        public async Task<List<UserWithRankModel>> PopulateUsersRanks(List<UserWithRankModel> rateModels)
+        {
+            foreach (var user in rateModels)
+            {
+                user.Rank = GetRank(user.Score).Result.Name;
+            }
+
+            return await Task.FromResult(rateModels);
         }
     }
 }

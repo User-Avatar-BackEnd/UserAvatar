@@ -14,6 +14,7 @@ using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
@@ -31,19 +32,22 @@ namespace UserAvatar.Api.Controllers
         private readonly IApplicationUser _applicationUser;
         private readonly IInviteService _inviteService;
         private readonly IHistoryService _historyService;
+        private readonly IRankService _rankService;
 
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
             IMapper mapper,
             IApplicationUser applicationUser,
-            IHistoryService historyService)
+            IHistoryService historyService, 
+            IRankService rankService)
         {
             _boardService = boardService;
             _mapper = mapper;
             _applicationUser = applicationUser;
             _inviteService = inviteService;
             _historyService = historyService;
+            _rankService = rankService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -94,6 +98,11 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
+            var membersWithRanks = 
+                await _rankService.PopulateUsersRanks(_mapper.Map<List<MemberModel>,List<UserWithRankModel>>(result.Value.Members));
+
+            result.Value.Members = _mapper.Map<List<UserWithRankModel>, List<MemberModel>>(membersWithRanks);
+            
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
             boardVm.IsOwner = result.Value.OwnerId == UserId;

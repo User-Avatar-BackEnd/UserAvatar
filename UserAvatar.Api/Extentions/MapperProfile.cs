@@ -15,7 +15,11 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Member, MemberModel>();
 
             CreateMap<MemberModel, UserShortVm>()
-                .ForMember(x => x.Login, y => y.MapFrom(z => z.User.Login));
+                .ForMember(x => x.Login, y => y.MapFrom(z => z.User.Login))
+                .ForMember(x=> x.Id, y=> y.MapFrom(z=> z.User.Id))
+                .ForMember(x=> x.Rank,y=> y.MapFrom(z=> z.Rank))
+                .ReverseMap();
+            
 
             CreateMap<Column, ColumnModel>();
             CreateMap<Event, EventModel>();
@@ -28,6 +32,20 @@ namespace UserAvatar.Api.Extentions
             
             CreateMap<UserModel, User>();
             CreateMap<MemberModel, Member>();
+            
+            CreateMap<MemberModel, UserWithRankModel>()
+                .ForMember(x=> x.Login,y=> y.MapFrom(z=> z.User.Login))
+                .ForMember(x=> x.UserId, y=> y.MapFrom(z=> z.User.Id))
+                .ForMember(x=> x.Role, y=> y.MapFrom(z=> z.User.Role))
+                .ForMember(x=> x.Score,y=> y.MapFrom(z=> z.User.Score))
+                .ForMember(x=> x.Rank, y=> y.MapFrom(z=> z.User.Role))
+                .ReverseMap();
+            
+            /*CreateMap<UserWithRankModel, MemberModel>()
+                .ForMember(x=> x.User.Id, y=> y.MapFrom(z=> z.UserId))
+                .ForMember(x=> x.User.Login, y=> y.MapFrom(z=> z.Login))
+                .ForMember(x=> x.User.Role,y=> y.MapFrom(z=> z.Role))
+                .ForMember(x=> x.User.Score,y=> y.MapFrom(z=> z.Score));*/
             
             CreateMap<HistoryModel, HistoryVm>();
 
@@ -49,8 +67,8 @@ namespace UserAvatar.Api.Extentions
 
             CreateMap<UserModel, UserShortVm>();
 
-            CreateMap<BoardModel, BoardVm>()
-                .ForMember(x => x.Members, opt => opt.MapFrom(src => src.Members.Select(x => x.User)));
+            CreateMap<BoardModel, BoardVm>();
+                /*.ForMember(x => x.Members, opt => opt.MapFrom(src => src.Members.Select(x => x.User)));*/
 
             CreateMap<CardModel, CardDetailedVm>();
 
