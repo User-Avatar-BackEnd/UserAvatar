@@ -27,11 +27,14 @@ namespace UserAvatar.Api.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IEventService _eventService;
+        private readonly IHistoryService _historyService;
         private readonly IPersonalAccountService _personalAccountService;
         private readonly IApplicationUser _applicationUser;
         private readonly IMapper _mapper;
 
-        public AdminController(IEventService eventService,
+        public AdminController(
+            IEventService eventService,
+            IHistoryService historyService,
             IPersonalAccountService _personalAccountService,
             IApplicationUser applicationUser,
             IMapper mapper)
@@ -39,6 +42,7 @@ namespace UserAvatar.Api.Controllers
             _eventService = eventService;
             _applicationUser = applicationUser;
             _mapper = mapper;
+            _historyService = historyService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -89,7 +93,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<HistoryVm>> GetHistory(string login)
         {
-            var result = await _eventService.GetHistoryAsync(login);
+            var result = await _historyService.GetHistoryAsync(login);
 
             if (result.Code == ResultCode.NotFound) return NotFound();
 
@@ -99,9 +103,11 @@ namespace UserAvatar.Api.Controllers
         [HttpPatch("balance/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<HistoryVm>> Change(string login, int change)
+        public async Task<ActionResult<HistoryVm>> ChangeBalance(string login, int change)
         {
-            throw new NotImplementedException();
+            var resultCode = await _eventService.ChangeBalanceAsync(login, change);
+            if (resultCode == ResultCode.NotFound) return NotFound();
+            return Ok();
         }
 
     }

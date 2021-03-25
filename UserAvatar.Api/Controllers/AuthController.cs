@@ -28,18 +28,18 @@ namespace UserAvatar.Api.Controllers
     {
         private readonly JwtOptions _jwt;
         private readonly IAuthService _authService;
-        private readonly IEventService _eventService;
+        private readonly IHistoryService _historyService;
         private readonly IApplicationUser _applicationUser;
 
         public AuthController(
             IAuthService authService,
             IOptions<JwtOptions> jwt,
-            IEventService eventService,
+            IHistoryService historyService,
             IApplicationUser applicationUser)
         {
             _authService = authService;
             _jwt = jwt.Value;
-            _eventService = eventService;
+            _historyService = historyService;
             _applicationUser = applicationUser;
         }
 
@@ -66,7 +66,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
+            await _historyService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
 
             return BuildToken(result.Value);
         }
@@ -86,7 +86,7 @@ namespace UserAvatar.Api.Controllers
                 return Conflict(result.Code);
             }
 
-            await _eventService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
+            await _historyService.AddEventToHistoryAsync(result.Value.Id, result.EventType);
 
             return BuildToken(result.Value);
         }
@@ -98,7 +98,7 @@ namespace UserAvatar.Api.Controllers
         {
             var userId = _applicationUser.Id;
 
-            await _eventService.AddEventToHistoryAsync(userId, _authService.Logout());
+            await _historyService.AddEventToHistoryAsync(userId, _authService.Logout());
 
             return Ok();
         }

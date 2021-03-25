@@ -15,19 +15,19 @@ namespace UserAvatar.Bll.Gamification.Services
     public class EventService : IEventService
     {
         private readonly IEventStorage _eventStorage;
-        private readonly IHistoryStorage _historyStorage;
         private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
+        private readonly IHistoryService _historyService;
 
         public EventService(
             IEventStorage eventStorage,
-            IHistoryStorage historyStorage,
+            IHistoryService historyService,
             IMapper mapper,
             IUserStorage userStorage)
         {
             _eventStorage = eventStorage;
             _mapper = mapper;
-            _historyStorage = historyStorage;
+            _historyService = historyService;
             _userStorage = userStorage;
         }
 
@@ -58,7 +58,7 @@ namespace UserAvatar.Bll.Gamification.Services
             return ResultCode.Success;
         }
 
-        public async Task<int> ChangeBalance(string login, int balance)
+        public async Task<int> ChangeBalanceAsync(string login, int balance)
         {
             var user = await _userStorage.GetByLoginAsync(login);
             if (user == null)
@@ -66,50 +66,9 @@ namespace UserAvatar.Bll.Gamification.Services
                 return ResultCode.NotFound;
             }
 
-            await AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
+            await _historyService.AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
 
             return ResultCode.Success;
-        }
-
-        public async Task AddEventToHistoryAsync(int userId, string eventType, int? customScore=null)
-        {
-            if (eventType == null) return;
-
-            try
-            {
-                int score = await _eventStorage.GetScoreByNameAsync(eventType);
-                if (customScore != null)
-                {
-                    score = (int)customScore;
-                }
-
-                var history = new History
-                {
-                    DateTime = DateTimeOffset.UtcNow,
-                    Calculated = false,
-                    UserId = userId,
-                    EventName = eventType,
-                    Score = score
-                };
-                await _historyStorage.AddHstoryAsync(history);
-            }
-            catch (Exception) { }
-
-        }
-
-        public async Task<Result<List<HistoryModel>>> GetHistoryAsync(string login)
-        {
-            var user = await _userStorage.GetByLoginAsync(login);
-            if (user == null)
-            {
-                return new Result<List<HistoryModel>>(ResultCode.NotFound);
-            }
-
-            var history = await _historyStorage.GetHistoryByUserAsync(user.Id);
-
-            var historyModels = _mapper.Map<List<History>, List<HistoryModel>>(history);
-
-            return new Result<List<HistoryModel>>(historyModels);
         }
     }
 }
