@@ -11,7 +11,6 @@ namespace UserAvatar.Bll.TaskManager.Models
         public string PasswordHash { get; set; }
         public int Score { get; set; }
         public string Role { get; set; }
-        public List<HistoryModel> Histories { get; set; }
         public List<BoardModel> Boards { get; set; }
         public List<CommentModel> Comments { get; set; }
         public List<InviteModel> Invited { get; set; }

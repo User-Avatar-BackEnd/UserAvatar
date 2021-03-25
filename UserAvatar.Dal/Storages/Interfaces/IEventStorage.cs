@@ -11,6 +11,6 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task UpdateEventsAsync(List<Event> events);
 
-        Task<int> GetScoreByName(string name);
+        Task<int> GetScoreByNameAsync(string name);
     }
 }
