@@ -102,7 +102,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             bool statusChanged = card.ColumnId == cardModel.ColumnId;
                 
-            card.Title = card.Title;
+            card.Title = cardModel.Title;
             card.Description = cardModel.Description;
             card.ColumnId = cardModel.ColumnId;
             card.ResponsibleId = cardModel.ResponsibleId;
