@@ -15,11 +15,8 @@ namespace UserAvatar.Api.Extentions
             CreateMap<Member, MemberModel>();
 
             CreateMap<MemberModel, UserShortVm>()
-                .ForMember(x => x.Login, y => y.MapFrom(z => z.User.Login))
-                .ForMember(x=> x.Id, y=> y.MapFrom(z=> z.User.Id))
-                .ForMember(x=> x.Rank,y=> y.MapFrom(z=> z.Rank))
-                .ReverseMap();
-            
+                .ForMember(x => x.Login, y => y.MapFrom(z => z.User.Login));
+
             CreateMap<Column, ColumnModel>();
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();
@@ -52,7 +49,8 @@ namespace UserAvatar.Api.Extentions
 
             CreateMap<UserModel, UserShortVm>();
 
-            CreateMap<BoardModel, BoardVm>();
+            CreateMap<BoardModel, BoardVm>()
+                .ForMember(x => x.Members, opt => opt.MapFrom(src => src.Members.Select(x => x.User)));
 
             CreateMap<CardModel, CardDetailedVm>();
 
