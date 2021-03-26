@@ -6,7 +6,8 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
 {
     public interface IRankService
     {
-        Task<RankDataModel> GetAllRanksData(int score);
-        Task<List<string>> GetRanks(List<int> scores);
+        Task<RankDataModel> GetAllRanksDataAsync(int score);
+
+        Task<List<string>> GetRanksAsync(List<int> scores);
     }
 }

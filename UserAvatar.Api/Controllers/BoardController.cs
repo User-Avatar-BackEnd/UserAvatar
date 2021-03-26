@@ -188,7 +188,7 @@ namespace UserAvatar.Api.Controllers
             if (string.IsNullOrEmpty(query))
                 return NotFound();
 
-            var result = await _inviteService.FindByQuery(boardId, UserId, query);
+            var result = await _inviteService.FindByQueryAsync(boardId, UserId, query);
 
             return result.Code switch
             {
@@ -203,7 +203,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> CheckChanges(int boardId, [FromQuery] long? ticks)
         {
-            if (!await _boardService.IsUserBoard(UserId, boardId))
+            if (!await _boardService.IsUserBoardAsync(UserId, boardId))
             {
                 return Forbid();
             }

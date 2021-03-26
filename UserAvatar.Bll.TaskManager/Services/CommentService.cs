@@ -34,21 +34,11 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<Result<CommentModel>> CreateNewCommentAsync(
             int userId, int boardId, int cardId, string text)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            var validation = await ValidateUserCommentAsync(userId, boardId, cardId);
+            if (validation != ResultCode.Success)
             {
-                return new Result<CommentModel>(ResultCode.NotFound);
+                return new Result<CommentModel>(validation);
             }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<CommentModel>(ResultCode.Forbidden);
-            }
-
-            if (!await _boardStorage.IsBoardCard(boardId, cardId))
-            {
-                return new Result<CommentModel>(ResultCode.Forbidden);
-            }
-            //await ValidateUserByCardAsync(userId, cardId);
 
             var newComment = new Comment
             {
@@ -69,27 +59,11 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<Result<CommentModel>> UpdateCommentAsync(
             int userId, int boardId, int cardId, int commentId, string text)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            var validation = await ValidateUserCommentAsync(userId, boardId, cardId, commentId);
+            if (validation != ResultCode.Success)
             {
-                return new Result<CommentModel>(ResultCode.NotFound);
+                return new Result<CommentModel>(validation);
             }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<CommentModel>(ResultCode.Forbidden);
-            }
-
-            if (!await _boardStorage.IsBoardCard(boardId, cardId))
-            {
-                return new Result<CommentModel>(ResultCode.Forbidden);
-            }
-
-            if (!await _cardStorage.IsCardComment(cardId, commentId))
-            {
-                return new Result<CommentModel>(ResultCode.Forbidden);
-            }
-            
-            //await ValidateUserByCommentAsync(userId, commentId);
 
             var thisComment = await _commentStorage.GetCommentByCommentIdAsync(commentId);
             thisComment.Text = text;
@@ -108,8 +82,22 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<List<CommentModel>>(_mapper.Map<List<Comment>, List<CommentModel>>(commentList));
         }*/
 
-        public async Task<int> DeleteCommentAsync(
-            int userId, int boardId, int cardId, int commentId)
+        public async Task<int> DeleteCommentAsync(int userId, int boardId, int cardId, int commentId)
+        {
+            var validation = await ValidateUserCommentAsync(userId, boardId, cardId, commentId);
+            if (validation != ResultCode.Success)
+            {
+                return validation;
+            }
+
+            await _commentStorage.DeleteApparentAsync(commentId);
+
+            _boardChangesService.DoChange(boardId, userId);
+
+            return ResultCode.Success;
+        }
+
+        private async Task<int> ValidateUserCommentAsync(int userId, int boardId, int cardId, int? commentId = null)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -123,36 +111,19 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (!await _boardStorage.IsBoardCard(boardId, cardId))
             {
-                return ResultCode.Forbidden;
+                return ResultCode.NotFound;
             }
 
-            if (!await _cardStorage.IsCardComment(cardId, commentId))
+            if (commentId != null)
             {
-                return ResultCode.Forbidden;
+                if (!await _cardStorage.IsCardComment(cardId, (int)commentId))
+                {
+                    return ResultCode.NotFound;
+                }
             }
-            
-            //await ValidateUserByCommentAsync(userId, commentId);
-            await _commentStorage.DeleteApparentAsync(commentId);
-
-            _boardChangesService.DoChange(boardId, userId);
 
             return ResultCode.Success;
         }
 
-        private async Task ValidateUserByCommentAsync(int userId, int commentId)
-        {
-            
-            var cardId = await _commentStorage.GetTaskIdByCommentIdAsync(commentId);
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
-            if (!isUserInThisBoard)
-                throw new Exception($"You {userId} are not allowed to do this!");
-        }
-
-        private async Task ValidateUserByCardAsync(int userId, int cardId)
-        {
-            var isUserInThisBoard = await _boardStorage.IsUserBoardAsync(userId, await _cardStorage.GetBoardIdAsync(cardId));
-            if (!isUserInThisBoard)
-                throw new Exception($"You {userId} are not allowed to do this!");
-        }
     }
 }

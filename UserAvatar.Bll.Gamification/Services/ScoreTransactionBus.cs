@@ -50,11 +50,9 @@ namespace UserAvatar.Bll.Gamification.Services
             var factory = (IServiceScopeFactory) state;
             using var scope = factory.CreateScope();
             var rates = scope.ServiceProvider.GetRequiredService<IHistoryService>();
-            rates.MakeScoreTransaction().GetAwaiter().GetResult();
+            rates.MakeScoreTransactionAsync().GetAwaiter().GetResult();
             _logger.LogInformation("Seeking done. Calculated");
         }
-        
-        
         
         /// <summary>
         /// Stops actualizing data

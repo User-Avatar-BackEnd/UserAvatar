@@ -45,8 +45,7 @@ namespace UserAvatar.Bll.Gamification.Services
             var events = await _eventStorage.GetEventListAsync();
             events = events.Where(x => x.Score != -1).ToList();
 
-            if (newEvents.Count != events.Count ||
-                !newEvents.All(x => events.Any(y => y.Name == x.Name)))
+            if (newEvents.Count != events.Count || !newEvents.All(x => events.Any(y => y.Name == x.Name)))
             {
                 return ResultCode.BadRequest;
             }
@@ -61,10 +60,7 @@ namespace UserAvatar.Bll.Gamification.Services
         public async Task<int> ChangeBalanceAsync(string login, int balance)
         {
             var user = await _userStorage.GetByLoginAsync(login);
-            if (user == null)
-            {
-                return ResultCode.NotFound;
-            }
+            if (user == null) return ResultCode.NotFound;
 
             await _historyService.AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
 

@@ -15,6 +15,7 @@ using System.Net.Mime;
 using System.Net;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Gamification.Models;
+
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
@@ -31,8 +32,7 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-
-
+        
         public PersonalAccountController(
             IPersonalAccountService personalAccountService,
             IRateService rateService,
@@ -103,23 +103,19 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-
-            if (userData.Code == ResultCode.NotFound) return NotFound();
-
-            // TODO: RESULT CODE??
-            var rankData = await _rankService.GetAllRanksData(userData.Value.Score);
+            var rankData = await _rankService.GetAllRanksDataAsync(userData.Score);
 
             var userDataVm = new UserDataVm
             {
-                Email = userData.Value.Email,
-                Login = userData.Value.Login,
-                Role = userData.Value.Role,
-                InvitesAmount = userData.Value.Invited
+                Email = userData.Email,
+                Login = userData.Login,
+                Role = userData.Role,
+                InvitesAmount = userData.Invited
                     .Count(invite => invite.Status == -1),
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
-                CurrentScoreAmount = userData.Value.Score,
-                NextLevelScore = userData.Value.Score >= 1000 ? userData.Value.Score : rankData.MaxScores
+                CurrentScoreAmount = userData.Score,
+                NextLevelScore = userData.Score >= 1000 ? userData.Score : rankData.MaxScores
             };
 
             return Ok(userDataVm);
@@ -161,9 +157,11 @@ namespace UserAvatar.Api.Controllers
 
         [HttpGet("rate")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<FullRateVm>> GetRate()
         {
-           var rate = await _rateService.GetTopRate(UserId);
+           var rate = await _rateService.GetTopRateAsync(UserId);
 
             return Ok(_mapper.Map<FullRateModel, FullRateVm>(rate.Value));
         }

@@ -123,7 +123,6 @@ namespace UserAvatar.Api.Controllers
             return Ok(encodedJwt);
         }
 
-        // TODO: Change Claim: add another claim identites
         private static ClaimsIdentity GetClaimsIdentity(int userId, string role)
         {
             var claims = new List<Claim>

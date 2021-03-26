@@ -22,7 +22,7 @@ namespace UserAvatar.Bll.Gamification.Services
         }
 
         // todo : change
-        public async Task<RankDataModel> GetAllRanksData(int score)
+        public async Task<RankDataModel> GetAllRanksDataAsync(int score)
         {
             // вынести в конструктор? вызывется каждый раз
             var ranks = await _rankStorage.GetAllRankAsync();
@@ -32,7 +32,7 @@ namespace UserAvatar.Bll.Gamification.Services
             return fullRanks.First(x => score < x.MaxScores && score >= x.Score);
         }
 
-        public async Task<List<string>> GetRanks(List<int> scores)
+        public async Task<List<string>> GetRanksAsync(List<int> scores)
         {
             var ranks = await _rankStorage.GetAllRankAsync();
             
