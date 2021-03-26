@@ -103,19 +103,19 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-            var rankData = await _rankService.GetAllRanksDataAsync(userData.Score);
+            var rankData = await _rankService.GetAllRanksDataAsync(userData.Value.Score);
 
             var userDataVm = new UserDataVm
             {
-                Email = userData.Email,
-                Login = userData.Login,
-                Role = userData.Role,
-                InvitesAmount = userData.Invited
+                Email = userData.Value.Email,
+                Login = userData.Value.Login,
+                Role = userData.Value.Role,
+                InvitesAmount = userData.Value.Invited
                     .Count(invite => invite.Status == -1),
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
-                CurrentScoreAmount = userData.Score,
-                NextLevelScore = userData.Score >= 1000 ? userData.Score : rankData.MaxScores
+                CurrentScoreAmount = userData.Value.Score,
+                NextLevelScore = userData.Value.Score >= 1000 ? userData.Value.Score : rankData.MaxScores
             };
 
             return Ok(userDataVm);
@@ -131,7 +131,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.NotFound) return NotFound();
             
             var scores = result.Value.Select(invite => invite.Inviter.Score).ToList();
-            var ranks = await _rankService.GetRanks(scores);
+            var ranks = await _rankService.GetRanksAsync(scores);
 
             var resultedOutput = _mapper.Map<List<InviteModel>, List<InviteVm>>(result.Value);
 

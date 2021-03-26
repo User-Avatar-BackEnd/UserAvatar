@@ -104,7 +104,7 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.NotFound) return NotFound();
 
             var scores = result.Value.Members.Select(member => member.User.Score).ToList();
-            var ranks = await _rankService.GetRanks(scores);
+            var ranks = await _rankService.GetRanksAsync(scores);
             for (var i = 0; i < result.Value.Members.Count; i++)
                 result.Value.Members[i].Rank = ranks[i];
             
