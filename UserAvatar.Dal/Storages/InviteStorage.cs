@@ -22,11 +22,13 @@ namespace UserAvatar.Dal.Storages
             await _userAvatarContext.AddAsync(invite);
             await _userAvatarContext.SaveChangesAsync();
         }
+
         public async Task UpdateAsync(Invite invite)
         {
             _userAvatarContext.Update(invite);
             await _userAvatarContext.SaveChangesAsync();
         }
+
         public async Task<Invite> GetByIdAsync(int inviteId)
         {
             return await _userAvatarContext.Invites.FindAsync(inviteId);

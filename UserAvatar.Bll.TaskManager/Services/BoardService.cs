@@ -139,6 +139,11 @@ namespace UserAvatar.Bll.TaskManager.Services
         
         public async Task<int> DeleteMemberFromBoardAsync(int userId, int toDeleteUserId, int boardId)
         {
+            if (userId == toDeleteUserId)
+            {
+                return ResultCode.Forbidden;
+            }
+
             var currentBoard = await _boardStorage.GetBoardAsync(boardId);
 
             if (currentBoard == null
@@ -147,6 +152,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.BadRequest;
 
             var thisMember = await _boardStorage.GetMemberByIdAsync(toDeleteUserId, boardId);
+
             thisMember.IsDeleted = true;
             
             await _boardStorage.UpdateMemberAsync(thisMember);

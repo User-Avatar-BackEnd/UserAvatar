@@ -88,7 +88,7 @@ namespace UserAvatar.Api.Controllers
                 return BadRequest();
             }
 
-            var result = await _personalAccountService.ChangeRole(UserId, login, role);
+            var result = await _personalAccountService.ChangeRoleAsync(UserId, login, role);
 
             if (result == ResultCode.NotFound) return NotFound();
             if (result == ResultCode.Forbidden) return Forbid();

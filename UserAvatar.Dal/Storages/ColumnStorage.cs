@@ -14,7 +14,6 @@ namespace UserAvatar.Dal.Storages
     public class ColumnStorage : IColumnStorage
     {
         private readonly UserAvatarContext _userAvatarContext;
-        //private readonly ICardStorage _taskStorage;
 
         private static readonly SemaphoreSlim LockSlim = new(1, 1);
         private static readonly SemaphoreSlim LockSlimForRecheck = new(1, 1);
@@ -50,11 +49,12 @@ namespace UserAvatar.Dal.Storages
             }
         }
 
-        // there can be change on async as well
+        // not using
         public async Task<int> GetColumnIdByBoardId(int boardId)
         {
             return await Task.FromResult(_userAvatarContext.Columns.FirstOrDefaultAsync(x => x.BoardId == boardId).Id);
         }
+        // not using
 
         public bool IsUserInBoardByColumnId(int userId,int columnId)
         {
@@ -91,6 +91,7 @@ namespace UserAvatar.Dal.Storages
             
             await _userAvatarContext.SaveChangesAsync();
         }
+
         public async Task<List<int>> GetAllColumnsAsync(int boardId)
         {
             return await Task.FromResult(_userAvatarContext.Columns

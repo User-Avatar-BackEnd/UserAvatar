@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -53,6 +52,5 @@ namespace UserAvatar.Dal.Entities
         public bool IsDeleted { get; set; }
                 
         public int ModifiedBy { get; set; }
-        
     }
 }

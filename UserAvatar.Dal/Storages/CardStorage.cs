@@ -20,6 +20,7 @@ namespace UserAvatar.Dal.Storages
         {
             _dbContext = dbContext;
         }
+
         public async Task<Card> GetByIdAsync(int id)
         {
             return await _dbContext.Cards
@@ -30,6 +31,7 @@ namespace UserAvatar.Dal.Storages
             
             // Removed && !x.IsDeleted. I think this does not have meaning
         }
+
         public async Task<Card> CreateAsync(Card card)
         {
             await _dbContext.Cards.AddAsync(card);
@@ -86,6 +88,7 @@ namespace UserAvatar.Dal.Storages
 
             await _dbContext.SaveChangesAsync();
         }
+
         public async Task<int> GetCardIdByColumnId(int columnId)
         {
             return await Task.FromResult(_dbContext.Cards.FirstOrDefaultAsync(x => x.ColumnId == columnId).Id);
