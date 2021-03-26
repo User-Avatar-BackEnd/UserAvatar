@@ -86,7 +86,7 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-            var rankData = await _rankService.GetAllRanksData(userData.Score);
+            var rankData = await _rankService.GetAllRanksDataAsync(userData.Score);
 
             var userDataVm = new UserDataVm
             {
@@ -136,7 +136,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<FullRateVm>> GetRate()
         {
-           var rate = await _rateService.GetTopRate(UserId);
+           var rate = await _rateService.GetTopRateAsync(UserId);
 
             return Ok(_mapper.Map<FullRateModel, FullRateVm>(rate.Value));
         }

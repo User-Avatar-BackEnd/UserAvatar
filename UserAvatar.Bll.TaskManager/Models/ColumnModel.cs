@@ -11,8 +11,7 @@ namespace UserAvatar.Bll.TaskManager.Models
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset ModifiedAt { get; set; }
         public int Index { get; set; }
-        public List<CardModel> Cards { get; set; }
-                
+        public List<CardModel> Cards { get; set; }             
         public int ModifiedBy { get; set; }
     }
 }

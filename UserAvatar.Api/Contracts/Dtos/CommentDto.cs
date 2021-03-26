@@ -4,8 +4,8 @@ namespace UserAvatar.Api.Contracts.Dtos
 {
     public class CommentDto
     {
-        [Required]
-        //todo: add validator
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(256, MinimumLength = 1)]
         public string Text { get; set; }
     }
 }
