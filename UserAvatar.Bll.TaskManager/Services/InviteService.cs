@@ -102,15 +102,19 @@ namespace UserAvatar.Bll.TaskManager.Services
         {
             var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
 
-            
-                if (thisInvite == null 
-                    || await _userStorage.GetByIdAsync(userId) == null
-                    || thisInvite.Status == InviteStatus.Accepted
-                    || await _boardStorage.IsUserBoardAsync(thisInvite.InvitedId, thisInvite.BoardId))
+
+            if (thisInvite == null
+                || await _userStorage.GetByIdAsync(userId) == null
+                || thisInvite.Status == InviteStatus.Accepted
+                || await _boardStorage.IsUserBoardAsync(thisInvite.InvitedId, thisInvite.BoardId))
+            {
                 return ResultCode.NotFound;
-                
-                if (thisInvite.InvitedId != userId)
-                    return ResultCode.Forbidden;
+            }
+
+            if (thisInvite.InvitedId != userId)
+            {
+                return ResultCode.Forbidden;
+            }
 
             if (statusCode == InviteStatus.Accepted)
             {
@@ -129,8 +133,10 @@ namespace UserAvatar.Bll.TaskManager.Services
         
         public async Task<Result<List<InviteModel>>> GetAllInvitesAsync(int userId)
         {
-            if(await _userStorage.GetByIdAsync(userId) == null)
+            if (await _userStorage.GetByIdAsync(userId) == null)
+            {
                 return new Result<List<InviteModel>>(ResultCode.NotFound);
+            }
             var inviteList = await _inviteStorage.GetInvitesAsync(userId);
             return new Result<List<InviteModel>>(_mapper.Map<List<Invite>,List<InviteModel>>(inviteList));
         }

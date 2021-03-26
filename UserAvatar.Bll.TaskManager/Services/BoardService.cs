@@ -146,10 +146,20 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             var currentBoard = await _boardStorage.GetBoardAsync(boardId);
 
-            if (currentBoard == null
-                || currentBoard.OwnerId != userId
-                || currentBoard.Members.All(x => x.UserId != toDeleteUserId))
-                return ResultCode.BadRequest;
+            if (currentBoard == null)
+            {
+                return ResultCode.NotFound;
+            }
+
+            if(currentBoard.OwnerId != userId)
+            {
+                return ResultCode.Forbidden;
+            }
+
+            if (currentBoard.Members.All(x => x.UserId != toDeleteUserId))
+            {
+                return ResultCode.NotFound;
+            }
 
             var thisMember = await _boardStorage.GetMemberByIdAsync(toDeleteUserId, boardId);
 
