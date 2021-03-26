@@ -147,10 +147,15 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UpdateInvitationAsync([FromQuery]int status, int inviteId)
         {
-            if (Math.Abs(status) > 1) return BadRequest("Status may be only -1 0 1");
+            if (status != -1 && status !=1)
+            {
+                return BadRequest("Status may be only -1 or 1");
+            }
+
             var resultCode = await _inviteService.UpdateInviteAsync(inviteId, UserId, status);
 
             if (resultCode == ResultCode.NotFound) return NotFound();
+            if (resultCode == ResultCode.NotFound) return Forbid();
 
             return Ok();
         }

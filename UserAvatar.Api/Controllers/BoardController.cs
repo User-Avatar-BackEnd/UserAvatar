@@ -71,6 +71,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult<BoardShortVm>> CreateBoardAsync(TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var result =
@@ -116,6 +118,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> RenameBoardAsync(int boardId, TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var result =
@@ -129,7 +133,6 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
             var result = await _boardService.DeleteBoardAsync(UserId, boardId);
@@ -144,15 +147,14 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteMemberFromBoardAsync(int boardId, [FromQuery] int toDeleteUserId)
         {
             var result = await _boardService.DeleteMemberFromBoardAsync(UserId,toDeleteUserId, boardId);
 
-            if (result != ResultCode.Success)
-                return BadRequest(result);
-            
-            return StatusCode(result);
+            if (result == ResultCode.Forbidden) return Forbid();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            return Ok();
         }
 
         [HttpPost("{boardId:int}/invites")]
@@ -163,6 +165,7 @@ namespace UserAvatar.Api.Controllers
             int boardId,
             [Required(AllowEmptyStrings = false)] string payload)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
 
             if (result.Code == ResultCode.Forbidden) return Forbid();
@@ -180,7 +183,9 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(int boardId, [FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
+            {
                 return NotFound();
+            }
 
             var result = await _inviteService.FindByQueryAsync(boardId, UserId, query);
 

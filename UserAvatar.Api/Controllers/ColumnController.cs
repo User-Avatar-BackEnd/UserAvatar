@@ -54,6 +54,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> CreateColumnAsync(int boardId, TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var thisColumn = await _columnService.CreateAsync(UserId, boardId, titleDto.Title);
@@ -72,6 +74,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> UpdateColumnAsync(int boardId, int columnId, TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var result = await _columnService.UpdateAsync(UserId, boardId, columnId, titleDto.Title);
@@ -104,9 +108,10 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        public async Task<IActionResult> ChangeColumnPositionAsync(int boardId, int columnId, [FromQuery] int to)
+        public async Task<IActionResult> ChangeColumnPositionAsync(int boardId, int columnId, [FromQuery] int? to)
         {
-            var result = await _columnService.ChangePositionAsync(UserId, boardId, columnId, to);
+            if (to == null) return BadRequest();
+            var result = await _columnService.ChangePositionAsync(UserId, boardId, columnId, (int)to);
 
             //Switch case 
             if (result == ResultCode.NotFound) return NotFound();
