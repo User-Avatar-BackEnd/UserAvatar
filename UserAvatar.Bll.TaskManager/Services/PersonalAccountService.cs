@@ -20,38 +20,59 @@ namespace UserAvatar.Bll.TaskManager.Services
             _mapper = mapper;
         }
 
-
-        public async Task ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        public async Task<int> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
         {
             var user = await _userStorage.GetByIdAsync(userId);
 
-            if (user == null) throw new SystemException("User doesn't exist");
+            if (user == null)
+            {
+                return ResultCode.NotFound;
+            }
 
-            if (!PasswordHash.ValidatePassword(oldPassword, user.PasswordHash)) throw new SystemException("Invalid old password");
+            if (!PasswordHash.ValidatePassword(oldPassword, user.PasswordHash))
+            {
+                return ResultCode.InvalidPassword;
+            }
 
-            if (PasswordHash.ValidatePassword(newPassword,user.PasswordHash)) throw new SystemException("New password can't be the same as the old password");
+            if (PasswordHash.ValidatePassword(newPassword, user.PasswordHash))
+            {
+                return ResultCode.SamePasswordAsOld;
+            }
 
             user.PasswordHash = PasswordHash.CreateHash(newPassword);
 
             await _userStorage.UpdateAsync(user);
+
+            return ResultCode.Success;
         }
 
-        public async Task ChangeLoginAsync(int userId, string newLogin)
+        public async Task<int> ChangeLoginAsync(int userId, string newLogin)
         {
             var user = await _userStorage.GetByIdAsync(userId);
 
-            if (user == null) throw new SystemException("User doesn't exist");
+            if(user == null)
+            {
+                return ResultCode.NotFound;
+            }
 
-            if (user.Login == newLogin) throw new SystemException("This is current login");
+            if (user.Login == newLogin)
+            {
+                return ResultCode.SameLoginAsCurrent;
+            }
 
-            if (await _userStorage.IsLoginExistAsync(newLogin)) throw new SystemException("This login is already taken");
+            if (await _userStorage.IsLoginExistAsync(newLogin))
+            {
+                return ResultCode.LoginAlreadyExist;
+            }
 
             user.Login = newLogin;
 
             await _userStorage.UpdateAsync(user);
+
+            return ResultCode.Success;
         }
 
-        public async Task<int> ChangeRole(int userId,string login, string role)
+        public async Task<int> ChangeRoleAsync(int userId, string login, string role)
         {
             var userToChange = await _userStorage.GetByLoginAsync(login);
 
@@ -72,13 +93,16 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<UserModel> GetUsersDataAsync(int userId)
+        public async Task<Result<UserModel>> GetUsersDataAsync(int userId)
         {
             var user = await _userStorage.GetByIdAsync(userId);
 
-            if (user == null) throw new SystemException("User doesn't exist");
+            if (user == null)
+            {
+                return new Result<UserModel>(ResultCode.NotFound);
+            }
 
-            return _mapper.Map<User, UserModel>(user);
+            return new Result<UserModel>(_mapper.Map<User, UserModel>(user));
         }
     }
 }

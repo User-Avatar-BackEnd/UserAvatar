@@ -40,7 +40,8 @@ namespace UserAvatar.Api.Controllers
             IRankService rankService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser, IHistoryService historyService)
+            IApplicationUser applicationUser,
+            IHistoryService historyService)
         {
             _personalAccountService = personalAccountService;
             _rateService = rateService;
@@ -55,50 +56,73 @@ namespace UserAvatar.Api.Controllers
 
         [HttpPatch]
         [Route("login")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> ChangeLoginAsync(ChangeLoginRequest login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             login.Login = login.Login.Trim();
 
-            await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
+            var result = await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
 
-            return Ok();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            if (result != ResultCode.Success)
+            {
+                return Conflict(result);
+            }
+
+            return StatusCode(result);
         }
 
         [HttpPatch]
         [Route("password")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            await _personalAccountService.ChangePasswordAsync(UserId, request.OldPassword, request.NewPassword);
+            var result = await _personalAccountService.ChangePasswordAsync(UserId, request.OldPassword, request.NewPassword);
 
-            return Ok();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            if (result != ResultCode.Success)
+            {
+                return Conflict(result);
+            }
+
+            return StatusCode(result);
         }
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
-            var rankData = await _rankService.GetAllRanksData(userData.Score);
+
+            if (userData.Code == ResultCode.NotFound) return NotFound();
+
+            // TODO: RESULT CODE??
+            var rankData = await _rankService.GetAllRanksData(userData.Value.Score);
 
             var userDataVm = new UserDataVm
             {
-                Email = userData.Email,
-                Login = userData.Login,
-                Role = userData.Role,
-                InvitesAmount = userData.Invited
+                Email = userData.Value.Email,
+                Login = userData.Value.Login,
+                Role = userData.Value.Role,
+                InvitesAmount = userData.Value.Invited
                     .Count(invite => invite.Status == -1),
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
-                CurrentScoreAmount = userData.Score,
-                NextLevelScore = userData.Score >= 1000 ? userData.Score : rankData.MaxScores
+                CurrentScoreAmount = userData.Value.Score,
+                NextLevelScore = userData.Value.Score >= 1000 ? userData.Value.Score : rankData.MaxScores
             };
 
             return Ok(userDataVm);
@@ -132,8 +156,6 @@ namespace UserAvatar.Api.Controllers
 
         [HttpGet("rate")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<FullRateVm>> GetRate()
         {
            var rate = await _rateService.GetTopRate(UserId);
