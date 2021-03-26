@@ -91,7 +91,10 @@ namespace UserAvatar.Api.Controllers
 
             await _historyService.AddEventToHistoryAsync(UserId, result.EventType);
 
-            return Ok(_mapper.Map<BoardModel, BoardShortVm>(result.Value));
+            var board = _mapper.Map<BoardModel, BoardShortVm>(result.Value);
+            board.IsOwner = result.Value.OwnerId == UserId;
+
+            return Ok(board);
         }
 
         [HttpGet("{boardId:int}")]
