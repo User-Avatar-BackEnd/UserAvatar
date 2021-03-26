@@ -16,8 +16,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using System;
-using System.Linq;
-using UserAvatar.Bll.Gamification.Models;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -35,7 +33,6 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IHistoryService _historyService;
         private readonly IBoardChangesService _boardChangesService;
-        private readonly IRankService _rankService;
 
         public BoardController(
             IBoardService boardService,
@@ -43,8 +40,7 @@ namespace UserAvatar.Api.Controllers
             IMapper mapper,
             IApplicationUser applicationUser,
             IHistoryService historyService,
-            IBoardChangesService boardChangesService, 
-            IRankService rankService)
+            IBoardChangesService boardChangesService)
         {
             _boardService = boardService;
             _mapper = mapper;
@@ -52,7 +48,6 @@ namespace UserAvatar.Api.Controllers
             _inviteService = inviteService;
             _historyService = historyService;
             _boardChangesService = boardChangesService;
-            _rankService = rankService;
         }
 
         private int UserId => _applicationUser.Id;
@@ -107,7 +102,6 @@ namespace UserAvatar.Api.Controllers
             var ranks = await _rankService.GetRanksAsync(scores);
             for (var i = 0; i < result.Value.Members.Count; i++)
                 result.Value.Members[i].Rank = ranks[i];
-            
             
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
