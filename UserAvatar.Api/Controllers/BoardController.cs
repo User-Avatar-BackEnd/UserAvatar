@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using System;
+using System.Linq;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -33,6 +34,7 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IHistoryService _historyService;
         private readonly IBoardChangesService _boardChangesService;
+        private readonly IRankService _rankService;
 
         public BoardController(
             IBoardService boardService,
@@ -40,7 +42,8 @@ namespace UserAvatar.Api.Controllers
             IMapper mapper,
             IApplicationUser applicationUser,
             IHistoryService historyService,
-            IBoardChangesService boardChangesService)
+            IBoardChangesService boardChangesService,
+            IRankService rankService)
         {
             _boardService = boardService;
             _mapper = mapper;
@@ -48,6 +51,7 @@ namespace UserAvatar.Api.Controllers
             _inviteService = inviteService;
             _historyService = historyService;
             _boardChangesService = boardChangesService;
+            _rankService = rankService;
         }
 
         private int UserId => _applicationUser.Id;

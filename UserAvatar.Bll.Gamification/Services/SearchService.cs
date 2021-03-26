@@ -23,9 +23,9 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
-        public async Task<PagedUsersModel> GetAllUsersAsync(int pageNumber, int pageSize)
+        public async Task<PagedUsersModel> GetAllUsersAsync(int pageNumber, int pageSize, string query)
         {
-            var users = await _userStorage.GetPagedUsersAsync(pageNumber, pageSize);
+            var users = await _userStorage.GetPagedUsersAsync(pageNumber, pageSize, query);
 
             var totalUserAmount = await _userStorage.GetUsersAmount();
 
