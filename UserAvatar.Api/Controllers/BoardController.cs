@@ -8,10 +8,8 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
-using UserAvatar.Bll.TaskManager;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Infrastructure;
-using UserAvatar.Bll.TaskManager.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -103,8 +101,10 @@ namespace UserAvatar.Api.Controllers
             //Here can be switch Case statement. Please remind to change
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
+            
 
             var scores = result.Value.Members.Select(member => member.User.Score).ToList();
+            
             var ranks = await _rankService.GetRanksAsync(scores);
             for (var i = 0; i < result.Value.Members.Count; i++)
                 result.Value.Members[i].Rank = ranks[i];
