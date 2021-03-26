@@ -55,16 +55,21 @@ namespace UserAvatar.Api.Controllers
         private int UserId => _applicationUser.Id;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BoardShortVm>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<List<BoardVm>>> GetBoardsAsync()
+        [ProducesResponseType(typeof(List<BoardShortVm>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<List<BoardShortVm>>> GetBoardsAsync()
         {
             var result = await _boardService.GetAllBoardsAsync(UserId);
 
-            var list =
-                _mapper.Map<IEnumerable<BoardModel>,
-                    IEnumerable<BoardShortVm>>(result.Value);
+            var models = result.Value.ToList();
 
-            return Ok(list);
+            var viewModels =_mapper.Map<List<BoardModel>,List<BoardShortVm>>(models);
+
+            for (var i = 0; i < result.Value.Count(); i++)
+            {
+                viewModels[i].IsOwner = models[i].OwnerId == UserId;
+            }
+
+            return Ok(viewModels);
         }
 
         [HttpPost]
@@ -77,8 +82,7 @@ namespace UserAvatar.Api.Controllers
 
             titleDto.Title = titleDto.Title.Trim();
 
-            var result =
-                await _boardService.CreateBoardAsync(UserId, titleDto.Title);
+            var result = await _boardService.CreateBoardAsync(UserId, titleDto.Title);
 
             if (result.Code != ResultCode.Success)
             {
@@ -107,7 +111,9 @@ namespace UserAvatar.Api.Controllers
             
             var ranks = await _rankService.GetRanksAsync(scores);
             for (var i = 0; i < result.Value.Members.Count; i++)
+            {
                 result.Value.Members[i].Rank = ranks[i];
+            }
             
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
@@ -126,9 +132,7 @@ namespace UserAvatar.Api.Controllers
 
             titleDto.Title = titleDto.Title.Trim();
 
-            var result =
-                await _boardService
-                    .RenameBoardAsync(UserId, boardId, titleDto.Title);
+            var result = await _boardService.RenameBoardAsync(UserId, boardId, titleDto.Title);
 
             return StatusCode(result);
         }
