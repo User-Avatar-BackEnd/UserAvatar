@@ -44,7 +44,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<ColumnModel>(validation);
             }
 
-            if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) > _limitations.MaxColumnCount)
+            if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) >= _limitations.MaxColumnCount)
             {
                 return new Result<ColumnModel>(ResultCode.MaxColumnCount);
             }
