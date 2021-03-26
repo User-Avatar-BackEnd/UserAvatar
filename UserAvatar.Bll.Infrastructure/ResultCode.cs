@@ -16,7 +16,7 @@
         // Limitation
         public const int MaxBoardCount = 21;
         public const int MaxColumnCount = 22;
-        public const int MaxTaskCount = 23;
+        public const int MaxCardCount = 23;
         
         // Internal
         public const int UserNotFound = -1;

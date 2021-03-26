@@ -59,6 +59,8 @@ namespace UserAvatar.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            registerRequest.Email = registerRequest.Email.ToLower();
+
             var result = await _authService.RegisterAsync(registerRequest.Email, registerRequest.Login, registerRequest.Password);
 
             if (result.Code != ResultCode.Success)
@@ -78,6 +80,8 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult> LoginAsync(LoginRequest loginRequest)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            loginRequest.Email = loginRequest.Email.ToLower();
 
             var result = await _authService.LoginAsync(loginRequest.Email, loginRequest.Password);
 

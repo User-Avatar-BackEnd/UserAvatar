@@ -83,9 +83,11 @@ namespace UserAvatar.Bll.Gamification.Services
 
                 foreach (var user in underTopUsers)
                 {
-                    user.RatePosition = users
+                    var position = user.RatePosition = users
                         .IndexOf(users
                             .First(x => x.Id == user.Id));
+
+                    user.RatePosition = ++position;
                 }
             }
 
@@ -107,9 +109,11 @@ namespace UserAvatar.Bll.Gamification.Services
 
             foreach (var user in topUsers)
             {
-                user.RatePosition = users
-                    .IndexOf(users
-                        .First(x => x.Id == user.Id));
+                var position = user.RatePosition = users
+                        .IndexOf(users
+                            .First(x => x.Id == user.Id));
+
+                user.RatePosition = ++position;
             }
 
             var rate = new FullRateModel()

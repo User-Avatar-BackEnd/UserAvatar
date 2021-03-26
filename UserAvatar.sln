@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Gamification
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAvatar.Bll.Infrastructure", "UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj", "{75E911F9-6119-48CC-B0A1-FE3611B18D5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAvatar.Bll.Tests", "UserAvatar.Bll.Tests\UserAvatar.Bll.Tests.csproj", "{7D5BCBEA-1D78-463F-9072-9F3221CB4BEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75E911F9-6119-48CC-B0A1-FE3611B18D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D5BCBEA-1D78-463F-9072-9F3221CB4BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5BCBEA-1D78-463F-9072-9F3221CB4BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5BCBEA-1D78-463F-9072-9F3221CB4BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5BCBEA-1D78-463F-9072-9F3221CB4BEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

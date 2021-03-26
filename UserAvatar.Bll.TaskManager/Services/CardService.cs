@@ -51,9 +51,9 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<CardModel>(ResultCode.Forbidden);
             }
 
-            if (await _cardStorage.GetCardsCountInColumnAsync(columnId) > _limitations.MaxCardCount)
+            if (await _cardStorage.GetCardsCountInColumnAsync(columnId) >= _limitations.MaxCardCount)
             {
-                return new Result<CardModel>(ResultCode.MaxColumnCount);
+                return new Result<CardModel>(ResultCode.MaxCardCount);
             }
 
             var card = new Card
