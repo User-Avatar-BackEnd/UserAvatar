@@ -41,8 +41,13 @@ namespace UserAvatar.Bll.TaskManager.Models
             {
                 return true;
             }
+<<<<<<< Updated upstream
             //_logs.ToArray().Reverse();
             foreach(var log in _logs.Reverse())
+=======
+            var logsSnapshot = _logs.ToArray().Reverse();
+            foreach(var log in logsSnapshot)
+>>>>>>> Stashed changes
             {
                 if (log.Ticks >= lastCheck && userId != log.UserId)
                 {
