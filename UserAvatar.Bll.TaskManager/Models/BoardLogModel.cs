@@ -41,6 +41,7 @@ namespace UserAvatar.Bll.TaskManager.Models
             {
                 return true;
             }
+            //_logs.ToArray().Reverse();
             foreach(var log in _logs.Reverse())
             {
                 if (log.Ticks >= lastCheck && userId != log.UserId)
