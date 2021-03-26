@@ -32,15 +32,15 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-        private readonly IHistoryService _historyService;
-        
 
-        public PersonalAccountController(IPersonalAccountService personalAccountService,
+
+        public PersonalAccountController(
+            IPersonalAccountService personalAccountService,
             IRateService rateService,
             IRankService rankService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser, IHistoryService historyService)
+            IApplicationUser applicationUser)
         {
             _personalAccountService = personalAccountService;
             _rateService = rateService;
@@ -48,7 +48,6 @@ namespace UserAvatar.Api.Controllers
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
-            _historyService = historyService;
         }
         
         private int UserId => _applicationUser.Id;
@@ -110,10 +109,18 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<List<InviteVm>>> GetAllInvitesAsync()
         {
             var result = await _inviteService.GetAllInvitesAsync(UserId);
-
+            
             if (result.Code == ResultCode.NotFound) return NotFound();
+            
+            var scores = result.Value.Select(invite => invite.Inviter.Score).ToList();
+            var ranks = await _rankService.GetRanks(scores);
 
-            return Ok(_mapper.Map<List<InviteModel>,List<InviteVm>>(result.Value));
+            var resultedOutput = _mapper.Map<List<InviteModel>, List<InviteVm>>(result.Value);
+
+            for (var i = 0; i < resultedOutput.Count; i++)
+                resultedOutput[i].Inviter.Rank = ranks[i];
+
+            return Ok(resultedOutput);
         }
 
         [HttpPatch("invites/{inviteId:int}")]
