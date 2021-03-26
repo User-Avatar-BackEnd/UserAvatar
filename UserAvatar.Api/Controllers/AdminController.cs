@@ -126,12 +126,14 @@ namespace UserAvatar.Api.Controllers
         [HttpGet("users")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<HistoryVm>> GetPagedUsers([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        public async Task<ActionResult<HistoryVm>> GetPagedUsers([FromQuery] int pageNumber, [FromQuery] int pageSize, [FromQuery] string query)
         {
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
             pageSize = pageSize < 10 ? 10 : pageSize;
 
-            var pagedModel = await _searchService.GetAllUsersAsync(pageNumber, pageSize);
+           query =  query == null ? "" : query.Trim();
+
+            var pagedModel = await _searchService.GetAllUsersAsync(pageNumber, pageSize, query);
 
             var scores = pagedModel.Users.Select(x=> x.Score).ToList();
 

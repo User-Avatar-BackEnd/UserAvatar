@@ -93,9 +93,11 @@ namespace UserAvatar.Dal.Storages
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize)
+        public async Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize, string query)
         {
+            // changes here
             return await _dbContext.Users
+                .Where(x=> x.Login.Contains(query))
                 .OrderBy(x => x.Login)
                    .Skip((pageNumber - 1) * pageSize)
                    .Take(pageSize)
