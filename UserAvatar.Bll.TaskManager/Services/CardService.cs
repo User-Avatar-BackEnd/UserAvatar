@@ -53,7 +53,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             if (await _cardStorage.GetCardsCountInColumnAsync(columnId) > _limitations.MaxCardCount)
             {
-                return new Result<CardModel>(ResultCode.MaCardCount);
+                return new Result<CardModel>(ResultCode.MaxCardCount);
             }
 
             var card = new Card
