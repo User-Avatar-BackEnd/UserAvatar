@@ -79,7 +79,10 @@ namespace UserAvatar.Api.Controllers
         }
 
         [HttpPut("role/{login}")]
-        public async Task<IActionResult> ChangeRole([Required] string role, string login)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> ChangeRoleAsync([Required] string role, string login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -88,7 +91,7 @@ namespace UserAvatar.Api.Controllers
                 return BadRequest();
             }
 
-            var result = await _personalAccountService.ChangeRole(UserId, login, role);
+            var result = await _personalAccountService.ChangeRoleAsync(UserId, login, role);
 
             if (result == ResultCode.NotFound) return NotFound();
             if (result == ResultCode.Forbidden) return Forbid();
@@ -111,10 +114,12 @@ namespace UserAvatar.Api.Controllers
         [HttpPatch("balance/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<HistoryVm>> ChangeBalance(string login, int change)
+        public async Task<ActionResult<HistoryVm>> ChangeBalanceAsync(string login, int change)
         {
             var resultCode = await _eventService.ChangeBalanceAsync(login, change);
+
             if (resultCode == ResultCode.NotFound) return NotFound();
+
             return Ok();
         }
 
@@ -126,13 +131,11 @@ namespace UserAvatar.Api.Controllers
             pageNumber = pageNumber < 1 ? 1 : pageNumber;
             pageSize = pageSize < 10 ? 10 : pageSize;
 
-            var pagedModel = await _searchService.GetAllUsers(pageNumber, pageSize);
+            var pagedModel = await _searchService.GetAllUsersAsync(pageNumber, pageSize);
 
-            var scores = pagedModel.Users
-                .Select(x=> x.Score)
-                .ToList();
+            var scores = pagedModel.Users.Select(x=> x.Score).ToList();
 
-            var ranks = await _rankService.GetRanks(scores);
+            var ranks = await _rankService.GetRanksAsync(scores);
 
             for (int i = 0; i < ranks.Count; i++)
             {

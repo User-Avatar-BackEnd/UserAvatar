@@ -98,6 +98,11 @@ namespace UserAvatar.Api.Controllers
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
 
+            var scores = result.Value.Members.Select(member => member.User.Score).ToList();
+            var ranks = await _rankService.GetRanksAsync(scores);
+            for (var i = 0; i < result.Value.Members.Count; i++)
+                result.Value.Members[i].Rank = ranks[i];
+            
             var boardVm = _mapper.Map<BoardModel, BoardVm>(result.Value);
 
             boardVm.IsOwner = result.Value.OwnerId == UserId;
@@ -177,7 +182,7 @@ namespace UserAvatar.Api.Controllers
             if (string.IsNullOrEmpty(query))
                 return NotFound();
 
-            var result = await _inviteService.FindByQuery(boardId, UserId, query);
+            var result = await _inviteService.FindByQueryAsync(boardId, UserId, query);
 
             return result.Code switch
             {
@@ -192,7 +197,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> CheckChanges(int boardId, [FromQuery] long? ticks)
         {
-            if (!await _boardService.IsUserBoard(UserId, boardId))
+            if (!await _boardService.IsUserBoardAsync(UserId, boardId))
             {
                 return Forbid();
             }

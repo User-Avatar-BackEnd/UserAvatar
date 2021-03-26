@@ -38,16 +38,12 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<Result<ColumnModel>> CreateAsync(
             int userId, int boardId, string title)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            var validation = await ValidateUserColumnAsync(userId, boardId);
+            if (validation != ResultCode.Success)
             {
-                return new Result<ColumnModel>(ResultCode.NotFound);
+                return new Result<ColumnModel>(validation);
             }
 
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<ColumnModel>(ResultCode.Forbidden);
-            }
-            
             if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) > _limitations.MaxColumnCount)
             {
                 return new Result<ColumnModel>(ResultCode.MaxColumnCount);
@@ -71,19 +67,15 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> ChangePositionAsync(
             int userId, int boardId, int columnId, int positionIndex)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
+            if (validation != ResultCode.Success)
             {
-                return ResultCode.NotFound;
+                return validation;
             }
 
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return ResultCode.Forbidden;
-            }
-            
             if (await _columnStorage.GetColumnsCountInBoardAsync(boardId) - 1 < positionIndex)
             {
-                return ResultCode.Forbidden;
+                return ResultCode.BadRequest;
             }
             
             await _columnStorage.ChangePositionAsync(columnId, positionIndex);
@@ -93,13 +85,13 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<int> DeleteAsync(
-            int userId, int boardId, int columnId)
+        public async Task<int> DeleteAsync(int userId, int boardId, int columnId)
         {
-            
-            var validation = await ValidateUserColumn(userId, boardId, columnId);
+            var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
             if (validation != ResultCode.Success)
+            {
                 return validation;
+            }
             
             await _columnStorage.DeleteApparentAsync(columnId);
 
@@ -108,21 +100,18 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<int> UpdateAsync(
-            int userId, int boardId, int columnId, string title)
+        public async Task<int> UpdateAsync(int userId, int boardId, int columnId, string title)
         {   
-            var validation = await ValidateUserColumn(userId, boardId, columnId);
+            var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
             if (validation != ResultCode.Success)
+            {
                 return validation;
+            }
 
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
-            if (thisColumn is null)
-            {
-                return ResultCode.NotFound;
-            }
-
             thisColumn.Title = title;
+
             await _columnStorage.UpdateAsync(thisColumn);
 
             _boardChangesService.DoChange(boardId, userId);
@@ -130,32 +119,20 @@ namespace UserAvatar.Bll.TaskManager.Services
             return ResultCode.Success;
         }
 
-        public async Task<Result<ColumnModel>> GetColumnByIdAsync(
-            int userId, int boardId, int columnId)
+        public async Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId)
         {
-            if (!await _boardStorage.IsBoardExistAsync(boardId))
+            int validation = await ValidateUserColumnAsync(userId, boardId, columnId);
+            if (validation != ResultCode.Success)
             {
-                return new Result<ColumnModel>(ResultCode.NotFound);
-            }
-
-            if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-            {
-                return new Result<ColumnModel>(ResultCode.Forbidden);
-            }
-
-            if (!await _boardStorage.IsBoardColumnAsync(boardId, columnId))
-            {
-                return new Result<ColumnModel>(ResultCode.NotFound);
+                return new Result<ColumnModel>(validation);
             }
 
             var foundColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
-            return foundColumn is null 
-                ? new Result<ColumnModel>(ResultCode.NotFound) 
-                : new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
+            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
         }
 
-        private async Task<int> ValidateUserColumn(int userId, int boardId, int columnId)
+        private async Task<int> ValidateUserColumnAsync(int userId, int boardId, int? columnId=null)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
             {
@@ -166,10 +143,13 @@ namespace UserAvatar.Bll.TaskManager.Services
             {
                 return ResultCode.Forbidden;
             }
-            
-            if (!await _boardStorage.IsBoardColumnAsync(boardId, columnId))
+
+            if (columnId != null)
             {
-                return ResultCode.NotFound;
+                if (!await _boardStorage.IsBoardColumnAsync(boardId, (int)columnId))
+                {
+                    return ResultCode.NotFound;
+                }
             }
 
             return ResultCode.Success;

@@ -34,11 +34,9 @@ namespace UserAvatar.Bll.TaskManager.Services
 
         public async Task<Result<IEnumerable<BoardModel>>> GetAllBoardsAsync(int userId)
         {
-            var boards = await _boardStorage
-                .GetAllBoardsAsync(userId);
+            var boards = await _boardStorage.GetAllBoardsAsync(userId);
 
-            var boardsModel = _mapper
-                .Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
+            var boardsModel = _mapper.Map<IEnumerable<Board>, IEnumerable<BoardModel>>(boards);
 
             return new Result<IEnumerable<BoardModel>>(boardsModel);
         }
@@ -111,7 +109,9 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<int> DeleteBoardAsync(int userId, int boardId)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
+            {
                 return ResultCode.NotFound;
+            }
 
             if (await _boardStorage.IsOwnerBoardAsync(userId,boardId))
             {
@@ -132,13 +132,18 @@ namespace UserAvatar.Bll.TaskManager.Services
         }
 
 
-        public async Task<bool> IsUserBoard(int userId, int boardId)
+        public async Task<bool> IsUserBoardAsync(int userId, int boardId)
         {
             return await _boardStorage.IsUserBoardAsync(userId, boardId);
         }
         
         public async Task<int> DeleteMemberFromBoardAsync(int userId, int toDeleteUserId, int boardId)
         {
+            if (userId == toDeleteUserId)
+            {
+                return ResultCode.Forbidden;
+            }
+
             var currentBoard = await _boardStorage.GetBoardAsync(boardId);
 
             if (currentBoard == null
@@ -147,6 +152,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.BadRequest;
 
             var thisMember = await _boardStorage.GetMemberByIdAsync(toDeleteUserId, boardId);
+
             thisMember.IsDeleted = true;
             
             await _boardStorage.UpdateMemberAsync(thisMember);

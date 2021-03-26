@@ -13,7 +13,7 @@ using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Api.Extentions
 {
-    public static class ServiceExtensions
+    public static class ServiceExtension
     {
         /// <summary>
         /// Registers services.

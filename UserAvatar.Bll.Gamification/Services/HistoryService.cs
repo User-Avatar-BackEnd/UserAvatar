@@ -30,7 +30,7 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
-        public async Task MakeScoreTransaction()
+        public async Task MakeScoreTransactionAsync()
         {
             if (await _historyStorage.GetNotCalculatedHistory())
             {
@@ -40,7 +40,9 @@ namespace UserAvatar.Bll.Gamification.Services
                     var thisUser = await _userStorage.GetByIdAsync(history.UserId);
                     thisUser.Score += history.Score;
                     if (thisUser.Score < 0)
+                    {
                         thisUser.Score = 0;
+                    }
                 }
                 await  _historyStorage.SaveChanges();
             }

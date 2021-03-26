@@ -4,7 +4,7 @@ using System;
 
 namespace UserAvatar.Api.Extentions
 {
-    public static class SwaggerExtention
+    public static class SwaggerExtension
     {
         /// <summary>
         /// Registers swagger.

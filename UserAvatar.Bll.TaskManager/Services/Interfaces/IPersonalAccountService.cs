@@ -1,16 +1,17 @@
 ﻿using UserAvatar.Bll.TaskManager.Models;
 ﻿using System.Threading.Tasks;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Bll.TaskManager.Services.Interfaces
 {
     public interface IPersonalAccountService
     {
-        Task ChangePasswordAsync(int userId, string oldPassword, string newPassword);
+        Task<int> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
 
-        Task ChangeLoginAsync(int userId, string newLogin);
+        Task<int> ChangeLoginAsync(int userId, string newLogin);
 
-        Task<UserModel> GetUsersDataAsync(int userId);
+        Task<Result<UserModel>> GetUsersDataAsync(int userId);
 
-        Task<int> ChangeRole(int userId, string login, string role);
+        Task<int> ChangeRoleAsync(int userId, string login, string role);
     }
 }

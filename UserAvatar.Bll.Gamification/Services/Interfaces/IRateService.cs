@@ -10,6 +10,6 @@ namespace UserAvatar.Bll.Gamification.Services.Interfaces
 {
     public interface IRateService
     {
-        Task<Result<FullRateModel>> GetTopRate(int userId);
+        Task<Result<FullRateModel>> GetTopRateAsync(int userId);
     }
 }
