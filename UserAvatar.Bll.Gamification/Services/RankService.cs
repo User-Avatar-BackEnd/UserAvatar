@@ -42,7 +42,6 @@ namespace UserAvatar.Bll.Gamification.Services
             .First(x => score < x.MaxScores && score >= x.Score).Name)
                 .ToList();
         }
-
         private List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)
         {
             for (int i = 0, j = 1; i < ranks.Count - 1; i++, j++)

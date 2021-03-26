@@ -7,18 +7,22 @@
         public const int BadRequest = 400;
         public const int NotFound = 404;
 
-        //Authorization
+        // Authorization
         public const int InvalidEmail = 11;
         public const int InvalidPassword = 12;
         public const int LoginAlreadyExist = 13;
         public const int EmailAlreadyExist = 14;
 
-        //Limitation
+        // Limitation
         public const int MaxBoardCount = 21;
         public const int MaxColumnCount = 22;
         public const int MaxTaskCount = 23;
         
-        //Internal
+        // Internal
         public const int UserNotFound = -1;
+
+        // Personal account
+        public const int SamePasswordAsOld = 33;
+        public const int SameLoginAsCurrent = 34;
     }
 }

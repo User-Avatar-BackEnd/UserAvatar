@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Entities;
 
@@ -21,7 +20,6 @@ namespace UserAvatar.Dal.Context
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)
         {
-            //Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

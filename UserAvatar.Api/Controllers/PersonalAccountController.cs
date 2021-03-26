@@ -15,6 +15,7 @@ using System.Net.Mime;
 using System.Net;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Gamification.Models;
+
 namespace UserAvatar.Api.Controllers
 {
     [Authorize]
@@ -28,19 +29,17 @@ namespace UserAvatar.Api.Controllers
         private readonly IPersonalAccountService _personalAccountService;
         private readonly IRateService _rateService;
         private readonly IRankService _rankService;
-
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
-        private readonly IHistoryService _historyService;
         
-
-        public PersonalAccountController(IPersonalAccountService personalAccountService,
+        public PersonalAccountController(
+            IPersonalAccountService personalAccountService,
             IRateService rateService,
             IRankService rankService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser, IHistoryService historyService)
+            IApplicationUser applicationUser)
         {
             _personalAccountService = personalAccountService;
             _rateService = rateService;
@@ -48,41 +47,59 @@ namespace UserAvatar.Api.Controllers
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
-            _historyService = historyService;
         }
         
         private int UserId => _applicationUser.Id;
 
         [HttpPatch]
         [Route("login")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> ChangeLoginAsync(ChangeLoginRequest login)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             login.Login = login.Login.Trim();
 
-            await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
+            var result = await _personalAccountService.ChangeLoginAsync(UserId, login.Login);
 
-            return Ok();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            if (result != ResultCode.Success)
+            {
+                return Conflict(result);
+            }
+
+            return StatusCode(result);
         }
 
         [HttpPatch]
         [Route("password")]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            await _personalAccountService.ChangePasswordAsync(UserId, request.OldPassword, request.NewPassword);
+            var result = await _personalAccountService.ChangePasswordAsync(UserId, request.OldPassword, request.NewPassword);
 
-            return Ok();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            if (result != ResultCode.Success)
+            {
+                return Conflict(result);
+            }
+
+            return StatusCode(result);
         }
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<UserDataVm>> GetUserDataAsync()
         {
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
@@ -110,10 +127,18 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<List<InviteVm>>> GetAllInvitesAsync()
         {
             var result = await _inviteService.GetAllInvitesAsync(UserId);
-
+            
             if (result.Code == ResultCode.NotFound) return NotFound();
+            
+            var scores = result.Value.Select(invite => invite.Inviter.Score).ToList();
+            var ranks = await _rankService.GetRanks(scores);
 
-            return Ok(_mapper.Map<List<InviteModel>,List<InviteVm>>(result.Value));
+            var resultedOutput = _mapper.Map<List<InviteModel>, List<InviteVm>>(result.Value);
+
+            for (var i = 0; i < resultedOutput.Count; i++)
+                resultedOutput[i].Inviter.Rank = ranks[i];
+
+            return Ok(resultedOutput);
         }
 
         [HttpPatch("invites/{inviteId:int}")]
