@@ -38,6 +38,7 @@ namespace UserAvatar.Dal.Storages
             return await _dbContext.Boards
                 .Include(x => x.User)
                 .Include(x => x.Members)
+                .ThenInclude(x=> x.User)
                 .Include(x => x.Columns)
                 .ThenInclude(x => x.Cards)
                 .ThenInclude(x => x.Comments)

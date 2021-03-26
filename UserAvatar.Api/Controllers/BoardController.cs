@@ -8,10 +8,8 @@ using UserAvatar.Api.Contracts.Dtos;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
-using UserAvatar.Bll.TaskManager;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Infrastructure;
-using UserAvatar.Bll.TaskManager.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -42,7 +40,8 @@ namespace UserAvatar.Api.Controllers
             IMapper mapper,
             IApplicationUser applicationUser,
             IHistoryService historyService,
-            IBoardChangesService boardChangesService, IRankService rankService)
+            IBoardChangesService boardChangesService,
+            IRankService rankService)
         {
             _boardService = boardService;
             _mapper = mapper;
@@ -74,6 +73,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Conflict)]
         public async Task<ActionResult<BoardShortVm>> CreateBoardAsync(TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var result =
@@ -100,8 +101,10 @@ namespace UserAvatar.Api.Controllers
             //Here can be switch Case statement. Please remind to change
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
+            
 
             var scores = result.Value.Members.Select(member => member.User.Score).ToList();
+            
             var ranks = await _rankService.GetRanksAsync(scores);
             for (var i = 0; i < result.Value.Members.Count; i++)
                 result.Value.Members[i].Rank = ranks[i];
@@ -119,6 +122,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> RenameBoardAsync(int boardId, TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             titleDto.Title = titleDto.Title.Trim();
 
             var result =
@@ -132,7 +137,6 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteBoardAsync(int boardId)
         {
             var result = await _boardService.DeleteBoardAsync(UserId, boardId);
@@ -147,15 +151,14 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<IActionResult> DeleteMemberFromBoardAsync(int boardId, [FromQuery] int toDeleteUserId)
         {
             var result = await _boardService.DeleteMemberFromBoardAsync(UserId,toDeleteUserId, boardId);
 
-            if (result != ResultCode.Success)
-                return BadRequest(result);
-            
-            return StatusCode(result);
+            if (result == ResultCode.Forbidden) return Forbid();
+            if (result == ResultCode.NotFound) return NotFound();
+
+            return Ok();
         }
 
         [HttpPost("{boardId:int}/invites")]
@@ -166,6 +169,7 @@ namespace UserAvatar.Api.Controllers
             int boardId,
             [Required(AllowEmptyStrings = false)] string payload)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var result = await _inviteService.CreateInviteAsync(boardId, UserId, payload);
 
             if (result.Code == ResultCode.Forbidden) return Forbid();
@@ -183,7 +187,9 @@ namespace UserAvatar.Api.Controllers
         public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(int boardId, [FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query))
+            {
                 return NotFound();
+            }
 
             var result = await _inviteService.FindByQueryAsync(boardId, UserId, query);
 

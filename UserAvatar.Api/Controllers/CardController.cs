@@ -70,6 +70,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<ActionResult<CardShortVm>> AddCardAsync(int boardId, int columnId, TitleDto titleDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var result = await _cardService.CreateCardAsync(titleDto.Title, boardId, columnId, UserId);
 
             if (result.Code == ResultCode.Forbidden) return Forbid();
@@ -92,6 +94,8 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> UpdateCardAsync(int boardId, int cardId, UpdateCardDto updateCardDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             var cardModel = _mapper.Map<UpdateCardDto, CardModel>(updateCardDto);
             cardModel.Id = cardId;
 
