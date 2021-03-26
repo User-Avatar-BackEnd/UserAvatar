@@ -20,4 +20,11 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\UserAvatar.Api\UserAvatar.Api.csproj" />
+      <ProjectReference Include="..\UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj" />
+      <ProjectReference Include="..\UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj" />
+      <ProjectReference Include="..\UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj" />
+      <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
+    </ItemGroup>
 </Project>
