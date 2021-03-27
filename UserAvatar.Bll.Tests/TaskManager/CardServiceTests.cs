@@ -21,21 +21,12 @@ namespace UserAvatar.Bll.Tests.TaskManager
         private readonly Mock<IBoardStorage> _boardStorage;
         private readonly Mock<IColumnStorage> _columnStorage;
         private readonly IOptions<LimitationOptions> _limitations;
-        private readonly IMapper _mapper;
+        private readonly Mock<IMapper> _mapper;
         private readonly Mock<IBoardChangesService> _boardChangesService;
 
         public CardServiceTests()
         {
-            if (_mapper == null)
-            {
-                var mappingConfig = new MapperConfiguration(mc =>
-                {
-                    mc.AddProfile(new MappingProfile());
-                });
-                IMapper mapper = mappingConfig.CreateMapper();
-                _mapper = mapper;
-            }
-
+            _mapper = new Mock<IMapper>();
             _columnStorage = new Mock<IColumnStorage>();
             _boardStorage = new Mock<IBoardStorage>();
             _boardChangesService = new Mock<IBoardChangesService>();
@@ -51,7 +42,7 @@ namespace UserAvatar.Bll.Tests.TaskManager
         {
             return new CardService(
                 _cardStorage.Object,
-                _mapper,
+                _mapper.Object,
                 _boardStorage.Object,
                 _columnStorage.Object,
                 _limitations,
@@ -380,6 +371,8 @@ namespace UserAvatar.Bll.Tests.TaskManager
             Assert.Equal(EventType.ChangeCardStatusOnAlienBoard, result.EventType);
         }
 
+
+
         [Fact]
         public async Task DeleteCard_If_Board_Does_Not_Exist_Returns_ResultCode_NotFound()
         {
@@ -433,6 +426,8 @@ namespace UserAvatar.Bll.Tests.TaskManager
             // Assert
             Assert.Equal(ResultCode.Success, result);
         }
+
+
 
         [Fact]
         public async Task GetById_If_Board_Does_Not_Exist_Returns_ResultCode_NotFound()
