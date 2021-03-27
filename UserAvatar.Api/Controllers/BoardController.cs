@@ -193,11 +193,6 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
        public async Task<ActionResult<List<UserShortVm>>> GetUsersByQuery(int boardId, [FromQuery] string query)
         {
-            if (string.IsNullOrEmpty(query))
-            {
-                return NotFound();
-            }
-
             var result = await _inviteService.FindByQueryAsync(boardId, UserId, query);
             switch (result.Code)
             {

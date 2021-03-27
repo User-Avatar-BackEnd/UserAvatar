@@ -38,7 +38,7 @@ namespace UserAvatar.Dal.Storages
 
             var filtered = await _dbContext.Users
                 .Where(x => !boardMembers.Contains(x.Id) 
-                            && x.Login.Contains(query)).ToListAsync();
+                            && x.Login.Contains(query)).Take(10).ToListAsync();
             return filtered;
         }
 
