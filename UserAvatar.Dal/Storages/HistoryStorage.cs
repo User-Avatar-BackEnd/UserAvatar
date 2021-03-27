@@ -33,7 +33,7 @@ namespace UserAvatar.Dal.Storages
                 .ToListAsync();
         }
 
-        public async Task SaveChanges()
+        public async Task SaveChangesAsync()
         {
             await _userAvatarContext.Histories.Where(x => !x.Calculated)
                 .UpdateAsync(x => new History{Calculated = true});
@@ -45,12 +45,12 @@ namespace UserAvatar.Dal.Storages
             return await _userAvatarContext.Users.FindAsync(userId);
         }
 
-        public async Task<bool> GetNotCalculatedHistory()
+        public async Task<bool> GetNotCalculatedHistoryAsync()
         {
             return await _userAvatarContext.Histories.AnyAsync(x => !x.Calculated);
         }
 
-        public async Task<List<History>> GetUserScoresList()
+        public async Task<List<History>> GetUserScoresListAsync()
         {
             var query = await _userAvatarContext.Histories
                 .Where(x=> !x.Calculated)

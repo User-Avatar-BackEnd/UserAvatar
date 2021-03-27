@@ -26,7 +26,7 @@ namespace UserAvatar.Bll.Gamification.Services
         public async Task<Result<FullRateModel>> GetTopRateAsync(int userId)
         {
             // TODO: SHOULD I CHECK THAT USERS.COUNT !=0?
-            var users = await _userStorage.GetUsersRate();
+            var users = await _userStorage.GetUsersRateAsync();
 
             var firstTen = users.Take(10).ToList();
             var underTopUsers = new List<RateModel>();

@@ -11,6 +11,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<IEnumerable<Board>> GetAllBoardsAsync(int userId);
 
         Task<int> CountAllBoardsAsync(int userId);
+
         /// <summary>
         /// Gets current board from Database
         /// Returns Board or Null if does not exist
@@ -22,6 +23,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateAsync(int userId, Board board);
 
         Task UpdateMemberAsync(Member member);
+
         /// <summary>
         /// Checks if user is member in this board
         /// </summary>
@@ -33,6 +35,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task DeleteRecurrentlyBoardAsync(int boardId);
 
         Task<Member> GetMemberByIdAsync(int userId, int boardId);
+
         /// <summary>
         /// Checks if user is owner of this board
         /// </summary>
@@ -42,6 +45,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<bool> IsOwnerBoardAsync(int userId, int boardId);
 
         Task<bool> IsBoardExistAsync(int boardId);
+
         /// <summary>
         /// Adds member to the board!
         /// </summary>
@@ -51,6 +55,6 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<bool> IsBoardColumnAsync(int boardId, int columnId);
 
-        Task<bool> IsBoardCard(int boardId, int cardId);
+        Task<bool> IsBoardCardAsync(int boardId, int cardId);
     }
 }

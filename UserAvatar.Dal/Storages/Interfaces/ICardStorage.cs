@@ -17,8 +17,8 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task UpdateAsync(Card card);
 
-        Task<int> GetCardIdByColumnId(int columnId);
+        Task<int> GetCardIdByColumnIdAsync(int columnId);
         
-        Task<bool> IsCardComment(int cardId, int commentId);
+        Task<bool> IsCardCommentAsync(int cardId, int commentId);
     }
 }
