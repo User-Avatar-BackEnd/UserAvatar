@@ -21,10 +21,8 @@ namespace UserAvatar.Bll.Gamification.Services
             _mapper = mapper;
         }
 
-        // todo : change
         public async Task<RankDataModel> GetAllRanksDataAsync(int score)
         {
-            // вынести в конструктор? вызывется каждый раз
             var ranks = await _rankStorage.GetAllRankAsync();
             
             var fullRanks = SetMaxScore(_mapper.Map<List<Rank>,List<RankDataModel>>(ranks));
@@ -38,19 +36,20 @@ namespace UserAvatar.Bll.Gamification.Services
             
             var fullRanks = SetMaxScore(_mapper.Map<List<Rank>, List<RankDataModel>>(ranks));
 
-            return  scores.Select(score => fullRanks
-            .First(x => score < x.MaxScores && score >= x.Score).Name)
+            return  scores
+                .Select(score => fullRanks
+                    .First(x => score < x.MaxScores && score >= x.Score).Name)
                 .ToList();
         }
 
         private List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)
         {
-            for (int i = 0, j = 1; i < ranks.Count - 1; i++, j++)
+            for (int i = 0; i < ranks.Count - 1; i++)
             {
-                ranks[i].MaxScores = ranks[j].Score;
+                ranks[i].MaxScores = ranks[i + 1].Score;
             }
 
-            ranks[ranks.Count - 1].MaxScores = int.MaxValue;
+            ranks[^1].MaxScores = int.MaxValue;
 
             return ranks;
         }

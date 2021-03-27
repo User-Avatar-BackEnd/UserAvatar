@@ -8,6 +8,6 @@ namespace UserAvatar.Bll.Tests.Gamification
 {
     public class SearchServiceTests
     {
-
+        
     }
 }
