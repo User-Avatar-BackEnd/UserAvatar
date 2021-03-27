@@ -28,4 +28,8 @@
       <ProjectReference Include="..\UserAvatar.Bll.TaskManager\UserAvatar.Bll.TaskManager.csproj" />
       <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Gamification\" />
+    </ItemGroup>
 </Project>
