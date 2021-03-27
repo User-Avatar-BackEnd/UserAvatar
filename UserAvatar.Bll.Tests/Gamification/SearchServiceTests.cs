@@ -1,13 +1,11 @@
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserAvatar.Api.Extentions;
-using UserAvatar.Dal.Storages.Interfaces;
 using AutoMapper;
 using FluentAssertions;
+using Moq;
 using UserAvatar.Api.Extentions;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Dal.Entities;
@@ -19,19 +17,6 @@ namespace UserAvatar.Bll.Tests.Gamification
     public class SearchServiceTests
     {
         private readonly Mock<IUserStorage> _userStorage;
-        private readonly IMapper _mapper;
-
-        public SearchServiceTests()
-        {
-            _userStorage = new Mock<IUserStorage>();
-
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-            IMapper mapper = mappingConfig.CreateMapper();
-
-            _mapper = mapper;
         private readonly Mapper _mapper;
         private SearchService _searchService;
         public SearchServiceTests()
