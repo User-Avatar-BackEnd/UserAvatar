@@ -42,6 +42,16 @@ namespace UserAvatar.Dal.Storages
             return filtered;
         }
 
+        public async Task<List<User>> GetAllUsers(int boardId)
+        {
+            var boardMembers = await  _dbContext.Members
+                .Where(x => x.BoardId == boardId).Select(x=> x.User.Id).ToListAsync();
+
+            var filtered = await _dbContext.Users
+                .Where(x => !boardMembers.Contains(x.Id)).ToListAsync();
+            return filtered;
+        }
+
         public async Task<User> GetByIdAsync(int id)
         {
             return await _dbContext.Users
