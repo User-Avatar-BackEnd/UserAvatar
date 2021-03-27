@@ -45,9 +45,9 @@ namespace UserAvatar.Bll.Gamification.Services
 
         private List<RankDataModel> SetMaxScore(List<RankDataModel> ranks)
         {
-            for (int i = 0, j = 1; i < ranks.Count - 1; i++, j++)
+            for (int i = 0; i < ranks.Count - 1; i++)
             {
-                ranks[i].MaxScores = ranks[j].Score;
+                ranks[i].MaxScores = ranks[i+1].Score;
             }
 
             ranks[ranks.Count - 1].MaxScores = int.MaxValue;
