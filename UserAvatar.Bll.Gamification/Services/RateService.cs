@@ -36,7 +36,7 @@ namespace UserAvatar.Bll.Gamification.Services
                 var currentUser = users.First(x => x.Id == userId);
                 var currentUserIndex = users.IndexOf(currentUser);
 
-                if (currentUserIndex == 11)
+                if (currentUserIndex == 10)
                 {
                     underTopUsers.Add(_mapper.Map<User, RateModel>(currentUser));
                     underTopUsers.Add(_mapper.Map<User, RateModel>(users[currentUserIndex + 1]));
