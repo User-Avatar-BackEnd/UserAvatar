@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using UserAvatar.Bll.Gamification.Models;
@@ -32,9 +31,9 @@ namespace UserAvatar.Bll.Gamification.Services
 
         public async Task MakeScoreTransactionAsync()
         {
-            if (await _historyStorage.GetNotCalculatedHistory())
+            if (await _historyStorage.GetNotCalculatedHistoryAsync())
             {
-                var getUserHistoryList = await _historyStorage.GetUserScoresList();
+                var getUserHistoryList = await _historyStorage.GetUserScoresListAsync();
                 foreach (var history in getUserHistoryList)
                 {
                     var thisUser = await _userStorage.GetByIdAsync(history.UserId);
@@ -44,7 +43,7 @@ namespace UserAvatar.Bll.Gamification.Services
                         thisUser.Score = 0;
                     }
                 }
-                await  _historyStorage.SaveChanges();
+                await  _historyStorage.SaveChangesAsync();
             }
         }
 

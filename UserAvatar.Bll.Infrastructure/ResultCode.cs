@@ -12,6 +12,7 @@
         public const int InvalidPassword = 12;
         public const int LoginAlreadyExist = 13;
         public const int EmailAlreadyExist = 14;
+        
 
         // Limitation
         public const int MaxBoardCount = 21;

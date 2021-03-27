@@ -11,15 +11,12 @@ namespace UserAvatar.Bll.Gamification.Services
     public class SearchService : ISearchService
     {
         private readonly IUserStorage _userStorage;
-        private readonly IRankService _rankService;
         private readonly IMapper _mapper;
 
         public SearchService(IUserStorage userStorage,
-            IRankService rankService,
             IMapper mapper)
         {
             _userStorage = userStorage;
-            _rankService = rankService;
             _mapper = mapper;
         }
 
@@ -27,7 +24,7 @@ namespace UserAvatar.Bll.Gamification.Services
         {
             var users = await _userStorage.GetPagedUsersAsync(pageNumber, pageSize, query);
 
-            var totalUserAmount = await _userStorage.GetUsersAmount();
+            var totalUserAmount = await _userStorage.GetUsersAmountAsync();
 
             var totalPages = totalUserAmount % pageSize == 0 ?
                 totalUserAmount / pageSize :

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -9,21 +11,25 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages.Interfaces;
 using FluentAssertions;
 using UserAvatar.Api.Extentions;
+using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace UserAvatar.Bll.Tests.TaskManager
 {
     public class ColumnServiceTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly Mapper _mapper;
         private readonly Mock<IColumnStorage> _columnStorage;
         private readonly Mock<IBoardStorage> _boardStorage;
         private readonly Mock<IBoardChangesService> _boardChangesService;
         private readonly IOptions<LimitationOptions> _limitations;
         private ColumnService _service;
-        public ColumnServiceTests()
+        public ColumnServiceTests(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             _columnStorage = new Mock<IColumnStorage>();
             _boardStorage = new Mock<IBoardStorage>();
             _boardChangesService = new Mock<IBoardChangesService>();
@@ -146,25 +152,6 @@ namespace UserAvatar.Bll.Tests.TaskManager
         }
         
         [Fact]
-        public async Task ChangePositionAsync_If_More_Than_Position_Returns_Ok()
-        {
-            //Assert
-            const int positionIndex = 5;
-            SetupAnyDeps();
-            _columnStorage.Setup(x => x.GetColumnsCountInBoardAsync(It.IsAny<int>()))
-                .ReturnsAsync(positionIndex + 1);
-            
-            _service = SetupColumnService();
-            
-            //Act
-            var result =
-                await _service.ChangePositionAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), positionIndex);
-            
-            //Assert
-            result.Should().Be(ResultCode.Success);
-        }
-        
-        [Fact]
         public async Task GetColumnByIdAsync_If_Column_is_Null_Returns_NotFound()
         {
             //Arrange
@@ -184,26 +171,27 @@ namespace UserAvatar.Bll.Tests.TaskManager
             resultSuccess.Code.Should().Be(ResultCode.Success);
 
         }
+
         [Fact]
-        public async Task DeleteAsync_If_Column_is_Null_Returns_NotFound()
+        public async Task DeleteAsync_If_Column_is_Deleted_Returns_BadRequest()
         {
             //Arrange
             SetupAnyDeps();
-            _boardStorage.Setup(x => x.IsBoardColumnAsync(It.IsAny<int>(), It.Is<int>(columnId => columnId > 10)))
-                .ReturnsAsync(false);
+            _columnStorage.Setup(x => x.InternalGetAllColumnsAsync(It.IsAny<Column>()))
+                .ReturnsAsync(new List<Column> {new(){Index = 0}, new(){Index = 1}, new (){Index = 2} });
+            
+            _columnStorage.Setup(x => x.GetColumnByIdAsync(It.IsAny<int>())).ReturnsAsync(new Column{IsDeleted = true});
             _service = SetupColumnService();
             
             //Act
             var resultError =
-                await _service.DeleteAsync(It.IsAny<int>(), It.IsAny<int>(),11);
-            var resultSuccess =
-                await _service.DeleteAsync(It.IsAny<int>(), It.IsAny<int>(),9);
-            
+                await _service.DeleteAsync(It.IsAny<int>(), It.IsAny<int>(),It.IsAny<int>());
+
             //Assert
-            resultError.Should().Be(ResultCode.NotFound);
-            resultSuccess.Should().Be(ResultCode.Success);
+            resultError.Should().Be(ResultCode.BadRequest);
 
         }
+
         [Fact]
         public async Task UpdateAsync_If_Column_is_Null_Returns_NotFound()
         {
@@ -224,6 +212,110 @@ namespace UserAvatar.Bll.Tests.TaskManager
             resultError.Should().Be(ResultCode.NotFound);
             resultSuccess.Should().Be(ResultCode.Success);
 
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(4)]
+        public async Task CreateAsync_Returns_New_Column(int columnCount)
+        {
+            //Arrange
+            SetupAnyDeps();
+            var expected = new Column
+            {
+                Title = It.IsAny<string>(),
+                BoardId = columnCount,
+                CreatedAt = default,
+                ModifiedAt = default
+            };
+            _columnStorage.Setup(x => x.GetColumnsCountInBoardAsync(It.IsAny<int>()))
+                .ReturnsAsync(columnCount);
+            /*_columnStorage.Setup(x => x.AddColumnAsync(It.Is<Column>(boardId=> boardId.BoardId == columnCount)))
+                .ReturnsAsync(expected);*/
+            
+            _service = SetupColumnService();
+            
+            //Act
+            var result = 
+                await _service.CreateAsync(It.IsAny<int>(), columnCount, It.IsAny<string>());
+            
+            
+            //Assert
+            Assert.Equal(expected.BoardId,result.Value.BoardId);
+            
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(148)]
+        public async Task GetColumnById_If_Id_Exists_Returns_Column(int columnId)
+        {
+            //Arrange
+            SetupAnyDeps();
+            var expected = new ColumnModel {Id = columnId};
+            _columnStorage.Setup(x => x.GetColumnByIdAsync(columnId))
+                .ReturnsAsync(new Column {Id = columnId});
+            _service = SetupColumnService();
+            
+            //Act
+            var result = await _service.GetColumnByIdAsync(It.IsAny<int>(), It.IsAny<int>(), columnId);
+            
+            
+            //Assert
+            Assert.StrictEqual(expected.Id,result.Value.Id);
+        }
+        
+        [Fact]
+        public async Task UpdateAsync_If_Updated_Returns_Success()
+        {
+            //Arrange
+            SetupAnyDeps();
+            _columnStorage.Setup(x => x.GetColumnByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Column());
+            _service = SetupColumnService();
+            
+            //Act
+            var result = await _service.UpdateAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>());
+            
+            //Assert
+            result.Should().Be(ResultCode.Success);
+        }
+        
+        [Theory]
+        [InlineData(1,0,2)]
+        [InlineData(2,1,0)]
+        [InlineData(3,2,1)]
+        public async Task ChangePositionAsync_Returns_New_Column_Position(int columnId,int oldIndex, int newIndex)
+        {
+            //Arrange
+            SetupAnyDeps();
+            
+            _columnStorage.Setup(x => x.GetColumnByIdAsync(columnId))
+                .ReturnsAsync(new Column{Index =  oldIndex});
+            
+            _columnStorage.Setup(x => x.GetColumnsCountInBoardAsync(It.IsAny<int>()))
+                .ReturnsAsync(3);
+
+            _columnStorage.Setup(x => x.GetAllColumnsExceptThisAsync(It.IsAny<Column>()))
+                .ReturnsAsync(new List<Column> { new(){Index = 0}, new(){Index = 1}, new(){Index = 2}});
+            
+            _service = SetupColumnService();
+            
+            //Act
+            var algorithm = await _service
+                .ChangePositionAsync(It.IsAny<int>(), It.IsAny<int>(), columnId, newIndex);
+            
+            //Assert
+            Assert.Equal(ResultCode.Success,algorithm);
         }
     }
 }
