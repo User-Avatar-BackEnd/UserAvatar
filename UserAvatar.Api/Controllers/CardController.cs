@@ -13,6 +13,7 @@ using UserAvatar.Bll.Infrastructure;
 using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace UserAvatar.Api.Controllers
 {
@@ -57,6 +58,7 @@ namespace UserAvatar.Api.Controllers
             var cardVm = _mapper.Map<CardModel, CardDetailedVm>(result.Value);
 
             cardVm.Comments.ForEach(x => x.Editable = x.UserId == UserId);
+            cardVm.Comments = cardVm.Comments.OrderByDescending(x => x.CreatedAt).ToList();
 
             return Ok(cardVm);
         }
