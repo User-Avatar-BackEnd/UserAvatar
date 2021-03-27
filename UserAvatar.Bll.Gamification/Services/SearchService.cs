@@ -11,15 +11,12 @@ namespace UserAvatar.Bll.Gamification.Services
     public class SearchService : ISearchService
     {
         private readonly IUserStorage _userStorage;
-        private readonly IRankService _rankService;
         private readonly IMapper _mapper;
 
         public SearchService(IUserStorage userStorage,
-            IRankService rankService,
             IMapper mapper)
         {
             _userStorage = userStorage;
-            _rankService = rankService;
             _mapper = mapper;
         }
 
