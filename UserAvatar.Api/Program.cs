@@ -18,7 +18,7 @@ namespace UserAvatar.Api
                 .ConfigureLogging(loggingBuilder =>
                 {
                     loggingBuilder.ClearProviders();
-                    loggingBuilder.SetMinimumLevel(LogLevel.Information);
+                    loggingBuilder.SetMinimumLevel(LogLevel.Warning);
                     loggingBuilder.AddSerilog(new LoggerConfiguration()
                         .WriteTo.Console()
                         .CreateLogger());

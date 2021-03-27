@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
@@ -14,177 +12,68 @@ namespace UserAvatar.Dal.Storages
     public class ColumnStorage : IColumnStorage
     {
         private readonly UserAvatarContext _userAvatarContext;
-
-        private static readonly SemaphoreSlim LockSlim = new(1, 1);
-        private static readonly SemaphoreSlim LockSlimForRecheck = new(1, 1);
-
         public ColumnStorage(UserAvatarContext userAvatarContext)
         {
            _userAvatarContext = userAvatarContext;
         }
-
-        public async Task<Column> CreateAsync(Column column)
+        public async Task<int> CountColumnsInBoardAsync(int boardId)
         {
-            await LockSlim.WaitAsync();
-            try
-            {
-                var thisBoard = await _userAvatarContext.Boards.FindAsync(column.BoardId);
-                if (thisBoard == null)
-                    throw new Exception();
-
-                var columnCount = _userAvatarContext.Columns
-                    .Count(x => x.BoardId == column.BoardId);
-                column.Board = thisBoard;
-                column.Index = columnCount;
-
-                // Please do not change or userAvatarContext would be
-                // disposed after first method call
-                await _userAvatarContext.Columns.AddAsync(column);
-                await  _userAvatarContext.SaveChangesAsync();
-                return column;  
-            }
-            finally
-            {
-                LockSlim.Release();
-            }
+            return await _userAvatarContext.Columns
+                .CountAsync(x => x.BoardId == boardId);
         }
-
-        // not using
-        public async Task<int> GetColumnIdByBoardId(int boardId)
+        public async Task AddColumnAsync(Column column)
         {
-            return await Task.FromResult(_userAvatarContext.Columns.FirstOrDefaultAsync(x => x.BoardId == boardId).Id);
+            await _userAvatarContext.Columns.AddAsync(column);
+            await  _userAvatarContext.SaveChangesAsync();
         }
-        // not using
-
-        public bool IsUserInBoardByColumnId(int userId,int columnId)
+        public async Task DeleteApparentAsync(Column column)
         {
-            // Дима сказал: там инклуд не нужен вроде, если вы не вытягиваете данные наружу, а я не уверенна ибо не делала это :D
-            // Поэтому осталю пока это тут)
-            
-            return _userAvatarContext.Boards
-                .Include(x => x.Columns)
-                .Include(x => x.Members)
-                .Any(x=> x.Columns.Any(x=> x.Id == columnId) && x.Members
-                    .Any(x=> x.UserId == userId));
-            
-        }
-        
-        public async Task DeleteApparentAsync(int columnId)
-        {
-            var column = await GetColumnByIdAsync(columnId);
-            if (column.IsDeleted)
-                throw new Exception($"Already Deleted!{columnId}");
-            
-            var columnList = InternalGetAllColumns(column);
-            await RecheckPositionAsync(columnList.ToList(),column.Index);
-            
-            await _userAvatarContext.Columns.Where(x => x.Id == columnId)
+            await _userAvatarContext.Columns.Where(x => x.Id == column.Id)
                 .Include(x => x.Cards)
                 .ThenInclude(x => x.Comments).SelectMany(x => x.Cards.SelectMany(card => card.Comments))
                 .UpdateAsync(x => new Comment {IsDeleted = true});
             
-            await _userAvatarContext.Cards.Where(x=> x.ColumnId == columnId)
+            await _userAvatarContext.Cards.Where(x=> x.ColumnId == column.Id)
                 .UpdateAsync(x => new Card {IsDeleted = true});
-            
             
             column.IsDeleted = true;
             
             await _userAvatarContext.SaveChangesAsync();
         }
-
         public async Task<List<int>> GetAllColumnsAsync(int boardId)
         {
             return await Task.FromResult(_userAvatarContext.Columns
                 .Where(x => x.BoardId == boardId)
                 .Select(x => x.Id).ToList());
         }
-        
         public async Task<int> GetColumnsCountInBoardAsync(int boardId)
         {
             return await _userAvatarContext.Columns
                 .CountAsync(x => x.BoardId == boardId);
         }
-
         public async Task UpdateAsync(Column column)
         {
             _userAvatarContext.Entry(column).State = EntityState.Modified;
             await _userAvatarContext.SaveChangesAsync();
         }
-
-        private IEnumerable<Column> InternalGetAllColumns(Column column)
+        public async Task<List<Column>> InternalGetAllColumns(Column column)
         {
-            return _userAvatarContext.Columns
-                .Where(x => x.BoardId == column.BoardId);
+            return await _userAvatarContext.Columns
+                .Where(x => x.BoardId == column.BoardId).ToListAsync();
         }
-
-        public async Task ChangePositionAsync(int columnId, int newIndex)
+        public async Task<List<Column>> GetAllColumnsExceptThis(Column thisColumn)
         {
-            var thisColumn = await GetColumnByIdAsync(columnId);
-            
-            var columnList = _userAvatarContext.Columns
-                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id);
-
-            
-            var previousIndex = thisColumn.Index;
-            thisColumn.Index = newIndex;
-            
-            if (!PositionAlgorithm(previousIndex, newIndex, columnList))
-                throw new Exception();
-            
+            return await _userAvatarContext.Columns
+                .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id)
+                .ToListAsync();
+        }
+        public async Task Update()
+        {
             await _userAvatarContext.SaveChangesAsync();
         }
-
         public async Task<Column> GetColumnByIdAsync(int id)
         {
             return await _userAvatarContext.Columns.FindAsync(id);
-        }
-
-        private static async Task RecheckPositionAsync(List<Column> columnList, int deletedPosition)
-        {
-            await LockSlimForRecheck.WaitAsync();
-            try
-            {
-                if (deletedPosition == columnList.Count)
-                    return;
-                foreach (var column in columnList.Where(column => column.Index > deletedPosition))
-                {
-                    column.Index--;
-                }
-            }
-            finally
-            {
-                LockSlimForRecheck.Release();
-            }
-        }
-
-        private static bool PositionAlgorithm(int previousIndex, int newIndex, IQueryable<Column> columnList)
-        {
-            if(previousIndex - newIndex == 0)
-                return true;
-            if (newIndex < 0 || newIndex > columnList.Count() + 1)
-                return false;
-            
-            foreach (var column in columnList)
-                switch (previousIndex - newIndex) 
-                { 
-                    case < 0: 
-                    { 
-                        if (column.Index <= newIndex && column.Index >= previousIndex) 
-                        {
-                            column.Index--;
-                        }
-                        break; 
-                    } 
-                    case > 0: 
-                    { 
-                        if (column.Index <= previousIndex && column.Index >= newIndex)
-                        {
-                            column.Index++;
-                        }
-                        break; 
-                    } 
-                }
-            return true;
         }
     }
 }  
