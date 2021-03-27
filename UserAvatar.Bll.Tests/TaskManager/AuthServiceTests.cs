@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using FakeItEasy;
 using Moq;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
