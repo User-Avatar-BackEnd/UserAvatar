@@ -102,10 +102,11 @@ namespace UserAvatar.Bll.Tests.TaskManager.InviteServiceTests
             resultedError.Code.Should().Be(ResultCode.NotFound);
         }
 
-        [Theory]
-        [InlineData(1,"1")]
-        public async Task CreateInvite_If_Inviter_and_Invited_Equals_Returns_Forbidden(int inviter,string invited)
+        [Fact]
+        public async Task CreateInvite_If_Inviter_and_Invited_Equals_Returns_Forbidden()
         {
+            var inviter = 1;
+            var invited = "1";
             //Arrange
             SetupDependencies();
             _boardStorage.Setup(x => x.IsUserBoardAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(true);
