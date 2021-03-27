@@ -64,6 +64,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 UserId = userId,
                 BoardId = board.Id,
             });
+
             return new Result<BoardModel>(_mapper.Map<Board,BoardModel>(board), EventType.CreateBoard);
         }
 
@@ -130,7 +131,6 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             return ResultCode.Success;
         }
-
 
         public async Task<bool> IsUserBoardAsync(int userId, int boardId)
         {
