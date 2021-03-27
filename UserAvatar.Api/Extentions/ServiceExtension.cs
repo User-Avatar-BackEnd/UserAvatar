@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
+using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages;
@@ -39,7 +40,8 @@ namespace UserAvatar.Api.Extentions
                 .AddTransient<IRankService, RankService>()
                 .AddTransient<IRateService, RateService>()
                 .AddSingleton<IBoardChangesService, BoardChangesService>()
-                .AddTransient<ISearchService, SearchService>();
+                .AddTransient<ISearchService, SearchService>()
+                .AddTransient<IDateTimeProvider, DateTimeProvider>();
 
             services.AddScoped<IApplicationUser, ApplicationUser>();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using UserAvatar.Bll.Infrastructure;
 
 namespace UserAvatar.Bll.TaskManager.Models
 {
@@ -8,10 +9,10 @@ namespace UserAvatar.Bll.TaskManager.Models
     {
         private readonly struct Log
         {
-            public Log(int userId)
+            public Log(int userId, long ticks)
             {
                 UserId = userId;
-                Ticks = DateTimeOffset.UtcNow.Ticks;
+                Ticks = ticks;
             }
 
             public int UserId { get;}
@@ -23,21 +24,24 @@ namespace UserAvatar.Bll.TaskManager.Models
 
         private readonly long lifeTime = TimeSpan.FromMinutes(1).Ticks;
 
-        public BoardLogModel()
+        private readonly IDateTimeProvider _dateTimeProvider;
+
+        public BoardLogModel(IDateTimeProvider dateTimeProvider)
         {
             _logs = new ConcurrentQueue<Log>();
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public void AddChange(int userId)
         {
             Clear();
-            _logs.Enqueue(new Log(userId));
+            _logs.Enqueue(new Log(userId, _dateTimeProvider.DateTimeUtcNowTicks()));
         }
 
         public bool HasChanges(int userId, long lastCheck)
         {
             Clear();
-            if (DateTimeOffset.UtcNow.Ticks - lastCheck > lifeTime)
+            if (_dateTimeProvider.DateTimeUtcNowTicks() - lastCheck > lifeTime)
             {
                 return true;
             }
@@ -62,7 +66,7 @@ namespace UserAvatar.Bll.TaskManager.Models
 
             while(_logs.TryPeek(out log))
             {
-                if (DateTimeOffset.UtcNow.Ticks - log.Ticks < lifeTime)
+                if (_dateTimeProvider.DateTimeUtcNowTicks() - log.Ticks < lifeTime)
                 {
                     break;
                 }
