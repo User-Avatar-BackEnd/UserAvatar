@@ -109,14 +109,14 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.Forbidden;
             }
 
-            if (!await _boardStorage.IsBoardCard(boardId, cardId))
+            if (!await _boardStorage.IsBoardCardAsync(boardId, cardId))
             {
                 return ResultCode.NotFound;
             }
 
             if (commentId != null)
             {
-                if (!await _cardStorage.IsCardComment(cardId, (int)commentId))
+                if (!await _cardStorage.IsCardCommentAsync(cardId, (int)commentId))
                 {
                     return ResultCode.NotFound;
                 }

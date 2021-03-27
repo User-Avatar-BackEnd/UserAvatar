@@ -31,5 +31,6 @@
 
     <ItemGroup>
       <Folder Include="Gamification\" />
+      <Folder Include="TaskManager\CommentServiceTests\" />
     </ItemGroup>
 </Project>

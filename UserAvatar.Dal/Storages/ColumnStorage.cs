@@ -56,18 +56,18 @@ namespace UserAvatar.Dal.Storages
             _userAvatarContext.Entry(column).State = EntityState.Modified;
             await _userAvatarContext.SaveChangesAsync();
         }
-        public async Task<List<Column>> InternalGetAllColumns(Column column)
+        public async Task<List<Column>> InternalGetAllColumnsAsync(Column column)
         {
             return await _userAvatarContext.Columns
                 .Where(x => x.BoardId == column.BoardId).ToListAsync();
         }
-        public async Task<List<Column>> GetAllColumnsExceptThis(Column thisColumn)
+        public async Task<List<Column>> GetAllColumnsExceptThisAsync(Column thisColumn)
         {
             return await _userAvatarContext.Columns
                 .Where(x => x.BoardId == thisColumn.BoardId && x.Id != thisColumn.Id)
                 .ToListAsync();
         }
-        public async Task Update()
+        public async Task UpdateAsync()
         {
             await _userAvatarContext.SaveChangesAsync();
         }
