@@ -86,7 +86,7 @@ namespace UserAvatar.Bll.TaskManager.Services
         public async Task<Result<List<UserModel>>> FindByQueryAsync(int boardId, int userId, string query)
         {
             if (string.IsNullOrEmpty(query))
-                return new Result<List<UserModel>>(new List<UserModel>());
+                return new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(await _userStorage.GetAllUsers(boardId)));
             
             if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
                 return new Result<List<UserModel>>(ResultCode.Forbidden);

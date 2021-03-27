@@ -21,6 +21,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task UpdateStatusAsync(User user);
 
         Task UpdateAsync(User user);
+        Task<List<User>> GetAllUsers(int boardId);
         
         Task<List<User>> GetUsersRateAsync();
       
