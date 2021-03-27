@@ -129,7 +129,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             return new Result<bool>(true,eventType);
         }
 
-        public async Task<Result<CardModel>> GetByIdAsync(
+        public async Task<Result<CardModel>> GetCardByIdAsync(
             int boardId, int cardId, int userId)
         {
             var card = await _cardStorage.GetByIdAsync(cardId);

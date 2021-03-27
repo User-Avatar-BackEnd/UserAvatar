@@ -49,7 +49,7 @@ namespace UserAvatar.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         public async Task<IActionResult> GetByIdAsync(int boardId, int cardId)
         {
-            var result = await _cardService.GetByIdAsync(boardId, cardId, UserId);
+            var result = await _cardService.GetCardByIdAsync(boardId, cardId, UserId);
 
             if (result.Code == ResultCode.Forbidden) return Forbid();
             if (result.Code == ResultCode.NotFound) return NotFound();
