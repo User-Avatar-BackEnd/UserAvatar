@@ -106,7 +106,7 @@ namespace UserAvatar.Bll.Tests.Gamification
         }
 
         [Fact]
-        public async Task ChangeEventsCost_If_Valid_Event_List_Returns_ResultCode_BadRequest()
+        public async Task ChangeEventsCost_If_Valid_Event_List_Returns_ResultCode_Success()
         {
             // Assert
             _eventStorage.Setup(x => x.GetEventListAsync()).ReturnsAsync(new List<Event>()

@@ -29,7 +29,6 @@
       <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Gamification\" />
       <Folder Include="TaskManager\CommentServiceTests\" />
     </ItemGroup>
 </Project>
