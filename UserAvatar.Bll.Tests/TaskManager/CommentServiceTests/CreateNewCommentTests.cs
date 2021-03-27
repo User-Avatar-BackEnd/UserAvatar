@@ -109,7 +109,7 @@ namespace UserAvatar.Bll.Tests.TaskManager.CommentServiceTests
 
         private CommentService SetupCommentService()
         {
-            return new CommentService(
+            return new(
                 _commentStorage.Object,
                 _boardStorage.Object,
                 _cardStorage.Object,

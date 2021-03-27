@@ -25,7 +25,6 @@ namespace UserAvatar.Bll.Gamification.Services
 
         public async Task<Result<FullRateModel>> GetTopRateAsync(int userId)
         {
-            // TODO: SHOULD I CHECK THAT USERS.COUNT !=0?
             var users = await _userStorage.GetUsersRateAsync();
 
             var firstTen = users.Take(10).ToList();
@@ -54,10 +53,7 @@ namespace UserAvatar.Bll.Gamification.Services
                 }
             }
 
-            // mapper.Map<List<?>,List<RateModel>>(first ten)
             var topUsers = _mapper.Map<List<RateModel>>(firstTen);
-
-            //setting two properties for every in those collections : 
 
             if (underTopUsers.Count >= 2)
             {
