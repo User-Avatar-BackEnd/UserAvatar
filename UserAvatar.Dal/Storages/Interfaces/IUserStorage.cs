@@ -12,24 +12,24 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<bool> IsLoginExistAsync(string login);
 
-        Task<List<User>> InviteByQuery(int boardId, string query);
+        Task<List<User>> InviteByQueryAsync(int boardId, string query);
 
         Task<bool> IsUserExistAsync(string email);
 
         Task<User> GetByIdAsync(int id);
 
-        Task UpdateStatus(User user);
+        Task UpdateStatusAsync(User user);
 
         Task UpdateAsync(User user);
         
-        Task<List<User>> GetUsersRate();
+        Task<List<User>> GetUsersRateAsync();
       
         Task<User> GetByLoginAsync(string login);
 
-        Task AddScoreToUser(int userId, int score);
+        Task AddScoreToUserAsync(int userId, int score);
 
         Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize, string query);
 
-        Task<int> GetUsersAmount();
+        Task<int> GetUsersAmountAsync();
     }
 }

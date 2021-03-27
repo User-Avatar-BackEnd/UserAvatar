@@ -10,10 +10,10 @@ namespace UserAvatar.Dal.Storages.Interfaces
 
         Task<List<History>> GetHistoryByUserAsync(int userId);
 
-        Task<bool> GetNotCalculatedHistory();
+        Task<bool> GetNotCalculatedHistoryAsync();
 
-        Task SaveChanges();
+        Task SaveChangesAsync();
 
-        Task<List<History>> GetUserScoresList();
+        Task<List<History>> GetUserScoresListAsync();
     }
 }

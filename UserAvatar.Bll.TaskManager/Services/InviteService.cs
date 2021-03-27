@@ -91,7 +91,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
                 return new Result<List<UserModel>>(ResultCode.Forbidden);
             
-            var userList = await _userStorage.InviteByQuery(boardId, query);
+            var userList = await _userStorage.InviteByQueryAsync(boardId, query);
             
             return new Result<List<UserModel>>(_mapper.Map<List<User>, List<UserModel>>(userList));
         }
