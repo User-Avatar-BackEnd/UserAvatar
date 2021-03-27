@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -69,6 +70,7 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             card = await _cardStorage.CreateAsync(card);
             var cardModel = _mapper.Map<Card, CardModel>(card);
+            card.Comments = card.Comments.OrderByDescending(x => x.CreatedAt).ToList();
 
             var board = await _boardStorage.GetBoardAsync(boardId);
             var eventType = board.OwnerId == userId ?
