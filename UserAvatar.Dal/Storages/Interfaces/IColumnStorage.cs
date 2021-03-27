@@ -7,20 +7,15 @@ namespace UserAvatar.Dal.Storages.Interfaces
 {
     public interface IColumnStorage
     {
-        Task<Column> CreateAsync(Column column);
-
-        Task DeleteApparentAsync(int columnId);
-
+        Task<int> CountColumnsInBoardAsync(int boardId);
+        Task AddColumnAsync(Column column);
+        Task<List<Column>> InternalGetAllColumns(Column column);
+        Task<List<Column>> GetAllColumnsExceptThis(Column thisColumn);
+        Task Update();
+        Task DeleteApparentAsync(Column column);
         Task UpdateAsync(Column column);
-
-        Task ChangePositionAsync(int columnId, int positionIndex);
-        
         Task<Column> GetColumnByIdAsync(int id);
-
         Task<List<int>> GetAllColumnsAsync(int boardId);
-
-        bool IsUserInBoardByColumnId(int userId, int columnId);
-        
         Task<int> GetColumnsCountInBoardAsync(int boardId);
     }
 }

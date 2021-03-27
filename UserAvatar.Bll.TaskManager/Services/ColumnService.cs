@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Options;
@@ -18,6 +21,9 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IBoardStorage _boardStorage;
         private readonly LimitationOptions _limitations;
         private readonly IBoardChangesService _boardChangesService;
+        
+        private static readonly SemaphoreSlim LockSlim = new(1, 1);
+        private static readonly SemaphoreSlim LockSlimForRecheck = new(1, 1);
 
         public ColumnService(
             IColumnStorage columnStorage,
@@ -32,11 +38,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             _limitations = limitations.Value;
             _boardChangesService = boardChangesService;
         }
-
-        //todo: add userId
-
-        public async Task<Result<ColumnModel>> CreateAsync(
-            int userId, int boardId, string title)
+        public async Task<Result<ColumnModel>> CreateAsync(int userId, int boardId, string title)
         {
             var validation = await ValidateUserColumnAsync(userId, boardId);
             if (validation != ResultCode.Success)
@@ -56,18 +58,31 @@ namespace UserAvatar.Bll.TaskManager.Services
                 CreatedAt = DateTimeOffset.UtcNow,
                 ModifiedAt = DateTimeOffset.UtcNow
             };
-
-            var column = await _columnStorage.CreateAsync(newColumn);
-
+            
+            await LockSlim.WaitAsync();
+            try
+            {
+                var thisBoard = await _boardStorage.GetBoardAsync(boardId);
+                var columnCount = await _columnStorage.CountColumnsInBoardAsync(boardId);
+                
+                newColumn.Board = thisBoard;
+                newColumn.Index = columnCount;
+                
+                await _columnStorage.AddColumnAsync(newColumn);
+            }
+            finally
+            {
+                LockSlim.Release();
+            }
+            
             _boardChangesService.DoChange(boardId, userId);
-
-            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(column));
+            
+            return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(newColumn));
         }
-
-        public async Task<int> ChangePositionAsync(
-            int userId, int boardId, int columnId, int positionIndex)
+        public async Task<int> ChangePositionAsync(int userId, int boardId, int columnId, int positionIndex)
         {
             var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
+            
             if (validation != ResultCode.Success)
             {
                 return validation;
@@ -78,13 +93,23 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.BadRequest;
             }
             
-            await _columnStorage.ChangePositionAsync(columnId, positionIndex);
+            var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
+
+            var columnList = await _columnStorage.GetAllColumnsExceptThis(thisColumn);
+            
+            var previousIndex = thisColumn.Index;
+            thisColumn.Index = positionIndex;
+
+            if (!PositionAlgorithm(previousIndex, positionIndex, columnList))
+                return ResultCode.BadRequest;
+            //throw new Exception(); I will change into something else
+
+            await _columnStorage.Update();
 
             _boardChangesService.DoChange(boardId, userId);
 
             return ResultCode.Success;
         }
-
         public async Task<int> DeleteAsync(int userId, int boardId, int columnId)
         {
             var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
@@ -93,13 +118,19 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return validation;
             }
             
-            await _columnStorage.DeleteApparentAsync(columnId);
+            var column = await _columnStorage.GetColumnByIdAsync(columnId);
+            if (column.IsDeleted)
+                return ResultCode.BadRequest;
+            
+            var columnList = await _columnStorage.InternalGetAllColumns(column);
+            await RecheckPositionAsync(columnList,column.Index);
 
+            await _columnStorage.DeleteApparentAsync(column);
+            
             _boardChangesService.DoChange(boardId, userId);
 
             return ResultCode.Success;
         }
-
         public async Task<int> UpdateAsync(int userId, int boardId, int columnId, string title)
         {   
             var validation = await ValidateUserColumnAsync(userId, boardId, columnId);
@@ -118,7 +149,6 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             return ResultCode.Success;
         }
-
         public async Task<Result<ColumnModel>> GetColumnByIdAsync(int userId, int boardId, int columnId)
         {
             int validation = await ValidateUserColumnAsync(userId, boardId, columnId);
@@ -131,7 +161,6 @@ namespace UserAvatar.Bll.TaskManager.Services
 
             return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
         }
-
         private async Task<int> ValidateUserColumnAsync(int userId, int boardId, int? columnId=null)
         {
             if (!await _boardStorage.IsBoardExistAsync(boardId))
@@ -153,6 +182,52 @@ namespace UserAvatar.Bll.TaskManager.Services
             }
 
             return ResultCode.Success;
+        }
+        private static bool PositionAlgorithm(int previousIndex, int newIndex, List<Column> columnList)
+        {
+            if(previousIndex - newIndex == 0)
+                return true;
+            if (newIndex < 0 || newIndex > columnList.Count() + 1)
+                return false;
+            
+            foreach (var column in columnList)
+                switch (previousIndex - newIndex) 
+                { 
+                    case < 0: 
+                    { 
+                        if (column.Index <= newIndex && column.Index >= previousIndex) 
+                        {
+                            column.Index--;
+                        }
+                        break; 
+                    } 
+                    case > 0: 
+                    { 
+                        if (column.Index <= previousIndex && column.Index >= newIndex)
+                        {
+                            column.Index++;
+                        }
+                        break; 
+                    } 
+                }
+            return true;
+        }
+        private static async Task RecheckPositionAsync(List<Column> columnList, int deletedPosition)
+        {
+            await LockSlimForRecheck.WaitAsync();
+            try
+            {
+                if (deletedPosition == columnList.Count)
+                    return;
+                foreach (var column in columnList.Where(column => column.Index > deletedPosition))
+                {
+                    column.Index--;
+                }
+            }
+            finally
+            {
+                LockSlimForRecheck.Release();
+            }
         }
     }
 }
