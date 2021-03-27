@@ -31,14 +31,14 @@ namespace UserAvatar.Dal.Storages
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<User>> InviteByQuery(int boardId, string query)
+        public async Task<List<User>> InviteByQueryAsync(int boardId, string query)
         {
             var boardMembers = await  _dbContext.Members
                 .Where(x => x.BoardId == boardId).Select(x=> x.User.Id).ToListAsync();
 
             var filtered = await _dbContext.Users
                 .Where(x => !boardMembers.Contains(x.Id) 
-                            && x.Login.Contains(query)).ToListAsync();
+                            && x.Login.Contains(query)).Take(10).ToListAsync();
             return filtered;
         }
 
@@ -55,7 +55,7 @@ namespace UserAvatar.Dal.Storages
            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateStatus(User user)
+        public async Task UpdateStatusAsync(User user)
         {
             _dbContext.Entry(user).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -73,7 +73,7 @@ namespace UserAvatar.Dal.Storages
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<User>> GetUsersRate()
+        public async Task<List<User>> GetUsersRateAsync()
         {
             return await _dbContext.Users
                 .OrderByDescending(x => x.Score)
@@ -86,7 +86,7 @@ namespace UserAvatar.Dal.Storages
             return await _dbContext.Users.AnyAsync(user => user.Email.ToLower() == email.ToLower());
         }
 
-        public async Task AddScoreToUser(int userId, int score)
+        public async Task AddScoreToUserAsync(int userId, int score)
         {
             var thisUser = await GetByIdAsync(userId);
             thisUser.Score += score;
@@ -104,7 +104,7 @@ namespace UserAvatar.Dal.Storages
                    .ToListAsync();
         }
 
-        public async Task<int> GetUsersAmount()
+        public async Task<int> GetUsersAmountAsync()
         {
             return await _dbContext.Users.CountAsync();
         }

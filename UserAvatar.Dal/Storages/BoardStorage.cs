@@ -143,7 +143,7 @@ namespace UserAvatar.Dal.Storages
         }
 
         //todo: think about this
-        public async Task<bool> IsBoardCard(int boardId, int cardId)
+        public async Task<bool> IsBoardCardAsync(int boardId, int cardId)
         {
             return await _dbContext.Boards
                 .Where(x => x.Id == boardId)

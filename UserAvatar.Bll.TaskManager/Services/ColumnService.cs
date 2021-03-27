@@ -95,7 +95,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             
             var thisColumn = await _columnStorage.GetColumnByIdAsync(columnId);
 
-            var columnList = await _columnStorage.GetAllColumnsExceptThis(thisColumn);
+            var columnList = await _columnStorage.GetAllColumnsExceptThisAsync(thisColumn);
             
             var previousIndex = thisColumn.Index;
             thisColumn.Index = positionIndex;
@@ -104,7 +104,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return ResultCode.BadRequest;
             //throw new Exception(); I will change into something else
 
-            await _columnStorage.Update();
+            await _columnStorage.UpdateAsync();
 
             _boardChangesService.DoChange(boardId, userId);
 
@@ -122,7 +122,7 @@ namespace UserAvatar.Bll.TaskManager.Services
             if (column.IsDeleted)
                 return ResultCode.BadRequest;
             
-            var columnList = await _columnStorage.InternalGetAllColumns(column);
+            var columnList = await _columnStorage.InternalGetAllColumnsAsync(column);
             await RecheckPositionAsync(columnList,column.Index);
 
             await _columnStorage.DeleteApparentAsync(column);

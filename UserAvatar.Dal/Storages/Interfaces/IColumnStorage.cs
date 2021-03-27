@@ -9,9 +9,9 @@ namespace UserAvatar.Dal.Storages.Interfaces
     {
         Task<int> CountColumnsInBoardAsync(int boardId);
         Task AddColumnAsync(Column column);
-        Task<List<Column>> InternalGetAllColumns(Column column);
-        Task<List<Column>> GetAllColumnsExceptThis(Column thisColumn);
-        Task Update();
+        Task<List<Column>> InternalGetAllColumnsAsync(Column column);
+        Task<List<Column>> GetAllColumnsExceptThisAsync(Column thisColumn);
+        Task UpdateAsync();
         Task DeleteApparentAsync(Column column);
         Task UpdateAsync(Column column);
         Task<Column> GetColumnByIdAsync(int id);

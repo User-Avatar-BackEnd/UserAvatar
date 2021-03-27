@@ -89,12 +89,12 @@ namespace UserAvatar.Dal.Storages
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> GetCardIdByColumnId(int columnId)
+        public async Task<int> GetCardIdByColumnIdAsync(int columnId)
         {
             return await Task.FromResult(_dbContext.Cards.FirstOrDefaultAsync(x => x.ColumnId == columnId).Id);
         }
 
-        public async Task<bool> IsCardComment(int cardId, int commentId)
+        public async Task<bool> IsCardCommentAsync(int cardId, int commentId)
         {
             return await _dbContext.Comments
                 .AnyAsync(x => x.Id == commentId && x.CardId == cardId);

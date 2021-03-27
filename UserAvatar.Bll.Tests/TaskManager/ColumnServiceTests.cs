@@ -171,12 +171,13 @@ namespace UserAvatar.Bll.Tests.TaskManager
             resultSuccess.Code.Should().Be(ResultCode.Success);
 
         }
+
         [Fact]
         public async Task DeleteAsync_If_Column_is_Deleted_Returns_BadRequest()
         {
             //Arrange
             SetupAnyDeps();
-            _columnStorage.Setup(x => x.InternalGetAllColumns(It.IsAny<Column>()))
+            _columnStorage.Setup(x => x.InternalGetAllColumnsAsync(It.IsAny<Column>()))
                 .ReturnsAsync(new List<Column> {new(){Index = 0}, new(){Index = 1}, new (){Index = 2} });
             
             _columnStorage.Setup(x => x.GetColumnByIdAsync(It.IsAny<int>())).ReturnsAsync(new Column{IsDeleted = true});
@@ -190,6 +191,7 @@ namespace UserAvatar.Bll.Tests.TaskManager
             resultError.Should().Be(ResultCode.BadRequest);
 
         }
+
         [Fact]
         public async Task UpdateAsync_If_Column_is_Null_Returns_NotFound()
         {
@@ -217,8 +219,6 @@ namespace UserAvatar.Bll.Tests.TaskManager
         [InlineData(8)]
         [InlineData(9)]
         [InlineData(4)]
-        [InlineData(9)]
-        
         public async Task CreateAsync_Returns_New_Column(int columnCount)
         {
             //Arrange
@@ -305,7 +305,7 @@ namespace UserAvatar.Bll.Tests.TaskManager
             _columnStorage.Setup(x => x.GetColumnsCountInBoardAsync(It.IsAny<int>()))
                 .ReturnsAsync(3);
 
-            _columnStorage.Setup(x => x.GetAllColumnsExceptThis(It.IsAny<Column>()))
+            _columnStorage.Setup(x => x.GetAllColumnsExceptThisAsync(It.IsAny<Column>()))
                 .ReturnsAsync(new List<Column> { new(){Index = 0}, new(){Index = 1}, new(){Index = 2}});
             
             _service = SetupColumnService();
