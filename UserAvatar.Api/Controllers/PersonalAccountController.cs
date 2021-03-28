@@ -111,7 +111,7 @@ namespace UserAvatar.Api.Controllers
                 Login = userData.Value.Login,
                 Role = userData.Value.Role,
                 InvitesAmount = userData.Value.Invited
-                    .Count(invite => invite.Status == -1),
+                    .Count(invite => invite.Status == 0),
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
                 CurrentScoreAmount = userData.Value.Score,
