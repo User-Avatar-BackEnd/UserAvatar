@@ -185,6 +185,11 @@ namespace UserAvatar.Dal.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int>("Index")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
+
                     b.Property<int>("Score")
                         .HasColumnType("integer");
 
@@ -217,8 +222,6 @@ namespace UserAvatar.Dal.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EventName");
 
                     b.HasIndex("UserId");
 
@@ -396,12 +399,6 @@ namespace UserAvatar.Dal.Migrations
 
             modelBuilder.Entity("UserAvatar.Dal.Entities.History", b =>
                 {
-                    b.HasOne("UserAvatar.Dal.Entities.Event", null)
-                        .WithMany("Histories")
-                        .HasForeignKey("EventName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("UserAvatar.Dal.Entities.User", "User")
                         .WithMany("Histories")
                         .HasForeignKey("UserId")
@@ -474,11 +471,6 @@ namespace UserAvatar.Dal.Migrations
             modelBuilder.Entity("UserAvatar.Dal.Entities.Column", b =>
                 {
                     b.Navigation("Cards");
-                });
-
-            modelBuilder.Entity("UserAvatar.Dal.Entities.Event", b =>
-                {
-                    b.Navigation("Histories");
                 });
 
             modelBuilder.Entity("UserAvatar.Dal.Entities.User", b =>

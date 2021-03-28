@@ -10,6 +10,9 @@ namespace UserAvatar.Dal.Entities
         [Required] 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Name { get; set; }
+        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Index { get; set; }
 
         [Required]
         public int Score { get; set; }
