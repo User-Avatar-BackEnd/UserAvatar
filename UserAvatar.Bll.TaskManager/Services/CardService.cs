@@ -106,7 +106,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 return new Result<bool>(ResultCode.Forbidden);
             }
 
-            bool statusChanged = card.ColumnId == cardModel.ColumnId;
+            var statusChanged = card.ColumnId != cardModel.ColumnId;
                 
             card.Title = cardModel.Title;
             card.Description = cardModel.Description;
