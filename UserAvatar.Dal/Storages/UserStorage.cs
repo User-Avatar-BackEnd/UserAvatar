@@ -90,6 +90,41 @@ namespace UserAvatar.Dal.Storages
                 .ToListAsync();
         }
 
+        public class query
+        {
+            public int Id { get; set; }
+            public string Login { get; set; }
+            public int Score { get; set; }
+            public int Index { get; set; }
+        }
+
+        public async Task<IEnumerable<query>> TestIndex(int userId)
+        {
+            return await Task.FromResult(_dbContext.Users.OrderByDescending(x => x.Score)
+                .AsEnumerable()
+                .TakeWhile(x=> x.Id != userId)
+                .Select((user, index) =>
+                    new query
+                    {
+                        Id = user.Id,
+                        Login = user.Login,
+                        Score = user.Score,
+                        Index = index + 1
+                    }));
+        }
+
+        public async Task<List<query>> GETTYGETTY(int userId)
+        {
+            var thisUser = await _dbContext.Users.FindAsync(userId);
+            return await (from x in _dbContext.Users
+                    where x.Score <= thisUser.Score
+                    orderby x.Score descending
+                    select x)
+                .Take(2)
+                .Select(x=> new query{Id = x.Id, Login = x.Login, Score = x.Score, Index = 0})
+                .ToListAsync();
+        }
+
         public async Task<bool> IsUserExistAsync(string email)
         {
             //return await _dbContext.Users.AnyAsync(user => user.Email == email);

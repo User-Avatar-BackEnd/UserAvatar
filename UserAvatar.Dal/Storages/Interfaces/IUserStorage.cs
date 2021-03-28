@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Dal.Entities;
 
@@ -7,6 +8,8 @@ namespace UserAvatar.Dal.Storages.Interfaces
     public interface IUserStorage
     {
         Task<User> GetByEmailAsync(string email);
+        Task<IEnumerable<UserStorage.query>> TestIndex(int userId);
+        Task<List<UserStorage.query>> GETTYGETTY(int userId);
 
         Task CreateAsync(User user);
 
