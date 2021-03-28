@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAvatar.Dal.Context;
@@ -18,7 +19,7 @@ namespace UserAvatar.Dal.Storages
 
         public async Task<List<Event>> GetEventListAsync()
         {
-            return await _dbContext.Events.ToListAsync();
+            return await _dbContext.Events.OrderBy(x=>x.Index).ToListAsync();
         }
 
         public async Task UpdateEventsAsync(List<Event> events)
