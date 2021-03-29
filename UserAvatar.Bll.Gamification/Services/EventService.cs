@@ -68,7 +68,7 @@ namespace UserAvatar.Bll.Gamification.Services
             var user = await _userStorage.GetByLoginAsync(login);
             if (user == null) return ResultCode.NotFound;
 
-            await _historyService.AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
+            await _historyService.AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalanceByAdmin, balance);
 
             return ResultCode.Success;
         }

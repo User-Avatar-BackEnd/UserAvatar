@@ -92,7 +92,7 @@ namespace UserAvatar.Api.Extensions
                 { EventType.CreateCardOnAlienBoard, 4 },
                 { EventType.ChangeCardStatusOnOwnBoard, 1 },
                 { EventType.ChangeCardStatusOnAlienBoard, 2 },
-                { EventType.ChangeUserBalansByAdmin, -1 }
+                { EventType.ChangeUserBalanceByAdmin, -1 }
             };
             
         }
