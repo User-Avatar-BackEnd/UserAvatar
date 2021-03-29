@@ -10,6 +10,9 @@ using UserAvatar.Api.Options;
 
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// Authentication services extension
+    /// </summary>
     public static class AuthenticationExtension
     {
         /// <summary>

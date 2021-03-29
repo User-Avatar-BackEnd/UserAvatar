@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +12,16 @@ using UserAvatar.Dal.Context;
 
 namespace UserAvatar.Api
 {
+    /// <summary>
+    /// Startup class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Startup method
+        /// </summary>
+        /// <param name="configuration">IConfiguration</param>
+        /// <param name="environment">IWebHostEnvironment</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -22,6 +31,10 @@ namespace UserAvatar.Api
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
         
+        /// <summary>
+        /// Configuration of Services
+        /// </summary>
+        /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -46,6 +59,12 @@ namespace UserAvatar.Api
             services.AddCors();
             
         }
+        /// <summary>
+        /// Configuration method
+        /// </summary>
+        /// <param name="app">IApplicationBuilder</param>
+        /// <param name="env">IWebHostEnvironment</param>
+        /// <param name="userAvatarContext">UserAvatarContext</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
         {
             userAvatarContext?.Database.Migrate();

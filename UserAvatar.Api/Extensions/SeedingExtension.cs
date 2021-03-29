@@ -8,8 +8,15 @@ using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// Seeding extension.
+    /// </summary>
     public static class SeedingExtension
     {
+        /// <summary>
+        /// First database population
+        /// </summary>
+        /// <param name="context"></param>
         public static void PopulateDatabase(UserAvatarContext context)
         {
             EnsureAdminCreated(context);

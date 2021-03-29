@@ -18,6 +18,9 @@ using UserAvatar.Api.Authentication;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Card controlelr
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards")]
@@ -30,6 +33,13 @@ namespace UserAvatar.Api.Controllers
         private readonly IApplicationUser _applicationUser;
         private readonly IHistoryService _historyService;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="cardService">card service</param>
+        /// <param name="mapper">automapper</param>
+        /// <param name="applicationUser">this user id</param>
+        /// <param name="historyService">history service</param>
         public CardController(
             ICardService cardService,
             IMapper mapper,
@@ -44,6 +54,12 @@ namespace UserAvatar.Api.Controllers
 
         private int UserId => _applicationUser.Id;
 
+        /// <summary>
+        /// Gets card by its id
+        /// </summary>
+        /// <param name="boardId">board where card is</param>
+        /// <param name="cardId">card id</param>
+        /// <returns></returns>
         [HttpGet("{cardId:int}")]
         [ProducesResponseType(typeof(CardDetailedVm),(int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -64,6 +80,13 @@ namespace UserAvatar.Api.Controllers
             return Ok(cardVm);
         }
 
+        /// <summary>
+        /// Adding a card to the board
+        /// </summary>
+        /// <param name="boardId">board to be added id</param>
+        /// <param name="columnId">column to be added id</param>
+        /// <param name="titleDto">title of the card</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("~/api/v1/boards/{boardId:int}/columns/{columnId:int}/cards")]
         [ProducesResponseType(typeof(CardShortVm),(int)HttpStatusCode.OK)]
@@ -91,6 +114,13 @@ namespace UserAvatar.Api.Controllers
             return Ok(cardVm);
         }
 
+        /// <summary>
+        /// Updates card
+        /// </summary>
+        /// <param name="boardId">board id where card is situated</param>
+        /// <param name="cardId">card to be updated id</param>
+        /// <param name="updateCardDto">update data</param>
+        /// <returns></returns>
         [HttpPut("{cardId:int}")]
         [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
@@ -112,6 +142,12 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Soft deletes card
+        /// </summary>
+        /// <param name="boardId">board id where card is situated in</param>
+        /// <param name="cardId">this card id</param>
+        /// <returns></returns>
         [HttpDelete("{cardId:int}")]
         [ProducesResponseType(typeof(int), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]

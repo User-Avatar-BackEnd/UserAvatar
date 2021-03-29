@@ -14,6 +14,9 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Commentaries controller
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/v1/boards/{boardId:int}/cards/{cardId:int}/comments")]
@@ -21,10 +24,16 @@ namespace UserAvatar.Api.Controllers
     [Produces(MediaTypeNames.Application.Json)]
     public class CommentController:ControllerBase
     {
-
         private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="commentService">commentaries service</param>
+        /// <param name="mapper">automapper</param>
+        /// <param name="applicationUser">this user id</param>
         public CommentController(ICommentService commentService, IMapper mapper, IApplicationUser applicationUser)
         {
             _commentService = commentService;
@@ -33,26 +42,14 @@ namespace UserAvatar.Api.Controllers
         }
 
         private int UserId => _applicationUser.Id;
-
-        /*
-        [HttpGet]
-        public async Task<ActionResult<CommentDto>> GetCommentsAsync(int cardId)
-        {
-            var userId = Convert.ToInt32(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            var list = await _commentService.GetCommentsAsync(userId,cardId);
-
-            if (list.Code != ResultCode.Success)
-            {
-                return Forbid();
-            }
-            return Ok(_mapper.Map<List<CommentModel>,List<CommentDto>>(list.Value));
-
-
-
-            return Ok(_mapper.Map<List<CommentModel>,List<CommentDto>>(list));
-        }
-        */
-
+        
+        /// <summary>
+        /// Creates comment in a card
+        /// </summary>
+        /// <param name="boardId">board id where card is</param>
+        /// <param name="cardId">card to be inserted in id</param>
+        /// <param name="commentDto">comment data</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(CommentVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -68,6 +65,14 @@ namespace UserAvatar.Api.Controllers
             return Ok(_mapper.Map<CommentModel,CommentVm>(result.Value));
         }
         
+        /// <summary>
+        /// Updates comment
+        /// </summary>
+        /// <param name="boardId">board id where card is</param>
+        /// <param name="cardId">card where comment is id</param>
+        /// <param name="commentId">comment to be updated id</param>
+        /// <param name="commentDto">update comment body</param>
+        /// <returns></returns>
         [HttpPatch("{commentId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -83,6 +88,13 @@ namespace UserAvatar.Api.Controllers
             return Ok(_mapper.Map<CommentModel, CommentVm>(result.Value));
         }
         
+        /// <summary>
+        /// Soft deletes comment
+        /// </summary>
+        /// <param name="boardId">board id where card with comment is</param>
+        /// <param name="cardId">card id where comment is</param>
+        /// <param name="commentId">comment id to be deleted</param>
+        /// <returns></returns>
         [HttpDelete("{commentId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

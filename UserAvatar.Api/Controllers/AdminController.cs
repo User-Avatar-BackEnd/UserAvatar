@@ -20,6 +20,9 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Administrator controller
+    /// </summary>
     [ApiController]
     [Route("api/v1/admin")]
     [Authorize(Roles = Roles.Admin)]
@@ -37,6 +40,16 @@ namespace UserAvatar.Api.Controllers
         private readonly IApplicationUser _applicationUser;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Constructio
+        /// </summary>
+        /// <param name="eventService">event service</param>
+        /// <param name="historyService">history service</param>
+        /// <param name="searchService">search service</param>
+        /// <param name="rankService">rank service</param>
+        /// <param name="personalAccountService">personal account service</param>
+        /// <param name="applicationUser">this user id</param>
+        /// <param name="mapper">mapper</param>
         public AdminController(
             IEventService eventService,
             IHistoryService historyService,
@@ -57,6 +70,10 @@ namespace UserAvatar.Api.Controllers
 
         private int UserId => _applicationUser.Id;
 
+        /// <summary>
+        /// Gets all events
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("events")]
         [ProducesResponseType(typeof(List<EventVm>),(int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<EventVm>>> GetEventsAsync()
@@ -65,6 +82,11 @@ namespace UserAvatar.Api.Controllers
             return Ok(_mapper.Map<List<EventModel>, List<EventVm>>(events));
         }
 
+        /// <summary>
+        /// Changing cost of event
+        /// </summary>
+        /// <param name="newEvents"></param>
+        /// <returns></returns>
         [HttpPut("events")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -79,6 +101,12 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Changing user role
+        /// </summary>
+        /// <param name="role"></param>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpPut("role/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -100,6 +128,11 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
 
+        /// <summary>
+        /// Gets history
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpGet("history/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -112,6 +145,12 @@ namespace UserAvatar.Api.Controllers
             return Ok(_mapper.Map<List<HistoryModel>, List<HistoryVm>>(result.Value));
         }
 
+        /// <summary>
+        /// Changing user balance
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="change"></param>
+        /// <returns></returns>
         [HttpPatch("balance/{login}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -124,6 +163,13 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Getting all users paged
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet("users")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

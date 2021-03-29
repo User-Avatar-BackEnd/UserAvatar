@@ -7,8 +7,14 @@ using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Api.Contracts.Dtos;
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// Profile for mapping
+    /// </summary>
     public class MappingProfile : Profile
     {
+        /// <summary>
+        /// Main mapping profiles
+        /// </summary>
         public MappingProfile()
         {
             CreateMap<User, UserModel>();

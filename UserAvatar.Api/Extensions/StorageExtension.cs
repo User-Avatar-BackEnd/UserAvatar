@@ -5,6 +5,9 @@ using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// All storage injection extension
+    /// </summary>
     public static class StorageExtension
     {
         /// <summary>

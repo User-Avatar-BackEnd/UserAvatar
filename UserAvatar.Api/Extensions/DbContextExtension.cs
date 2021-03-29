@@ -6,6 +6,9 @@ using UserAvatar.Dal.Context;
 
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// Database context service extension
+    /// </summary>
     public static class DbContextExtension
     {
         /// <summary>

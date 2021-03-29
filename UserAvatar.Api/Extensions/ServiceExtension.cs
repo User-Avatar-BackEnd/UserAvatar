@@ -15,6 +15,9 @@ using UserAvatar.Dal.Storages.Interfaces;
 
 namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// All services injection extension
+    /// </summary>
     public static class ServiceExtension
     {
         /// <summary>
