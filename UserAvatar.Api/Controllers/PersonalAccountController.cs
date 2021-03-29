@@ -105,6 +105,8 @@ namespace UserAvatar.Api.Controllers
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
             var rankData = await _rankService.GetAllRanksDataAsync(userData.Value.Score);
 
+            var thisUserDailyEvent = _mapper.Map<DailyEventVm>(await _eventService.GetUserDailyEvent(UserId));
+
             var userDataVm = new UserDataVm
             {
                 Email = userData.Value.Email,
@@ -112,6 +114,7 @@ namespace UserAvatar.Api.Controllers
                 Role = userData.Value.Role,
                 InvitesAmount = userData.Value.Invited
                     .Count(invite => invite.Status == 0),
+                DailyEvent = thisUserDailyEvent,
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
                 CurrentScoreAmount = userData.Value.Score,
