@@ -20,6 +20,9 @@ namespace UserAvatar.Api.Extentions
                 .ForMember(x=> x.Rank,y=> y.MapFrom(z=> z.Rank))
                 .ReverseMap();
 
+            CreateMap<DailyEvent, DailyEventModel>().ReverseMap();
+            CreateMap<DailyEventModel, DailyEventVm>().ReverseMap();
+
             CreateMap<Column, ColumnModel>();
             CreateMap<Event, EventModel>();
             CreateMap<History, HistoryModel>();

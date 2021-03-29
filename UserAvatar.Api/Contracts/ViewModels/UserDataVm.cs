@@ -9,6 +9,8 @@
         public string Role { get; set; }
 
         public int InvitesAmount { get; set; }
+        
+        public DailyEventVm DailyEvent { get; set; }
 
         public string Rank { get; set; }
 

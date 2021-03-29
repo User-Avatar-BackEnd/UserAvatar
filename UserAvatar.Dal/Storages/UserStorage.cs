@@ -118,5 +118,12 @@ namespace UserAvatar.Dal.Storages
         {
             return await _dbContext.Users.CountAsync();
         }
+        
+        //Killer feature
+
+        public async Task<List<int>> GetUserIdsAsync()
+        {
+            return await _dbContext.Users.Select(x=> x.Id).ToListAsync();
+        }
     }
 }

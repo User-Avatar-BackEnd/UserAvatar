@@ -154,10 +154,12 @@ namespace UserAvatar.Api.Controllers
 
             var resultCode = await _inviteService.UpdateInviteAsync(inviteId, UserId, status);
 
-            if (resultCode == ResultCode.NotFound) return NotFound();
-            if (resultCode == ResultCode.NotFound) return Forbid();
-
-            return Ok();
+            return resultCode switch
+            {
+                ResultCode.NotFound => NotFound(),
+                ResultCode.Forbidden => Forbid(),
+                _ => Ok()
+            };
         }
 
         [HttpGet("rate")]

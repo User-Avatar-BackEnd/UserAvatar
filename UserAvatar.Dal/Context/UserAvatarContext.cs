@@ -16,6 +16,7 @@ namespace UserAvatar.Dal.Context
         public DbSet<Member> Members { get; set; }
         public DbSet<Rank> Ranks { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<DailyEvent> DailyEvents { get; set; }
         
         public UserAvatarContext(DbContextOptions<UserAvatarContext> options)
             :base(options)

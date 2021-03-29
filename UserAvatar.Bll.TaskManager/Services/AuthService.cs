@@ -16,8 +16,7 @@ namespace UserAvatar.Bll.TaskManager.Services
         private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
 
-        public AuthService(IUserStorage userStorage, 
-            IMapper mapper)
+        public AuthService(IUserStorage userStorage, IMapper mapper)
         {
             _userStorage = userStorage;
             _mapper = mapper;
@@ -51,7 +50,7 @@ namespace UserAvatar.Bll.TaskManager.Services
                 Score = 0,
                 Role = "user"
             };
-
+            
             await _userStorage.CreateAsync(user);
             
             var userModel = _mapper.Map<User, UserModel>(user);

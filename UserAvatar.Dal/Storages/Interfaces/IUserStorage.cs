@@ -32,5 +32,7 @@ namespace UserAvatar.Dal.Storages.Interfaces
         Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize, string query);
 
         Task<int> GetUsersAmountAsync();
+
+        Task<List<int>> GetUserIdsAsync();
     }
 }

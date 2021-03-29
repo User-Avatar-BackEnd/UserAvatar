@@ -35,5 +35,21 @@ namespace UserAvatar.Dal.Storages
         {
             return (await _dbContext.Events.FirstAsync(x => x.Name == name)).Score;
         }
+        
+        //Methods for Daily events. Killer feature
+
+        public async Task BulkInsertDailyQuestsAsync(List<DailyEvent> quests)
+        {
+            await _dbContext.DailyEvents.BulkInsertAsync(quests);
+        }
+        
+        public async Task<int> DeleteAllDailyEventsAsync()
+        {
+            return await _dbContext.DailyEvents.DeleteFromQueryAsync();
+        }
+        public async Task<DailyEvent> GetUserDailyQuestById(int userid)
+        {
+            return await _dbContext.DailyEvents.FirstOrDefaultAsync(x => x.UserId == userid);
+        }
     }
 }
