@@ -18,6 +18,7 @@ namespace UserAvatar.Bll.Gamification.Services
         private readonly IUserStorage _userStorage;
         private readonly IMapper _mapper;
         private readonly IHistoryService _historyService;
+        private static readonly Random Rnd = new();
 
         public EventService(
             IEventStorage eventStorage,
@@ -38,6 +39,11 @@ namespace UserAvatar.Bll.Gamification.Services
             var eventModels = _mapper.Map<IEnumerable<Event>, IEnumerable<EventModel>>(events);
 
             return eventModels.Where(x => x.Score != -1).ToList();
+        }
+
+        public async Task<DailyEventModel> GetUserDailyEvent(int userId)
+        {
+            return _mapper.Map<DailyEventModel>(await _eventStorage.GetUserDailyQuestById(userId));
         }
 
         public async Task<int> ChangeEventsCostAsync(List<EventModel> newEvents)
@@ -65,6 +71,27 @@ namespace UserAvatar.Bll.Gamification.Services
             await _historyService.AddEventToHistoryAsync(user.Id, EventType.ChangeUserBalansByAdmin, balance);
 
             return ResultCode.Success;
+        }
+
+        public async Task GenerateDailyQuests()
+        {
+            await _eventStorage.DeleteAllDailyEventsAsync();
+            var usersCount = await _userStorage.GetUserIdsAsync();
+
+            var availableQuests = new List<string>
+            {
+                EventType.CreateBoard,
+                EventType.SendInvite,
+                EventType.CreateCardOnOwnBoard,
+                EventType.ChangeCardStatusOnOwnBoard,
+                EventType.ChangeCardStatusOnAlienBoard
+            };
+
+            var questsList = (from id in usersCount let randomIndex = Rnd.Next(availableQuests.Count) 
+                let randomEvent = availableQuests[randomIndex] 
+                select new DailyEvent {UserId = id, EventName = randomEvent}).ToList();
+
+            await _eventStorage.BulkInsertDailyQuestsAsync(questsList);
         }
     }
 }

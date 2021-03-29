@@ -46,8 +46,9 @@ namespace UserAvatar.Api
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
-            
-            services.AddHostedService<ScoreTransactionBus>();
+
+            services.AddHostedService<ScoreTransactionBus>()
+                .AddHostedService<DailyQuestsHostedService>();
 
             services.AddSwagger();
             
