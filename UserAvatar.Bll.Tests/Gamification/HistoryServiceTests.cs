@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Dal.Entities;
@@ -14,6 +15,7 @@ namespace UserAvatar.Bll.Tests.Gamification
     {
         private readonly Mock<IHistoryStorage> _historyStorage;
         private readonly Mock<IEventStorage> _eventStorage;
+        private readonly Mock<ILogger<HistoryService>> _logger;
         private readonly Mock<IUserStorage> _userStorage;
         private readonly Mock<IMapper> _mapper;
 
@@ -23,6 +25,7 @@ namespace UserAvatar.Bll.Tests.Gamification
             _historyStorage = new Mock<IHistoryStorage>();
             _eventStorage = new Mock<IEventStorage>();
             _userStorage = new Mock<IUserStorage>();
+            _logger = new Mock<ILogger<HistoryService>>();
         }
 
         [Fact]
@@ -57,11 +60,12 @@ namespace UserAvatar.Bll.Tests.Gamification
 
         private HistoryService SetUpService()
         {
-            return new HistoryService(
+            return new(
                 _historyStorage.Object,
                 _userStorage.Object,
                 _eventStorage.Object,
-                _mapper.Object);
+                _mapper.Object,
+                _logger.Object);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Infrastructure;
@@ -15,18 +16,21 @@ namespace UserAvatar.Bll.Gamification.Services
         private readonly IHistoryStorage _historyStorage;
         private readonly IEventStorage _eventStorage;
         private readonly IUserStorage _userStorage;
+        private readonly ILogger<HistoryService> _logger;
         private readonly IMapper _mapper;
 
         public HistoryService(
             IHistoryStorage historyStorage,
             IUserStorage userStorage,
             IEventStorage eventStorage,
-            IMapper mapper)
+            IMapper mapper, 
+            ILogger<HistoryService> logger)
         {
             _historyStorage = historyStorage;
             _userStorage = userStorage;
             _eventStorage = eventStorage;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task MakeScoreTransactionAsync()
@@ -53,10 +57,10 @@ namespace UserAvatar.Bll.Gamification.Services
 
             try
             {
-                int score = await _eventStorage.GetScoreByNameAsync(eventType);
+                var score = await _eventStorage.GetScoreByNameAsync(eventType);
                 if (customScore != null)
                 {
-                    score = (int)customScore;
+                    score = (int) customScore;
                 }
 
                 var history = new History
@@ -67,10 +71,21 @@ namespace UserAvatar.Bll.Gamification.Services
                     EventName = eventType,
                     Score = score
                 };
+                var userDailyQuest = await _eventStorage.GetUserDailyQuestById(userId);
+                if (userDailyQuest!= null 
+                    && userDailyQuest.EventName == eventType 
+                    && !userDailyQuest.IsCompleted)
+                {
+                    userDailyQuest.IsCompleted = true;
+                    history.Score = score * 2;
+                }
+
                 await _historyStorage.AddHstoryAsync(history);
             }
-            catch (Exception) { }
-
+            catch (Exception exception)
+            {
+                _logger.LogError(exception,"Crashed at AddEventToHistoryAsync. HistoryService");
+            }
         }
 
         public async Task<Result<List<HistoryModel>>> GetHistoryAsync(string login)
