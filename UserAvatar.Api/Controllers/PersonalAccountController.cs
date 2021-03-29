@@ -32,6 +32,7 @@ namespace UserAvatar.Api.Controllers
         private readonly IInviteService _inviteService;
         private readonly IMapper _mapper;
         private readonly IApplicationUser _applicationUser;
+        private readonly IEventService _eventService;
         
         public PersonalAccountController(
             IPersonalAccountService personalAccountService,
@@ -39,7 +40,8 @@ namespace UserAvatar.Api.Controllers
             IRankService rankService,
             IMapper mapper, 
             IInviteService inviteService, 
-            IApplicationUser applicationUser)
+            IApplicationUser applicationUser,
+            IEventService eventService)
         {
             _personalAccountService = personalAccountService;
             _rateService = rateService;
@@ -47,6 +49,7 @@ namespace UserAvatar.Api.Controllers
             _mapper = mapper;
             _inviteService = inviteService;
             _applicationUser = applicationUser;
+            _eventService = eventService;
         }
         
         private int UserId => _applicationUser.Id;
@@ -105,6 +108,8 @@ namespace UserAvatar.Api.Controllers
             var userData = await _personalAccountService.GetUsersDataAsync(UserId);
             var rankData = await _rankService.GetAllRanksDataAsync(userData.Value.Score);
 
+            var thisUserDailyEvent = _mapper.Map<DailyEventVm>(await _eventService.GetUserDailyEvent(UserId));
+
             var userDataVm = new UserDataVm
             {
                 Email = userData.Value.Email,
@@ -112,6 +117,7 @@ namespace UserAvatar.Api.Controllers
                 Role = userData.Value.Role,
                 InvitesAmount = userData.Value.Invited
                     .Count(invite => invite.Status == 0),
+                DailyEvent = thisUserDailyEvent,
                 Rank = rankData.Name,
                 PreviousLevelScore = rankData.Score,
                 CurrentScoreAmount = userData.Value.Score,
