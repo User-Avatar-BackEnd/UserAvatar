@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Api.Options;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public static class AuthenticationExtension
     {

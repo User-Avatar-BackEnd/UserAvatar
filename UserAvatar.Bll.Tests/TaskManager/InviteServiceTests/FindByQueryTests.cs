@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Entities;

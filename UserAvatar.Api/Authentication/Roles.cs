@@ -1,4 +1,4 @@
-﻿namespace UserAvatar.Api
+﻿namespace UserAvatar.Api.Authentication
 {
     public static class Roles
     {

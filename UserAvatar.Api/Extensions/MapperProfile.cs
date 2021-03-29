@@ -5,7 +5,7 @@ using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Api.Contracts.Dtos;
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public class MappingProfile : Profile
     {

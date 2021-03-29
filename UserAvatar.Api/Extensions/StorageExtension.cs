@@ -3,7 +3,7 @@ using System;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public static class StorageExtension
     {

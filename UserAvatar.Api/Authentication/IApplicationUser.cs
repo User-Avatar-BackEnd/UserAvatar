@@ -1,4 +1,4 @@
-﻿namespace UserAvatar.Api.Options
+﻿namespace UserAvatar.Api.Authentication
 {
     public interface IApplicationUser
     {

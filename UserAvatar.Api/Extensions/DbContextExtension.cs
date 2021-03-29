@@ -8,25 +8,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserAvatar.Dal.Context;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public static class DbContextExtension
     {
-    /// <summary>
-    /// Register Db contexts
-    /// </summary>
-    /// <param name="services">Service collection</param>
-    /// <param name="configuration">Configuration</param>
-    /// <returns></returns>
+        /// <summary>
+        /// Adds Data base context
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
-
             services.AddDbContext<UserAvatarContext>(
-                   options =>
-                       options.UseNpgsql(
-                           configuration.GetConnectionString("connectionString"),
-                           x => x.MigrationsAssembly("UserAvatar.Dal")));
+                   options => options.UseNpgsql(
+                           configuration.GetConnectionString("connectionString"), 
+                           x=> x.MigrationsAssembly("UserAvatar.Dal")));
 
             return services;
         }

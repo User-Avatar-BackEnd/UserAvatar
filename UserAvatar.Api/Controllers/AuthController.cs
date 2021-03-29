@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UserAvatar.Api.Authentication;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Gamification.Services.Interfaces;

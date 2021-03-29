@@ -4,7 +4,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Bll.Gamification.Services.Interfaces;

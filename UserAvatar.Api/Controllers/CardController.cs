@@ -14,6 +14,7 @@ using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
+using UserAvatar.Api.Authentication;
 
 namespace UserAvatar.Api.Controllers
 {

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
+using UserAvatar.Api.Options;
 
-namespace UserAvatar.Api.Options
+namespace UserAvatar.Api.Authentication
 {
     public class ApplicationUser: IApplicationUser
     {

@@ -13,6 +13,7 @@ using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using System.Net.Mime;
 using System.Net;
+using UserAvatar.Api.Authentication;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Gamification.Models;
 

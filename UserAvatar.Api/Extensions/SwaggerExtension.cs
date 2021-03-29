@@ -2,7 +2,7 @@
 using Microsoft.OpenApi.Models;
 using System;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public static class SwaggerExtension
     {

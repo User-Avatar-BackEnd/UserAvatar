@@ -6,11 +6,17 @@ using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Dal.Context;
 using UserAvatar.Dal.Entities;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
     public static class SeedingExtension
     {
-        internal static void EnsureAdminCreated(UserAvatarContext context)
+        public static void PopulateDatabase(UserAvatarContext context)
+        {
+            EnsureAdminCreated(context);
+            EnsureEventsCreated(context);
+            EnsureRanksCreated(context);
+        }
+        private static void EnsureAdminCreated(UserAvatarContext context)
         {
             var adminUser = context.Users.Any(x=> x.Email == "admin@admin.com" 
                                                   && x.Login == "admin");
@@ -27,7 +33,7 @@ namespace UserAvatar.Api.Extentions
             context.SaveChanges();
         }
 
-        public static void EnsureEventsCreated(UserAvatarContext context)
+        private static void EnsureEventsCreated(UserAvatarContext context)
         {
             var eventList = PopulateEvents();
 
@@ -42,7 +48,8 @@ namespace UserAvatar.Api.Extentions
             }
             context.SaveChanges();
         }
-        public  static void EnsureRanksCreated(UserAvatarContext context)
+
+        private static void EnsureRanksCreated(UserAvatarContext context)
         {
             var rankList = PopulateRanks();
 
