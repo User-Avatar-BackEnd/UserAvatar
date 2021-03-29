@@ -15,9 +15,13 @@ using System.Net.Mime;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using System;
 using System.Linq;
+using UserAvatar.Api.Authentication;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Board controller
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/v1/boards")]
@@ -34,6 +38,16 @@ namespace UserAvatar.Api.Controllers
         private readonly IBoardChangesService _boardChangesService;
         private readonly IRankService _rankService;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="boardService">board service</param>
+        /// <param name="inviteService">invite service</param>
+        /// <param name="mapper">automapper</param>
+        /// <param name="applicationUser">this user id</param>
+        /// <param name="historyService">history service</param>
+        /// <param name="boardChangesService">tracking changes in background</param>
+        /// <param name="rankService">rank service</param>
         public BoardController(
             IBoardService boardService,
             IInviteService inviteService,
@@ -54,6 +68,10 @@ namespace UserAvatar.Api.Controllers
 
         private int UserId => _applicationUser.Id;
 
+        /// <summary>
+        /// Gets all boards
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(List<BoardShortVm>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<List<BoardShortVm>>> GetBoardsAsync()
@@ -72,6 +90,11 @@ namespace UserAvatar.Api.Controllers
             return Ok(viewModels);
         }
 
+        /// <summary>
+        /// Creating a board
+        /// </summary>
+        /// <param name="titleDto">board title</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(BoardShortVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -97,6 +120,11 @@ namespace UserAvatar.Api.Controllers
             return Ok(board);
         }
 
+        /// <summary>
+        /// Gets specific board
+        /// </summary>
+        /// <param name="boardId">id of board</param>
+        /// <returns></returns>
         [HttpGet("{boardId:int}")]
         [ProducesResponseType(typeof(BoardVm), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -125,6 +153,12 @@ namespace UserAvatar.Api.Controllers
             return Ok(boardVm);
         }
 
+        /// <summary>
+        /// Renaming a board
+        /// </summary>
+        /// <param name="boardId">id of board</param>
+        /// <param name="titleDto">new board title</param>
+        /// <returns></returns>
         [HttpPatch("{boardId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -140,6 +174,11 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
 
+        /// <summary>
+        /// Soft deletes board
+        /// </summary>
+        /// <param name="boardId"></param>
+        /// <returns></returns>
         [HttpDelete("{boardId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
@@ -154,6 +193,12 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
         
+        /// <summary>
+        /// Deletes member from a specific board
+        /// </summary>
+        /// <param name="boardId">id of this board</param>
+        /// <param name="toDeleteUserId">id of user to be deleted</param>
+        /// <returns></returns>
         [HttpDelete("{boardId:int}/user/")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
@@ -168,6 +213,12 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Creates an invitation to the board
+        /// </summary>
+        /// <param name="boardId">id of board to be invited in</param>
+        /// <param name="payload">id or email of user to be invited</param>
+        /// <returns></returns>
         [HttpPost("{boardId:int}/invites")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -187,6 +238,12 @@ namespace UserAvatar.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Gets user by search query
+        /// </summary>
+        /// <param name="boardId">id of this board</param>
+        /// <param name="query">search query</param>
+        /// <returns></returns>
         [HttpGet("{boardId:int}/invites/find_person")]
         [ProducesResponseType(typeof(List<UserShortVm>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -211,6 +268,12 @@ namespace UserAvatar.Api.Controllers
             return Ok(mapped);
         }
 
+        /// <summary>
+        /// Method for checking changes on board
+        /// </summary>
+        /// <param name="boardId">id of this board</param>
+        /// <param name="ticks">amount of ticks</param>
+        /// <returns></returns>
         [HttpGet("{boardId:int}/changes")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]

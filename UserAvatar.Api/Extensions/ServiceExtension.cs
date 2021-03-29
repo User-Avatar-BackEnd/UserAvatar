@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using UserAvatar.Api.Authentication;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -12,8 +13,11 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// All services injection extension
+    /// </summary>
     public static class ServiceExtension
     {
         /// <summary>

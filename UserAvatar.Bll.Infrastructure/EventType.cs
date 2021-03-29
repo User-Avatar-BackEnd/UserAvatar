@@ -20,6 +20,6 @@
 
         public const string ChangeCardStatusOnAlienBoard = "Change card status on alien board";
 
-        public const string ChangeUserBalansByAdmin = "Change user balans by admin";
+        public const string ChangeUserBalanceByAdmin = "Change user balance by admin";
     }
 }

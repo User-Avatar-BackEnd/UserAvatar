@@ -1,22 +1,27 @@
-﻿using System.Linq;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.Gamification.Services;
-using UserAvatar.Bll.Infrastructure;
-using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Options;
 using UserAvatar.Dal.Context;
-using UserAvatar.Dal.Entities;
 
 namespace UserAvatar.Api
 {
+    /// <summary>
+    /// Startup class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Startup method
+        /// </summary>
+        /// <param name="configuration">IConfiguration</param>
+        /// <param name="environment">IWebHostEnvironment</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -26,43 +31,44 @@ namespace UserAvatar.Api
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
         
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configuration of Services
+        /// </summary>
+        /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .Configure<LimitationOptions>(Configuration.GetSection("Limitations"));
+                .Configure<LimitationOptions>(Configuration.GetSection("Limitations"))
+                .AddDbContexts(Configuration)
+                .AddServices()
+                .AddStorages()
+                .AddHostedService<ScoreTransactionBus>()
+                .AddHostedService<DailyQuestsHostedService>();
             
-            services.AddHealthChecks();
-            services.AddServices();
-            services.AddStorages();
-            
-            services.AddAuthentications();
-            
-            services.AddDbContexts(Configuration);
-
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
                 options.SuppressMapClientErrors = true;
             });
 
-            services.AddHostedService<ScoreTransactionBus>()
-                .AddHostedService<DailyQuestsHostedService>();
-
+            
+            services.AddAuthentications();
+            services.AddHealthChecks();
             services.AddSwagger();
             
             services.AddCors();
             
         }
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configuration method
+        /// </summary>
+        /// <param name="app">IApplicationBuilder</param>
+        /// <param name="env">IWebHostEnvironment</param>
+        /// <param name="userAvatarContext">UserAvatarContext</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserAvatarContext userAvatarContext)
         {
             userAvatarContext?.Database.Migrate();
-            
-            SeedingExtension.EnsureAdminCreated(userAvatarContext);
-            SeedingExtension.EnsureEventsCreated(userAvatarContext);
-            SeedingExtension.EnsureRanksCreated(userAvatarContext);
+            SeedingExtension.PopulateDatabase(userAvatarContext);
             
             if (env.IsDevelopment()) 
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Moq;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Bll.Gamification.Services;
 using UserAvatar.Dal.Entities;

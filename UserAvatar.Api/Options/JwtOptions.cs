@@ -4,6 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace UserAvatar.Api.Options
 {
+    /// <summary>
+    /// Options for JWT token
+    /// </summary>
     public class JwtOptions
     {
         /// <summary>
@@ -31,6 +34,10 @@ namespace UserAvatar.Api.Options
         /// </summary>
         public bool RequireHttps { get; set; } = false;
 
+        /// <summary>
+        /// Getting a symmetric security key
+        /// </summary>
+        /// <returns></returns>
         public SymmetricSecurityKey GetSymmetricSecurityKey()
         {
             return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(PrivateKey));

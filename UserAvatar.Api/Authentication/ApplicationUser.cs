@@ -1,17 +1,27 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
 
-namespace UserAvatar.Api.Options
+namespace UserAvatar.Api.Authentication
 {
+    /// <summary>
+    /// Application user 
+    /// </summary>
     public class ApplicationUser: IApplicationUser
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="httpContextAccessor">http accessor</param>
         public ApplicationUser(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
+        /// <summary>
+        /// This user шв
+        /// </summary>
         public int Id => GetUserId();
         
         private int GetUserId()
@@ -21,6 +31,5 @@ namespace UserAvatar.Api.Options
 
             return int.TryParse(request?.Value, out var id) ? id : 0;
         }
-        //GetRole
     }
 }

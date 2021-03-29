@@ -5,7 +5,7 @@ using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.TaskManager.Options;
 using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;

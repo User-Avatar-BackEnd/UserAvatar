@@ -13,11 +13,15 @@ using UserAvatar.Bll.Infrastructure;
 using UserAvatar.Bll.TaskManager.Models;
 using System.Net.Mime;
 using System.Net;
+using UserAvatar.Api.Authentication;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
 using UserAvatar.Bll.Gamification.Models;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Personal account controller
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/v1/account")]
@@ -34,6 +38,16 @@ namespace UserAvatar.Api.Controllers
         private readonly IApplicationUser _applicationUser;
         private readonly IEventService _eventService;
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="personalAccountService">personal account service</param>
+        /// <param name="rateService">service for user rate</param>
+        /// <param name="rankService">service with ranks</param>
+        /// <param name="mapper">automapper</param>
+        /// <param name="inviteService">service for invites</param>
+        /// <param name="applicationUser">this user id</param>
+        /// <param name="eventService">event service</param>
         public PersonalAccountController(
             IPersonalAccountService personalAccountService,
             IRateService rateService,
@@ -54,6 +68,11 @@ namespace UserAvatar.Api.Controllers
         
         private int UserId => _applicationUser.Id;
 
+        /// <summary>
+        /// Changes this user login
+        /// </summary>
+        /// <param name="login">new user login</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("login")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -78,6 +97,11 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
 
+        /// <summary>
+        /// Changes user password
+        /// </summary>
+        /// <param name="request">password body</param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("password")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -100,6 +124,10 @@ namespace UserAvatar.Api.Controllers
             return StatusCode(result);
         }
 
+        /// <summary>
+        /// Gets user data
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -127,6 +155,10 @@ namespace UserAvatar.Api.Controllers
             return Ok(userDataVm);
         }
 
+        /// <summary>
+        /// Gets all user invites
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("invites")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -147,6 +179,12 @@ namespace UserAvatar.Api.Controllers
             return Ok(resultedOutput);
         }
 
+        /// <summary>
+        /// Accepts or declines invites
+        /// </summary>
+        /// <param name="status">new invite status</param>
+        /// <param name="inviteId">id of invite</param>
+        /// <returns></returns>
         [HttpPatch("invites/{inviteId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -168,6 +206,10 @@ namespace UserAvatar.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// Gets rates
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("rate")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

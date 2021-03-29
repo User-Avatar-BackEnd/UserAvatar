@@ -10,7 +10,7 @@ using UserAvatar.Bll.TaskManager.Services;
 using UserAvatar.Bll.TaskManager.Services.Interfaces;
 using UserAvatar.Dal.Storages.Interfaces;
 using FluentAssertions;
-using UserAvatar.Api.Extentions;
+using UserAvatar.Api.Extensions;
 using UserAvatar.Bll.TaskManager.Models;
 using UserAvatar.Dal.Entities;
 using Xunit;

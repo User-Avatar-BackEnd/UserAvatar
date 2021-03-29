@@ -5,10 +5,16 @@ using UserAvatar.Dal.Entities;
 using UserAvatar.Api.Contracts.ViewModels;
 using UserAvatar.Bll.Gamification.Models;
 using UserAvatar.Api.Contracts.Dtos;
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// Profile for mapping
+    /// </summary>
     public class MappingProfile : Profile
     {
+        /// <summary>
+        /// Main mapping profiles
+        /// </summary>
         public MappingProfile()
         {
             CreateMap<User, UserModel>();

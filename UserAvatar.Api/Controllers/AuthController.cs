@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UserAvatar.Api.Authentication;
 using UserAvatar.Api.Contracts.Requests;
 using UserAvatar.Api.Options;
 using UserAvatar.Bll.Gamification.Services.Interfaces;
@@ -19,6 +20,9 @@ using UserAvatar.Bll.TaskManager.Services.Interfaces;
 
 namespace UserAvatar.Api.Controllers
 {
+    /// <summary>
+    /// Authentication controller
+    /// </summary>
     [ApiController]
     [Route("api/v1/auth")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -31,6 +35,13 @@ namespace UserAvatar.Api.Controllers
         private readonly IHistoryService _historyService;
         private readonly IApplicationUser _applicationUser;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="authService">authentication service</param>
+        /// <param name="jwt">jwt token</param>
+        /// <param name="historyService">history service</param>
+        /// <param name="applicationUser">this user id</param>
         public AuthController(
             IAuthService authService,
             IOptions<JwtOptions> jwt,
@@ -73,6 +84,11 @@ namespace UserAvatar.Api.Controllers
             return BuildToken(result.Value);
         }
 
+        /// <summary>
+        /// Signing in user
+        /// </summary>
+        /// <param name="loginRequest"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
@@ -95,6 +111,10 @@ namespace UserAvatar.Api.Controllers
             return BuildToken(result.Value);
         }
         
+        /// <summary>
+        /// Signing out of this user
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("logout")]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]

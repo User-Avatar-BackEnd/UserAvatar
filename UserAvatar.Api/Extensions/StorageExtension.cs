@@ -3,8 +3,11 @@ using System;
 using UserAvatar.Dal.Storages;
 using UserAvatar.Dal.Storages.Interfaces;
 
-namespace UserAvatar.Api.Extentions
+namespace UserAvatar.Api.Extensions
 {
+    /// <summary>
+    /// All storage injection extension
+    /// </summary>
     public static class StorageExtension
     {
         /// <summary>
