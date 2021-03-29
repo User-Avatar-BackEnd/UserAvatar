@@ -39,7 +39,7 @@ namespace UserAvatar.Dal.Storages
                 .Include(x => x.User)
                 .Include(x => x.Members)
                 .ThenInclude(x=> x.User)
-                .Include(x => x.Columns)
+                .Include(x => x.Columns.OrderBy(x=> x.Index))
                 .ThenInclude(x => x.Cards)
                 .ThenInclude(x => x.Comments)
                 .FirstOrDefaultAsync(board => board.Id == boardId);
