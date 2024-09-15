@@ -12,19 +12,26 @@ public class Invite
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [ForeignKey("BoardId")] public int BoardId { get; set; }
+    [ForeignKey("BoardId")]
+    public int BoardId { get; set; }
 
     public virtual Board Board { get; set; }
 
-    [Required] public int InviterId { get; set; }
+    [Required]
+    public int InviterId { get; set; }
 
-    [ForeignKey("InviterId")] public virtual User Inviter { get; set; }
+    [ForeignKey("InviterId")]
+    public virtual User Inviter { get; set; }
 
-    [Required] public int InvitedId { get; set; }
+    [Required]
+    public int InvitedId { get; set; }
 
-    [ForeignKey("InvitedId")] public virtual User Invited { get; set; }
+    [ForeignKey("InvitedId")]
+    public virtual User Invited { get; set; }
 
-    [Required] public int Status { get; set; }
+    [Required]
+    public int Status { get; set; }
 
-    [Required] public DateTimeOffset Issued { get; set; }
+    [Required]
+    public DateTimeOffset Issued { get; set; }
 }

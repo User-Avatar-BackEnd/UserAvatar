@@ -13,17 +13,24 @@ public class Column
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required] [MaxLength(64)] public string Title { get; set; }
+    [Required]
+    [MaxLength(64)]
+    public string Title { get; set; }
 
-    [Required] public int BoardId { get; set; }
+    [Required]
+    public int BoardId { get; set; }
 
-    [ForeignKey("BoardId")] public virtual Board Board { get; set; }
+    [ForeignKey("BoardId")]
+    public virtual Board Board { get; set; }
 
-    [Required] public DateTimeOffset CreatedAt { get; set; }
+    [Required]
+    public DateTimeOffset CreatedAt { get; set; }
 
-    [Required] public DateTimeOffset ModifiedAt { get; set; }
+    [Required]
+    public DateTimeOffset ModifiedAt { get; set; }
 
-    [Required] public int Index { get; set; }
+    [Required]
+    public int Index { get; set; }
 
     public virtual ICollection<Card> Cards { get; set; }
 

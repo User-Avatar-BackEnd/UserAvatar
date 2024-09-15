@@ -12,15 +12,20 @@ public class History
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required] public int UserId { get; set; }
+    [Required]
+    public int UserId { get; set; }
 
-    [ForeignKey("UserId")] public virtual User User { get; set; }
+    [ForeignKey("UserId")]
+    public virtual User User { get; set; }
 
-    [Required] public string EventName { get; set; }
+    [Required]
+    public string EventName { get; set; }
 
-    [Required] public int Score { get; set; }
+    [Required]
+    public int Score { get; set; }
 
-    [Required] public DateTimeOffset DateTime { get; set; }
+    [Required]
+    public DateTimeOffset DateTime { get; set; }
 
     public bool Calculated { get; set; }
 }

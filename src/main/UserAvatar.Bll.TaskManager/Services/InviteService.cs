@@ -32,7 +32,7 @@ public sealed class InviteService : IInviteService
 
     public async Task<Result<bool>> CreateInviteAsync(int boardId, int userId, string payload)
     {
-        //if (payload == null)
+        // if (payload == null)
         if (string.IsNullOrEmpty(payload))
         {
             return new Result<bool>(ResultCode.NotFound);
@@ -70,7 +70,7 @@ public sealed class InviteService : IInviteService
                 BoardId = boardId,
                 InvitedId = invitedId,
                 Issued = DateTimeOffset.UtcNow,
-                Status = InviteStatus.Pending
+                Status = InviteStatus.Pending,
             };
         }
         else
@@ -107,7 +107,6 @@ public sealed class InviteService : IInviteService
     {
         var thisInvite = await _inviteStorage.GetByIdAsync(inviteId);
 
-
         if (thisInvite == null
             || await _userStorage.GetByIdAsync(userId) == null
             || thisInvite.Status == InviteStatus.Accepted
@@ -125,7 +124,8 @@ public sealed class InviteService : IInviteService
         {
             await _boardStorage.AddAsMemberAsync(new Member
             {
-                UserId = thisInvite.InvitedId, BoardId = thisInvite.BoardId
+                UserId = thisInvite.InvitedId,
+                BoardId = thisInvite.BoardId,
             });
         }
 

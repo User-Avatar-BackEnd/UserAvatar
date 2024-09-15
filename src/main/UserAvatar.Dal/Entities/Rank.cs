@@ -11,5 +11,6 @@ public sealed class Rank
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public string Name { get; set; }
 
-    [Required] public int Score { get; set; }
+    [Required]
+    public int Score { get; set; }
 }

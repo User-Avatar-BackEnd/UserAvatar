@@ -49,7 +49,7 @@ public sealed class BoardService : IBoardService
             OwnerId = userId,
             CreatedAt = DateTimeOffset.UtcNow,
             ModifiedAt = DateTimeOffset.UtcNow,
-            ModifiedBy = 0
+            ModifiedBy = 0,
         };
         var boards = await _boardStorage.CountAllBoardsAsync(userId);
 

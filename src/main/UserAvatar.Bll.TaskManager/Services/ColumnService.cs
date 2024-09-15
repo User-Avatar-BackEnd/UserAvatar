@@ -53,7 +53,7 @@ public sealed class ColumnService : IColumnService
 
         var newColumn = new Column
         {
-            Title = title, BoardId = boardId, CreatedAt = DateTimeOffset.UtcNow, ModifiedAt = DateTimeOffset.UtcNow
+            Title = title, BoardId = boardId, CreatedAt = DateTimeOffset.UtcNow, ModifiedAt = DateTimeOffset.UtcNow,
         };
 
         await LockSlim.WaitAsync();
@@ -102,8 +102,8 @@ public sealed class ColumnService : IColumnService
         {
             return ResultCode.BadRequest;
         }
-        //throw new Exception(); I will change into something else
 
+        // throw new Exception(); I will change into something else
         await _columnStorage.UpdateAsync();
 
         _boardChangesService.DoChange(boardId, userId);
@@ -167,29 +167,6 @@ public sealed class ColumnService : IColumnService
         return new Result<ColumnModel>(_mapper.Map<Column, ColumnModel>(foundColumn));
     }
 
-    private async Task<int> ValidateUserColumnAsync(int userId, int boardId, int? columnId = null)
-    {
-        if (!await _boardStorage.IsBoardExistAsync(boardId))
-        {
-            return ResultCode.NotFound;
-        }
-
-        if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
-        {
-            return ResultCode.Forbidden;
-        }
-
-        if (columnId != null)
-        {
-            if (!await _boardStorage.IsBoardColumnAsync(boardId, (int)columnId))
-            {
-                return ResultCode.NotFound;
-            }
-        }
-
-        return ResultCode.Success;
-    }
-
     private static bool PositionAlgorithm(int previousIndex, int newIndex, List<Column> columnList)
     {
         if (previousIndex - newIndex == 0)
@@ -215,6 +192,7 @@ public sealed class ColumnService : IColumnService
 
                     break;
                 }
+
                 case > 0:
                 {
                     if (column.Index <= previousIndex && column.Index >= newIndex)
@@ -249,5 +227,28 @@ public sealed class ColumnService : IColumnService
         {
             LockSlimForRecheck.Release();
         }
+    }
+
+    private async Task<int> ValidateUserColumnAsync(int userId, int boardId, int? columnId = null)
+    {
+        if (!await _boardStorage.IsBoardExistAsync(boardId))
+        {
+            return ResultCode.NotFound;
+        }
+
+        if (!await _boardStorage.IsUserBoardAsync(userId, boardId))
+        {
+            return ResultCode.Forbidden;
+        }
+
+        if (columnId != null)
+        {
+            if (!await _boardStorage.IsBoardColumnAsync(boardId, (int)columnId))
+            {
+                return ResultCode.NotFound;
+            }
+        }
+
+        return ResultCode.Success;
     }
 }

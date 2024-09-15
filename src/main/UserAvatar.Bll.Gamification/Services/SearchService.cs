@@ -13,7 +13,8 @@ public sealed class SearchService : ISearchService
     private readonly IMapper _mapper;
     private readonly IUserStorage _userStorage;
 
-    public SearchService(IUserStorage userStorage,
+    public SearchService(
+        IUserStorage userStorage,
         IMapper mapper)
     {
         _userStorage = userStorage;

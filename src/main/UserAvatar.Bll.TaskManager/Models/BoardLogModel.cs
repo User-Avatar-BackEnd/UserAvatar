@@ -11,7 +11,7 @@ public sealed class BoardLogModel
 
     private readonly ConcurrentQueue<Log> _logs;
 
-    private readonly long lifeTime = TimeSpan.FromMinutes(1).Ticks;
+    private readonly long _lifeTime = TimeSpan.FromMinutes(1).Ticks;
 
     public BoardLogModel(IDateTimeProvider dateTimeProvider)
     {
@@ -28,7 +28,7 @@ public sealed class BoardLogModel
     public bool HasChanges(int userId, long lastCheck)
     {
         Clear();
-        if (_dateTimeProvider.DateTimeUtcNowTicks() - lastCheck > lifeTime)
+        if (_dateTimeProvider.DateTimeUtcNowTicks() - lastCheck > _lifeTime)
         {
             return true;
         }
@@ -56,7 +56,7 @@ public sealed class BoardLogModel
 
         while (_logs.TryPeek(out log))
         {
-            if (_dateTimeProvider.DateTimeUtcNowTicks() - log.Ticks < lifeTime)
+            if (_dateTimeProvider.DateTimeUtcNowTicks() - log.Ticks < _lifeTime)
             {
                 break;
             }

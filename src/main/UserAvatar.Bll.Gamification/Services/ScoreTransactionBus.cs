@@ -17,8 +17,8 @@ public sealed class ScoreTransactionBus : IHostedService
     private readonly IServiceScopeFactory _scopeFactory;
     private Timer _timer;
 
-
-    public ScoreTransactionBus(IServiceScopeFactory scopeFactory,
+    public ScoreTransactionBus(
+        IServiceScopeFactory scopeFactory,
         ILogger<ScoreTransactionBus> logger)
     {
         _scopeFactory = scopeFactory

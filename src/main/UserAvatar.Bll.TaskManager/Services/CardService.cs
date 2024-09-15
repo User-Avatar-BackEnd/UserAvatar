@@ -36,8 +36,11 @@ public sealed class CardService : ICardService
         _boardChangesService = boardChangesService;
     }
 
-    public async Task<Result<CardModel>> CreateCardAsync(string title,
-        int boardId, int columnId, int userId)
+    public async Task<Result<CardModel>> CreateCardAsync(
+        string title,
+        int boardId,
+        int columnId,
+        int userId)
     {
         var column = await _columnStorage.GetColumnByIdAsync(columnId);
 
@@ -59,12 +62,12 @@ public sealed class CardService : ICardService
         var card = new Card
         {
             Title = title,
-            Description = "",
+            Description = string.Empty,
             OwnerId = userId,
             CreatedAt = DateTimeOffset.UtcNow,
             ModifiedAt = DateTimeOffset.UtcNow,
             ColumnId = columnId,
-            ModifiedBy = userId
+            ModifiedBy = userId,
         };
 
         card = await _cardStorage.CreateAsync(card);
@@ -78,8 +81,10 @@ public sealed class CardService : ICardService
         return new Result<CardModel>(cardModel, eventType);
     }
 
-    public async Task<Result<bool>> UpdateCardAsync(CardModel cardModel,
-        int boardId, int userId)
+    public async Task<Result<bool>> UpdateCardAsync(
+        CardModel cardModel,
+        int boardId,
+        int userId)
     {
         if (!await _boardStorage.IsBoardExistAsync(boardId))
         {

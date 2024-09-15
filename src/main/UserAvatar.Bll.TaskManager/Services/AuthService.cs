@@ -46,7 +46,7 @@ public sealed class AuthService : IAuthService
             PasswordHash = PasswordHash.CreateHash(password),
             Login = login,
             Score = 0,
-            Role = "user"
+            Role = "user",
         };
 
         await _userStorage.CreateAsync(user);
@@ -77,6 +77,19 @@ public sealed class AuthService : IAuthService
         return EventType.Logout;
     }
 
+    // was not static: visual studio suggestion
+    private static string RandomDigits()
+    {
+        var random = new Random();
+        var s = string.Empty;
+        for (var i = 0; i < 10; i++)
+        {
+            s = string.Concat(s, random.Next(10).ToString());
+        }
+
+        return s;
+    }
+
     private async Task<string> GenerateLoginAsync()
     {
         while (true)
@@ -88,18 +101,5 @@ public sealed class AuthService : IAuthService
                 return login;
             }
         }
-    }
-
-    //was not static: visual studio suggestion
-    private static string RandomDigits()
-    {
-        var random = new Random();
-        var s = string.Empty;
-        for (var i = 0; i < 10; i++)
-        {
-            s = string.Concat(s, random.Next(10).ToString());
-        }
-
-        return s;
     }
 }

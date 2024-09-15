@@ -14,5 +14,6 @@ public sealed class Event
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Index { get; set; }
 
-    [Required] public int Score { get; set; }
+    [Required]
+    public int Score { get; set; }
 }

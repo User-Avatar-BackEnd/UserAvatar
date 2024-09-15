@@ -2,12 +2,6 @@
 
 public readonly struct Result<T>
 {
-    public T Value { get; }
-
-    public int Code { get; }
-
-    public string EventType { get; }
-
     public Result(T value)
     {
         Code = ResultCode.Success;
@@ -28,4 +22,10 @@ public readonly struct Result<T>
         Value = default;
         EventType = null;
     }
+
+    public T Value { get; }
+
+    public int Code { get; }
+
+    public string EventType { get; }
 }

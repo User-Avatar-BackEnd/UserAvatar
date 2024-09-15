@@ -17,7 +17,8 @@ public sealed class DailyQuestsHostedService : IHostedService
     private readonly IServiceScopeFactory _scopeFactory;
     private Timer _timer;
 
-    public DailyQuestsHostedService(IServiceScopeFactory scopeFactory,
+    public DailyQuestsHostedService(
+        IServiceScopeFactory scopeFactory,
         ILogger<DailyQuestsHostedService> logger)
     {
         _scopeFactory = scopeFactory

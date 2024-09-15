@@ -11,13 +11,17 @@ public class Member
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required] public int UserId { get; set; }
+    [Required]
+    public int UserId { get; set; }
 
-    [ForeignKey("UserId")] public virtual User User { get; set; }
+    [ForeignKey("UserId")]
+    public virtual User User { get; set; }
 
-    [Required] public int BoardId { get; set; }
+    [Required]
+    public int BoardId { get; set; }
 
-    [ForeignKey("BoardId")] public virtual Board Board { get; set; }
+    [ForeignKey("BoardId")]
+    public virtual Board Board { get; set; }
 
     public bool IsDeleted { get; set; } = false;
 }

@@ -13,15 +13,21 @@ public class Board
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required] [MaxLength(64)] public string Title { get; set; }
+    [Required]
+    [MaxLength(64)]
+    public string Title { get; set; }
 
-    [Required] public int OwnerId { get; set; }
+    [Required]
+    public int OwnerId { get; set; }
 
-    [ForeignKey("OwnerId")] public virtual User User { get; set; }
+    [ForeignKey("OwnerId")]
+    public virtual User User { get; set; }
 
-    [Required] public DateTimeOffset CreatedAt { get; set; }
+    [Required]
+    public DateTimeOffset CreatedAt { get; set; }
 
-    [Required] public DateTimeOffset ModifiedAt { get; set; }
+    [Required]
+    public DateTimeOffset ModifiedAt { get; set; }
 
     public virtual ICollection<Column> Columns { get; set; }
 

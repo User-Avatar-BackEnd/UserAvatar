@@ -14,7 +14,8 @@ public sealed class RankService : IRankService
     private readonly IMapper _mapper;
     private readonly IRankStorage _rankStorage;
 
-    public RankService(IRankStorage rankStorage,
+    public RankService(
+        IRankStorage rankStorage,
         IMapper mapper)
     {
         _rankStorage = rankStorage;

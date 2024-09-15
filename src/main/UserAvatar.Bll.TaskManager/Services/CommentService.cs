@@ -46,8 +46,9 @@ public sealed class CommentService : ICommentService
             UserId = userId,
             Text = text,
             CreatedAt = DateTimeOffset.Now,
-            ModifiedAt = DateTimeOffset.Now
+            ModifiedAt = DateTimeOffset.Now,
         };
+
         // TODO: It returns the comment, but shouldn't , let's return nothing
         var comment = await _commentStorage.CreateAsync(newComment);
 

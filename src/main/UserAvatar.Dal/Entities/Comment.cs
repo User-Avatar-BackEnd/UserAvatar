@@ -12,19 +12,27 @@ public class Comment
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Required] public int CardId { get; set; }
+    [Required]
+    public int CardId { get; set; }
 
-    [ForeignKey("CardId")] public virtual Card Card { get; set; }
+    [ForeignKey("CardId")]
+    public virtual Card Card { get; set; }
 
-    [Required] public int UserId { get; set; }
+    [Required]
+    public int UserId { get; set; }
 
-    [ForeignKey("UserId")] public virtual User User { get; set; }
+    [ForeignKey("UserId")]
+    public virtual User User { get; set; }
 
-    [Required] [MaxLength(256)] public string Text { get; set; }
+    [Required]
+    [MaxLength(256)]
+    public string Text { get; set; }
 
-    [Required] public DateTimeOffset CreatedAt { get; set; }
+    [Required]
+    public DateTimeOffset CreatedAt { get; set; }
 
-    [Required] public DateTimeOffset ModifiedAt { get; set; }
+    [Required]
+    public DateTimeOffset ModifiedAt { get; set; }
 
     public bool IsDeleted { get; set; }
 }
