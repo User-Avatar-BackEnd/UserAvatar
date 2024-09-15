@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8</TargetFramework>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\UserAvatar.Bll.Gamification\UserAvatar.Bll.Gamification.csproj"/>
+        <ProjectReference Include="..\UserAvatar.Bll.Infrastructure\UserAvatar.Bll.Infrastructure.csproj"/>
+        <ProjectReference Include="..\UserAvatar.Dal\UserAvatar.Dal.csproj"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>
