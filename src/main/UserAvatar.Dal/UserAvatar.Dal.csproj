@@ -12,7 +12,7 @@
         <Folder Include="Entities\"/>
         <Folder Include="Context\"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8"/>
         <Folder Include="Migrations"/>
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="8.103.3"/>
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
